@@ -743,7 +743,7 @@ de exploração e nível de socialização. O nível de preservação realiza o desvio
 de obstáculos, a exploração executa navegação de alto nível, e a socialização
 habilita o comportamento de seguir objetos.
 
-\subsubsection{Arquitetura Esquema Motor}
+\subsubsection{Arquitetura Esquema Motor}\label{motorscheme}
 Em 1987, Arkin \cite{arkin1987aura} utiliza a teoria de esquemas (psicologia)
 proposta por \cite{arbib1992schema} para desenvolver sua função de coordenação
 cooperativa para sistemas reativos, chamado de Esquema Motor. Neste sistema, as
@@ -937,6 +937,68 @@ Neste trabalho, são destacadas arquitetura híbridas Autonomous Robot
 Architecture (AuRA) e AUV Phoenix.
 
 \subsubsection{AuRA}
+
+A Autonomous Robot Architecture (AuRA) foi a primeira arquitetura
+híbrida, desenvolvida em 1986 por Arkin \cite{arkin1987path}. De acordo com Murphy \cite{murphy2000introduction},
+AuRA pertence ao estilo de arquitetura híbrida \textit{administradora}
+(\textit{Managerial}), reconhecida por sua decomposição similar a um
+gerenciamento de negócios. Há agentes superiores que realizam planejamento em
+alto nível e passam o plano a subordinados, os quais refinam os planos e coletam
+os recursos, e, então, estes são passados ao último nível de agentes, os
+comportamentos reativos. 
+
+AuRA é composto por cinco subsistemas, dos quais dois pertencem à porção
+deliberativa: Planejador e Cartógrafo, o subsistema de sensores, subsistema de
+gerenciador de comportamentos (gerenciador esquema motor) e o subsitema de
+controle homestático.
+
+O planejador é responsável pela missão e
+o planejamento de tarefas e é subdividido em três componentes: planejador da
+missão, navegador e piloto e seus módulos são executados sequencialmente, tornando-se mais específico e detalhado.
+A lógica é hierárquica: o planejador de missão envia trechos da missão ao
+navegador, o qual envia trechos de trajetória para o piloto, que determina ações
+ao controlador de baixo nível. O planejador de missão também funciona como
+interface ao usuário. A utilização do mapa interno do robô por cada módulo é
+diferente, enquanto o planejador usa o mapa global, o piloto recebe informações
+locais. Vale observar que, quando o modelo do mundo é atualizado, muitas vezes
+não há necessidade de o planejador atualizar toda a missão e recomeçar o ciclo
+de planejamento, o piloto pode recalcular a trajetória local. Por exemplo, o
+navegador recebe as tarefas: ``vá até a montanha até a torre da água, siga o
+caminho até o acampamento'', e o piloto recebe a primeira subtarefa ``vá até a
+montanha ae a torre da água'' e as informações necessárias para gerar os
+comportamentos.
+
+O Cartógrafo encapsula todo o mapa e tem a funcionalidade de receber mapas a
+priori (operador pode fornecer um mapa inicial). Os três componentes do
+planejador interagem com o Cartógrafo para obter a trajetória a seguir, quebrada
+em segmentos.
+
+O subsistema do AuRA que gerencia comportamentos utiliza a arquitetura
+reativa esquema motor. O esquema motor, como visto na subseção
+\ref{motorscheme}, representa cada ação em campos potenciais (vetores) e a resposta do sistema é a
+soma dos vetores. 
+
+O controle homeostático, quinto subsistema, está no meio do caminho entre os
+sistemas deliberativos e reativos. Sua função é modificar a relação entre
+comportamentos, modificando os ganhos do vetores (subseção \ref{motorscheme}).
+Considere o seguinte exemplo, para melhor entendimento deste subsistema: um
+veículo (robô) operando, no planeta Marte em um amabiente rochoso, têm como
+tarefa remover fisicamente amostras de rochas de várias localidades pelo planeta
+e levá-las a um veículo de retorno, o qual tem uma data fixa de lançamento. O
+robô é provido com ganhos padrões em seus comportamentos, os quais produzem uma
+execução conservadora da operação, por exemplo garantindo que o robô esteja
+sempre 2 metros de distância dos obstáculos em seu caminho. No começo da missão,
+a execução conservadora parece razoável, mas agora considere próximo à data
+limite de decolagem do veículo de retorno: se o robô estiver próximo ao veículo
+de decolagem, ele deveria cortar caminhos, reduzindo sua margem de evitar
+obstáculos para realizar a entrega, sacrificando sua própria existência para a
+missão.
+
+AuRA poderia integrar o controle homeostático à parte deliberativa da
+arquitetura, mas foi motivado pela biologia a colocá-lo em outra área, o qual
+chama de subconsciente, o qual em animais modifica sempre a área consciente em
+resposta a necessidades internas. A FIGURA mostra os cinco subsistemas da
+arquitetura AuRA.
 
 \subsubsection{AUV Phoenix}
 Em 1996, Healey, A. J. [8] (Autonomous Underwater Vehicle Laboratory,
