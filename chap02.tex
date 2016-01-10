@@ -57,8 +57,8 @@ exemplificam as arquiteturas pela ótica de diversos autores, e são
 comparadas e analisadas.
 
 %TODO: acrescentar mais uma referência (arkin?)
-O controle de missão (\textit{Mission Control}) ou planejamento de missão
-(\textit{Mission Planning}) ou planejamento de tarefas (\textit{Task Planning})
+O controle de missão (\textit{Mission Control System} - MCS) ou planejamento de
+missão (\textit{Mission Planning}) ou planejamento de tarefas (\textit{Task Planning})
 de robôs faz parte da arquitetura robótica, e pode ser desenvolvido para os
 três tipos de arquiteturas. Em \cite{fryxell1996navigation}, o conceito é bem
 introduzido como: controle de missão é um sistema que permite ao operador
@@ -73,9 +73,18 @@ maneira conjunta, os objetivos da missão, em um ambiente dinâmico.
 Neste trabalho, o controle de missão de robôs é o componente da arquitetura
 robótica que organiza e executa todas as tarefas do robô de maneira ótima,
 exerce o papel de traduzir os comandos de missão do usuário ao robô, provê feedback ao
-operador, e contém as diretivas do robô. Como faz parte da arquitetura, as
-seções que seguem buscam, em cada arquitetura, destacar de forma exemplificada
-alguns controles de missão.
+operador (\textit{execution monitoring}), e contém as diretivas do robô. Como
+faz parte da arquitetura, as seções que seguem buscam, em cada arquitetura, destacar de forma exemplificada
+alguns controles de missão. 
+
+A robô DORIS é um robô móvel com aplicação de inspeção em um ambiente não
+muito dinâmico. Apresenta missões semelhantes a um AUV, apesar de sua dinâmica
+ser bem mais simplificada, já que este se move ao longo de um trilho.
+Entretanto, como a aplicação (inspeção) é igual, os hardwares são equivalentes
+por ser um robô móvel com vários sensores, e alguns desafios são comuns, é de
+se esperar que a arquitetura robótica possa apresentar muitas semelhanças. Desta
+forma, durante a apresentação das arquiteturas, será sempre destacada uma
+arquitetura em AUV.
 
 \section{Paradigma hierárquico/deliberativo}
 Em meados do século XX, são realizados os primeiros estudos de robôs autônomos,
@@ -159,8 +168,8 @@ autônomas (figura~\ref{manipulador}).
 As arquiteturas deliberativas são sistemas hierárquicos com a lógica
 \textit{SPA}. São utilizados em sistemas robóticos até hoje, quando a aplicação
 favorece seu uso e o poder computacional não é uma restrição.
-Destacam-se os modelos de Albus, NASREM, \textit{Nested Hierarchical Controllers} e o \emph{Intelligent Mobile
-Robot System}.
+Destacam-se os modelos de Albus, NASREM, o \emph{Intelligent Mobile
+Robot System}, MARIUS (AUV).
 
 \subsubsection{Modelo de Albus}
 
@@ -217,7 +226,8 @@ diversas arquiteturas.
 \end{figure}
 
 Vale ressaltar que, nesta arquitetura, o \textit{gerador de comportamentos} faz
-o papel de controlador de missão.
+o papel do controle de missão, porém não de maneira completa, já que a
+interação com o usuário ainda é precária.
 
 \subsubsection{NASREM}
 O NASREM \cite{albus1989nasa} foi uma arquitetura utilizada pela
@@ -252,24 +262,6 @@ metodologia de software.
 \caption{Arquitetura NASREM.}
 \label{nasrem}
 \end{figure}
-
-\subsubsection{\textit{Nested Hierarchical Controllers}}
-O \textit{Nested Hierarchical Controllers} (NHC) consiste também em seis
-níveis hierárquicos: planejador da missão, navegador, piloto, monitor de
-trajetória, controlador, e sistema de controle de baixo nível. Há também
-constante atualização do modelo do mundo por um sistema de sensoriamento.
-
-O planejamento é decomposto em planejador da missão, navegador e piloto e seus
-módulos são executados sequencialmente, tornando-se mais específico e detalhado.
-A lógica é hierárquica: o planejador de missão envia trechos da missão para o
-navegador, o qual envia trechos de trajetória para o piloto, que determina ações
-ao controlador de baixo nível. A utilização do mapa interno do robô por cada
-módulo é diferente, enquanto o planejador usa o mapa global, o piloto recebe
-informações locais. Vale observar que, quando o modelo do mundo é atualizado,
-muitas vezes não há necessidade de o planejador atualizar toda a missão e
-recomeçar o ciclo de planejamento, apenas o piloto pode recalcular a trajetória
-local. 
-%TODO: FIGURA 
 
 \subsubsection{\textit{Intelligent Mobile Robot System}}
 Em 1991, Saridis \cite{wang1991petri} cria o \emph{Intelligent Mobile
@@ -358,6 +350,70 @@ e robustez, e é provado que redes de Petri são uma excelente ferramenta para
 modelagem de sistemas, sobretudo quando envolvem tarefas conflitantes ou
 simultâneas \cite{murata1989petri}.
 
+\subsubsection{MARIUS}
+Em 1996, Silva et al. \cite{oliveira1996design} (Institute for Systems and
+Robotics, Lisboa) projetaram, desenvolveram e testaram um sistema de controle de missão para o
+MARIUS, robô autônomo submarino. O trabalho de Silva introduz novos e
+importantes conceitos chave para o MCS: Tarefa do Sistema (\emph{System Task}), Primitiva do
+Veículo (\emph{Vechicle Primitive}), Procedimento de Missão (\emph{Mission Procedure})
+e Programa de Missão (\emph{Mission Program}). Além disso, a arquitetura do
+veículo, por ser um AUV, possui sistemas e interconexões
+semelhantes ao robô DORIS, estudo desta dissertação.
+
+\textbf{Tarefa do Sistema} (ST): é a especificação paramétrica de uma classe
+de algoritmos ou processos que implementam uma funcionalidade básica em um robô.
+Requer a implementação de dois módulos: \textit{i}) um \emph{módulo Funcional}
+que contém um determinado algoritmo e processo, e transfere dados com outras
+Tarefas do Sistema e dispositivos físicos; \textit{ii}) um \emph{módulo
+Comando}, máquina de estado finito, que recebe comandos externos, produz
+mensagens de saída, e controla a seleção de algoritmos, processos, e caminhos
+dos dados para/de módulos Funcionais.
+
+A arquitetura do MARIUS é descrita abaixo, figura~\ref{SILVA_1}:
+\begin{itemize}
+  \item \emph{Vehicle Support System} (VSS) - Controla a distribuição de energia
+  aos hardwares instalados no veículo, monitora consumo de energia e detecta
+  falhas de hardware, podendo enviar comandos de emergência.
+  \item \emph{Actuator Control System} (ACS) - Controla a velocidade de rotação
+  dos propulsores e posição dos ailerions e lemes. Os \emph{Set Points} dos
+  atuadores são dados pelo \emph{Vehicle Guidance and Control System} (VGCS) e
+  os dados dos atuadores são transmitidos para o \emph{Mission Control System}.
+  \item \emph{Navigation System} (NS) - Estima posição linear e velocidade do
+  veículo, orientação e velocidade angular. O sistema funde informações do
+  \emph{Positioning System} (\emph{Long Baseline unit}) e \emph{Motion Sensor
+  Integration System}, o qual inclui diversos sensores. As saídas do NS são
+  entradas do VGCS, e enviadas ao MCS.
+  \item \emph{Vehicle Guidance and Control System} (VGCS) - Recebe como entrada
+  as trajetórias de referência pelo MCS, e os dados de navegação do NS. Suas
+  saídas são \emph{Set Points} para velocidade de rotação e outros atuadores do
+  ACS, tal que o veículo siga a trajetória desejada mesmo com incertezas e
+  distúrbios.
+  \item \emph{Communication System} (COMS) - Controla o link bidirecional usado
+  pelo operador para passar missões ao MCS, e pelo veículo para passar status de
+  missão ou estados do veículo.
+  \item \emph{Environmental Inspection System} (EIS) - Coleta dados do ambiente
+  com diversos sensores (inclusive câmeras), como temperatura, pressão, pH. É
+  controlado pelo MCS.
+  \item \emph{Data Logging System} (DLS) - Adquiri e armazena dados do veículo.
+  \item \emph{Mission Control System} (MCS) - Sequencia e sincroniza a execução
+  das tarefas básicas do veículo para uma determinada missão e provê a
+  recuperação em caso de falhas.
+\end{itemize}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\columnwidth]{figs/SILVA_1.pdf}
+\caption{Arquitetura do Veículo MARIUS}
+\label{SILVA_1}
+\end{figure}
+
+Como pode ser visto, a arquitetura é dividida em um nível organizacional, um
+coordenador e um nível funcional.
+
+Silva desenvolveu os softwares CORAL e ATOL para implementação das VPs e STs em
+redes de Petri de forma que um usuário final, como um operador, pudesse
+facilmente criar seus MPs. A grande contribuição  
+
 
 \subsection{Análise crítica}
 A abordagem deliberativa simula, de certa forma, o processo de planejamento e
@@ -379,9 +435,16 @@ Dessa forma, robôs móveis em ambientes muito dinâmicos, como o carro autônomo da
 google (figura~\ref{googlecar}), não são aplicações favoráveis para esta
 arquitetura.
 
+O controle de missão é presente em arquiteturas deliberativas, mas de maneira
+primitiva, normalmente possuindo apenas as funcionalidades de: quebrar as
+missões em tarefas menores que o robô possa executar, gerenciar as tarefas, e
+monitoramento interno. Entretando, peca no desenvolvimento da interface com o
+usuário, a possibilidade de alteração de tarefas em tempo de
+execução, e feedback ao operador em tempo real.
+
 \begin{figure}[h!]
 \centering
-\includegraphics[width=1\columnwidth]{figs/BRAIN.png}
+\includegraphics[width=1\columnwidth]{figs/brain.jpg}
 \caption{Comparativo da arquitetura deliberativa com o ser humano.}
 \label{brain}
 \end{figure}
@@ -485,20 +548,41 @@ evitando luz intensa (``ameaças'') e atraída por certos objetivos. Vale
 observar a característica de perceber baixo nível de bateria e procurar
 uma estação de recarga, comportamento que se sobrepõe aos outros. Os
 comportamentos são simples e não há representação abstrata do mundo:
-dirigir-se para luz fraca; fugir de luz forte; e evitar obstáculos.
+dirigir-se para luz fraca; fugir de luz forte; e evitar obstáculos
+(figura~\ref{turtle}).
 
 Em 1984, veículos simples e puramente reativos com os pares clássicos
 sensor-motor foram desenvolvidos pelo psicologista Braitenberg
 \cite{braitenberg1986vehicles}, a fim de simular sentimentos, como covardia,
-agressividade e outros. 
+agressividade e outros (figura~\ref{Braitenberg}). 
 
 Em 2002 até os dias atuais, o robô iRobot Roomba ganha destaque comercial e
 executa uma simples tarefa doméstica: limpar o chão. Em sua arquitetura, o robô
 Roomba possui apenas algumas funções reativas, como esquivar-se e locomover-se,
 e, em suas versões antigas, foi constatado que não possui o modelo do mundo,
-mapa, dentro de si \cite{tribelhorn2007evaluating}.
+mapa, dentro de si \cite{tribelhorn2007evaluating} (figura~\ref{roomba}).
 
-%TODO: Verificar controle de missão dos modelos
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\columnwidth]{figs/turtle.jpg}
+\caption{A tartaruga de Grey Walter.}
+\label{turtle}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\columnwidth]{figs/Braitenberg.jpg}
+\caption{Veículos de Braitenberg.}
+\label{Braitenberg}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\columnwidth]{figs/roomba.jpg}
+\caption{Robô comercial Roomba da iRobot.}
+\label{roomba}
+\end{figure}
+
 \subsection{Arquiteturas reativas}
 As arquiteturas reativas foram formalmente introduzidas em 1986 por
 Roodney Brooks. O roboticista, futuro fundador da empresa iRobot, vivenciou uma
@@ -584,39 +668,7 @@ A camada de controle nível zero deve garantir que o robô não entre em contato
 com outros objetos, estacionários ou móveis. Portanto, o robô deve desviar de
 objetos que se aproximam ou parar se houver um objeto fixo em sua trajetória. A camada de controle nível 1, combinada a camada de controle nível 0, permite
  que o robô vagueie sem colisões. A figura~\ref{BROOKS_4} mostra o sistema de
- controle aumentado pelo nível da camada 1.
-
-
-% \begin{figure}[h]
-% \centering
-% \includegraphics[width=1\columnwidth]{figs/BROOKS_3.pdf}
-% \caption{Nível 0 de controle do sistema}
-% \label{BROOKS_3}
-% \end{figure}
-% 
-% Segue pequena descrição de cada módulo:
-% \begin{itemize}
-%   \item Módulo \emph{Curva}: comunica-se diretamente com o robô (atuadores).
-%   Recebe uma mensagem \emph{Dirigir} especificando um ângulo de giro seguido por
-%   uma mensagem do módulo \emph{Avanço} com uma determinada magnitude. Isso faz
-%   com que o robô realize uma curva e vá para o estado de \emph{Avanço}.
-%   \item Módulo \emph{Avanço}: comando faz robô se movimentar (atuadores), mas
-%   pára o robô se receber mensagem do módulo \emph{Colisão}. O robô fica inativo
-%   e mensagens do encoder é enviado ao módulo \emph{Curva}, funcionando como um
-%   \emph{reset}, e podendo receber novos comandos.
-%   \item Módulo \emph{Sonar}: recebe um vetor de informações de sensores do robô,
-%   filtra os dados e produz um mapeamento de obstáculos para o robô em
-%   coordenadas polares.
-%   \item Módulo \emph{Colisão}: monitora o mapa gerado pelo módulo \emph{Sonar}
-%   e, se detectar um obstáculo, envia um sinal de parada. Observe que este módulo
-%   funciona independentemente se o robô está em movimento ou parado.
-%   \item Módulo \emph{Sentir Força}: cada obstáculo detectado é somado
-%   como uma força repulsiva, gerando uma força resultante.
-%   \item Módulo \emph{Fugir}: monitora a força produzida pelos obstáculos e envia
-%   comandos para o módulo \emph{Curva} se a força for significante.
-% \end{itemize}
- 
- 
+ controle aumentado pelo nível da camada 1. 
 
 \begin{figure}[h!]
 \centering
@@ -624,34 +676,6 @@ objetos que se aproximam ou parar se houver um objeto fixo em sua trajetória. A 
 \caption{Nível 0 e 1 de controle do sistema}
 \label{BROOKS_4}
 \end{figure}
-
-% Segue pequena descrição de cada módulo do nível 1:
-% \begin{itemize}
-%   \item Módulo \emph{Vaguear}: gera nova direção para o robô a cada 20 segundos.
-%   \item Módulo \emph{Evitar}: recebe resultado da força computada pelo nível 0
-%   de controle e combina com a direção desejada pelo módulo \emph{Vaguear},
-%   produzindo uma nova direção desejada sem obstáculos. Esse resultado presume as
-%   computações do módulo \emph{Fugir}. Vale observar que o módulo \emph{Evitar}
-%   suprime a saída do módulo \emph{Fugir} (mecanismo de supressão). 
-% \end{itemize}
-% 
-% Os problemas anteriormente da arquitetura hierárquica apontados por Brooks
-% são solucionados pela nova arquitetura:
-% \begin{itemize}
-%   \item Múltiplos objetivos: camadas individuais podem trabalhar em objetivos
-%   individuais ao mesmo tempo. Os níveis das camadas de controle e o mecanismo de
-%   supressão do trânsito de dados resolvem os problemas de conflito, dependência
-%   e prioridade;
-%   \item Múltiplos sensores: as camadas utilizam os dados dos sensores
-%   independentemente, de forma que não há necessidade de se preocupar com a
-%   fusão;
-%   \item Robustez: além do uso inteligente de sensores, camadas de controle de
-%   nível inferior continuam a funcionar quando novas camadas de nível superior
-%   são adicionadas;
-%   \item Extensibilidade: cada camada de controle pode possuir o seu próprio
-%   processador, resolvendo o problema de adicionar sensores indefinidamente e
-%   consumir o processamento;
-% \end{itemize}
 
 A estrutura das camadas de controle foram construídas por um conjunto de
 pequenos processadores que enviam mensagens uns para os outros. Cada processador
@@ -669,9 +693,15 @@ utilizando como módulos básicos máquinas de estados finitos (FSM - \emph{Finite
 State Machine}). Como a conexão de diversas FSM's não é uma FSM, a solução
 encontrada por Brooks foi acrescentar inibidores e supressores em suas
 FSM, chamando-as AFSM (\emph{Augmented Finite State Machine} ou máquina de
-estado aumentada, FIGURA). Porém, o modelo hierárquico dos níveis cria uma certa
-inflexibilidade nos níveis inferiores.
-%TODO Colocar figura do modulo basico de brooks 
+estado aumentada, figura~\ref{afsm}). Porém, o modelo hierárquico dos níveis
+cria uma certa inflexibilidade nos níveis inferiores.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\columnwidth]{figs/afsm.jpg}
+\caption{Módulo básico da arquitetura de subsunção (AFSM).}
+\label{afsm}
+\end{figure}
 
 Apesar dos pontos positivos, a arquitetura de controle de um sistema
 baseado em comportamento apresenta problemas com escala e contextualização
@@ -694,8 +724,8 @@ inferiores para obter os dados dos sensores. Porém, Bellingham não resolveu o
 problema utilizando uma arquitetura do tipo subsunção: as camadas são associadas
 com um número de prioridade, de forma que saídas conflitantes são resolvidas
 com esse número. Esta solução pode gerar uma certa inflexibilidade, visto que
-que uma nova ação pode alterar toda a estrutura de prioridades previamente
-estabelecida.
+que a adição de um novo comportamento pode alterar toda a estrutura de
+prioridades previamente estabelecida.
 
 A solução para o problema de contextualidade só foi resolvido em 2000 por Bennet
 \cite{bennett2000behavior}. No \emph{State Configured Layered Control} (SCLC),
@@ -703,6 +733,15 @@ múltiplos conjuntos de comportamentos simples são escolhidos de uma biblioteca
 de comportamentos e são executados em cada fase da missão. A vantagem é o
 número reduzido de comportamentos executados ao mesmo tempo. Esta é
 uma estratégia comum em arquiteturas de controle híbrido. 
+
+\paragraph{O AUV Eric}
+Desenvolvido pelo Key Center Robotics Laboratory, University of Technology,
+Sydney \cite{boswell1994using}, o AUV Eric segue a arquitetura de subsunção
+desenvolvida por Brooks com alguns avanços. Foram desenvolvidos três níveis de
+competência, que descrevem a capacidade do sistema: nível de preservação, nível
+de exploração e nível de socialização. O nível de preservação realiza o desvio
+de obstáculos, a exploração executa navegação de alto nível, e a socialização
+habilita o comportamento de seguir objetos.
 
 \subsubsection{Arquitetura Esquema Motor}
 Em 1987, Arkin \cite{arkin1987aura} utiliza a teoria de esquemas (psicologia)
@@ -759,7 +798,13 @@ que é necessário sair do trilho ao avistar um trêm, e para isso basta um par
 estímulo-motor e uma supressão de tarefa (no caso, a tarefa de continuar
 limpando o trilho). 
 
-A tabela\ref{comparativa} mostra a compração das arquiteturas analisadas até
+Não é comum na literatura encontrarmos controle de missão em arquiteturas
+reativas e é comum alguns autores se referirem a esses robôs como
+\textit{non-taskable systems}, isto é, sistemas que não é possível atribuir
+tarefas. Não há interface com o usuário, mas sim com o programador, que deve
+alterar comportamentos a fim de gerar uma nova tarefa ou aplicação.
+
+A tabela~\ref{comparativa} mostra a compração das arquiteturas analisadas até
 agora.
 
 \begin{table}[]
@@ -775,13 +820,6 @@ Planejamento                                                                    
 \begin{tabular}[c]{@{}l@{}}Resposta lenta às mudanças no \\ ambiente\end{tabular}                  & \begin{tabular}[c]{@{}l@{}}Resposta rápida às mudanças do \\ ambiente\end{tabular}                   
 \end{tabular}
 \end{table}
-
-% Por outro lado, robôs de inspeção necessitam conhecer todo o ambiente, mundo,
-% para identificar irregularidades e, por vezes, planejar sua locomoção em
-% terrenos mais acidentados. A aplicação muitas vezes dita qual a arquitetura
-% deverá ser usada
-% non hard-wired
-%TODO fechar análise
 
 \begin{figure}[h!]
 \centering
@@ -817,9 +855,42 @@ ter um entendimento de alto nível da natureza do mundo e um modelo da intenção
 do usuário.  
 
 \subsection{Robôs híbridos}
+Entre 1986 e 1987 \cite{arkin1989mobile}, Arkin foi o primeiro a criar uma
+arquitetura híbrida e implementar em um robô. O onjetivo do robô era reconhecer
+o ambiente de trabalho, planejar uma trajetória e navegar até o ponto desejado,
+evitando obstáculos estáteis e móveis (figura~\ref{george}).
+
+Em 1996, o AUV com arquitetura híbrida Phoenix, desenvolvido em Naval
+Post-graduated School, Monterey, foi testado em Moss Landing
+California \cite{brutzman1996nps}, figura~\ref{phoenix}.  
+
+Desde 2003 com o Spirit até os dias atuais com Opportunity e Curiosity
+(figura~\ref{curiosity}, a NASA vem desenvolvendo robôs de alta tecnologia,
+com grande robustez de hardware e software.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\columnwidth]{figs/georgerobot.jpg}
+\caption{Robô George.}
+\label{george}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\columnwidth]{figs/phoenix.jpeg}
+\caption{O AUV Phoenix.}
+\label{phoenix}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\columnwidth]{figs/curiosity.jpg}
+\caption{Robô Curiosity, o robô da NASA explorador do planeta Marte.}
+\label{curiosity}
+\end{figure}
 
 \subsection{Aquitetura híbrida}
-Em \cite{arkin1998behavior}, Arkin aponta quatro estratégias para o
+Em \cite{arkin1998behavior}, Arkin aponta quatro possíveis estratégias para o
 projeto de arquiteturas híbridas:
 
 \begin{itemize}
@@ -836,10 +907,38 @@ projeto de arquiteturas híbridas:
   caso. Neste caso, os planos só são elaborados quando necessários.
 \end{itemize}
 
+Em \cite{murphy2000introduction}, Murphy afirma que apesar de arquiteturas
+híbridas variarem em como a função deliberativa (o planejador) atua no sistema,
+os componentes implementados em uma arquitetura híbrida são semelhantes,
+possuindo geralmente os seguintes módulos:
 
+\begin{itemize}
+  \item Sequenciador: agente que gera o conjunto de comportamentos a serem
+  usados para completar uma subtarefa, e determina qualquer sequência e
+  condições de ativação. A sequência é normalmente representada como uma rede de
+  dependências ou FSMs, mas o sequenciador gera essa estrutura ou ou
+  dinamicamente a adapta.
+  \item Gerenciador de recursos: agente que aloca recursos aos comportamentos.
+  Este agente está diretamente ligado aos sensores do robô, podendo verificar
+  qual o sensor é mais adequado para cada situação do robô. 
+  \item Cartógrafo: agente responsável por criar, armazenar e atualizar o mapa,
+  modelo do mundo.
+  \item Planejador de missão: agente que interage com o usuário, traduz a
+  mensagem do usuário para os termos do robô, e contrói um plano de missão. Por
+  exemplo, um robô ``assistente'' poderia receber o comando ``Robô, traga um
+  xícara com café''. O planejador de missão interpreta o comando de forma que
+  primeiro o robô deve procurar uma xícara, servir café (supondo que este já
+  esteja pronto) e, então, levá-lo até o usuário.
+  \item Monitor de desempenho e solucionador de problemas: é o agente que
+  permite ao robô perceber se está progredindo no cumprimento de sua tarefa.
+\end{itemize}
 
-\subsection{Análise crítica} 
+Neste trabalho, são destacadas arquitetura híbridas Autonomous Robot
+Architecture (AuRA) e AUV Phoenix.
 
+\subsubsection{AuRA}
+
+\subsubsection{AUV Phoenix}
 Em 1996, Healey, A. J. [8] (Autonomous Underwater Vehicle Laboratory,
 California), aplica técnicas de controle híbrido em seu trabalho de
 desenvolvimento do AUV Phoenix.  O controle híbrido será responsável tanto pela
@@ -867,66 +966,10 @@ e hierárquicos, figura~\ref{HEALEY_1}:
 \label{HEALEY_1}
 \end{figure}
 
-Em 1996, Silva, V. et al [6] (Institute for Systems and Robotics, Lisboa),
-projetaram, desenvolveram e testaram um sistema de controle de missão para o
-MARIUS, robô autônomo submarino. O trabalho de Silva, V. [6], introduz novos e
-importantes conceitos chave para o MCS: Tarefa do Sistema (\emph{System Task}), Primitiva do
-Veículo (\emph{Vechicle Primitive}), Procedimento de Missão (\emph{Mission Procedure})
-e Programa de Missão (\emph{Mission Program}). Além disso, a arquitetura do
-veículo, por ser um AUV, possui sistemas e interconexões
-semelhantes ao robô DORIS, estudo desta dissertação.
 
-\textbf{Tarefa do Sistema} (ST): é a especificação paramétrica de uma classe
-de algoritmos ou processos que implementam uma funcionalidade básica em um robô.
-Requer a implementação de dois módulos: \textit{i}) um \emph{módulo Funcional}
-que contém um determinado algoritmo e processo, e transfere dados com outras
-Tarefas do Sistema e dispositivos físicos; \textit{ii}) um \emph{módulo
-Comando}, máquina de estado finito, que recebe comandos externos, produz
-mensagens de saída, e controla a seleção de algoritmos, processos, e caminhos
-dos dados para/de módulos Funcionais.
+\subsection{Análise crítica} 
 
-A arquitetura do veículo DORIS teve grande influência da organização do veículo
-MARIUS descrita abaixo, figura~\ref{SILVA_1}:
-\begin{itemize}
-  \item \emph{Vehicle Support System} (VSS) - Controla a distribuição de energia
-  aos hardwares instalados no veículo, monitora consumo de energia e detecta
-  falhas de hardware, podendo enviar comandos de emergência.
-  \item \emph{Actuator Control System} (ACS) - Controla a velocidade de rotação
-  dos propulsores e posição dos ailerions e lemes. Os \emph{Set Points} dos
-  atuadores são dados pelo \emph{Vehicle Guidance and Control System} (VGCS) e
-  os dados dos atuadores são transmitidos para o \emph{Mission Control System}.
-  \item \emph{Navigation System} (NS) - Estima posição linear e velocidade do
-  veículo, orientação e velocidade angular. O sistema funde informações do
-  \emph{Positioning System} (\emph{Long Baseline unit}) e \emph{Motion Sensor
-  Integration System}, o qual inclui diversos sensores. As saídas do NS são
-  entradas do VGCS, e enviadas ao MCS.
-  \item \emph{Vehicle Guidance and Control System} (VGCS) - Recebe como entrada
-  as trajetórias de referência pelo MCS, e os dados de navegação do NS. Suas
-  saídas são \emph{Set Points} para velocidade de rotação e outros atuadores do
-  ACS, tal que o veículo siga a trajetória desejada mesmo com incertezas e
-  distúrbios.
-  \item \emph{Communication System} (COMS) - Controla o link bidirecional usado
-  pelo operador para passar missões ao MCS, e pelo veículo para passar status de
-  missão ou estados do veículo.
-  \item \emph{Environmental Inspection System} (EIS) - Coleta dados do ambiente
-  com diversos sensores (inclusive câmeras), como temperatura, pressão, pH. É
-  controlado pelo MCS.
-  \item \emph{Data Logging System} (DLS) - Adquiri e armazena dados do veículo.
-  \item \emph{Mission Control System} (MCS) - Sequencia e sincroniza a execução
-  das tarefas básicas do veículo para uma determinada missão e provê a
-  recuperação em caso de falhas.
-\end{itemize}
 
-\begin{figure}[h!]
-\centering
-\includegraphics[width=1\columnwidth]{figs/SILVA_1.pdf}
-\caption{Arquitetura do Veículo MARIUS}
-\label{SILVA_1}
-\end{figure}
-
-Silva desenvolveu os softwares CORAL e ATOL para implementação das VPs e STs em
-redes de Petri de forma que um usuário final, como um operador, pudesse
-facilmente criar seus MPs. A grande contribuição  
 
 %TODO falar de blackboard quando for falar de ROS
 Antes de Brooks, em 1983, Elfes, A. \cite{elfes1983distributed},já havia
