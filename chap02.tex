@@ -10,8 +10,8 @@ Neste capítulo, são apresentados os fundamentos teóricos necessários para o
 entendimento desta dissertação. O objetivo deste levantamento bibliográfico é
 apresentar alguns dos principais trabalhos e pesquisas científicos sobre
 arquiteturas e sistemas de controle de missão de robôs móveis. Por fim,
-o leitor é direcionado para os conhecimentos aplicados no controle de missão do
-robô DORIS, projeto que envolve esta dissertação.
+o leitor é direcionado para os ambientes de software desenvolvidos para robôs
+autônomos (\textit{Robotic Development Environments} - RDEs).
 
 O conceito de arquitetura %do grego arkhétékhton, do ingles architecture, do
 % frances architecture
@@ -19,8 +19,8 @@ para robôs é definido de diferentes formas na
 literatura. Em \cite{arkin1998behavior}, arquitetura de robô é
 relacionada com arquitetura de software, em uma adaptação à
 arquitetura de computadores de \cite{stone1980introduction}, e definida como:
-arquitetura de robô é a disciplina dedicada ao projeto de robôs altamente específicos e individuais
-a partir de uma coleção de blocos comuns de softwares.
+arquitetura de robô é a disciplina dedicada ao projeto de robôs altamente
+específicos e individuais a partir de uma coleção de blocos comuns de softwares.
 Em \cite{mataric1992behavior}, a definição aborda sistemas de controle: uma
 arquitetura fornece uma maneira principal de organizar um
 sistema de controle, contudo, a arquitetura também impõe restrições sobre a
@@ -804,7 +804,7 @@ alterar comportamentos a fim de gerar uma nova tarefa ou aplicação.
 A tabela~\ref{comparativa} mostra a compração das arquiteturas analisadas até
 agora.
 
-\begin{table}[H]
+\begin{table}[!ht]
 \centering
 \caption{Tabela comparativa de arquitetura deliberativa e reativa}
 \label{comparativa}
@@ -936,8 +936,8 @@ Architecture (AuRA), AUV Phoenix, CLARAty e Stanley.
 \subsubsection{AuRA}
 
 A Autonomous Robot Architecture (AuRA) foi a primeira arquitetura
-híbrida, desenvolvida em 1986 por Arkin \cite{arkin1987path}. De acordo com Murphy \cite{murphy2000introduction},
-AuRA pertence ao estilo de arquitetura híbrida \textit{administradora}
+híbrida, desenvolvida em 1986 por Arkin \cite{arkin1987aura}. De acordo com
+Murphy \cite{murphy2000introduction}, AuRA pertence ao estilo de arquitetura híbrida \textit{administradora}
 (\textit{Managerial}), reconhecida por sua decomposição similar a um
 gerenciamento de negócios. Há agentes superiores que realizam planejamento em
 alto nível e passam o plano a subordinados, os quais refinam os planos e coletam
@@ -996,10 +996,10 @@ AuRA poderia integrar o controle homeostático à parte deliberativa da
 arquitetura, mas foi motivado pela biologia a colocá-lo em outra área, o qual
 chama de subconsciente, o qual em animais modifica sempre a área consciente em
 resposta a necessidades internas. A figura~\ref{aura} mostra os cinco
-subsistemas da arquitetura AuRA. A tabela~\ref{auratable} resume a arquitetura
+subsistemas da arquitetura AuRA. A tabela~\ref{auratable} resume a arquitetura.
 
 
-\begin{table}[H]
+\begin{table}[!ht]
 \centering
 \caption{Resumo da arquitetura AuRA}
 \label{auratable}
@@ -1046,7 +1046,7 @@ as arquiteturas Atlantis \cite{gat1991reliable}, sua evolução CLARAty
 \cite{volpe2001claraty}, ambas desenvolvidas pela NASA, e o robô Stanley
 (Stanford).
 
-\begin{table}[H]
+\begin{table}[!ht]
 \centering
 \caption{Resumo da arquitetura de três camadas}
 \label{3Ttable}
@@ -1191,12 +1191,16 @@ desempenho e é capaz de adaptação e reconfiguração.
 
 
 %TODO falar de blackboard quando for falar de ROS
-Antes de Brooks, em 1983, Elfes, A. \cite{elfes1983distributed},já havia
-idealizado uma arquitetura em módulos e controle distribuído a fim de atingir
-efetividade em processamento paralelo, flexibilidade de interação com os
-diversos sensores, distribuir capacidades de decisão e flexibilidade de
-expansão e modificação do sistema.
-Porém o sistema de comunicação entre módulos era centralizado
-(\emph{Blackboard}) e só realizavam uma determinada tarefa sob o comando de um
-Plano de Controle (\emph{Control Plan}). O usuário ainda deveria explicitamente
-codificiar paralelismo, os casos das exceções e condições inesperadas.
+% Antes de Brooks, em 1983, Elfes, A. \cite{elfes1983distributed},já havia
+% idealizado uma arquitetura em módulos e controle distribuído a fim de atingir
+% efetividade em processamento paralelo, flexibilidade de interação com os
+% diversos sensores, distribuir capacidades de decisão e flexibilidade de
+% expansão e modificação do sistema.
+% Porém o sistema de comunicação entre módulos era centralizado
+% (\emph{Blackboard}) e só realizavam uma determinada tarefa sob o comando de um
+% Plano de Controle (\emph{Control Plan}). O usuário ainda deveria explicitamente
+% codificiar paralelismo, os casos das exceções e condições inesperadas.
+
+\section{Robotic Development Environments}
+
+\subsection{ROS}
