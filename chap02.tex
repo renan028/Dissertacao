@@ -1205,14 +1205,58 @@ desempenho e é capaz de adaptação e reconfiguração.
 
 A tecnologia em robótica e o número de aplicações de robôs autônomos aumentaram
 muito nos últimos anos, exigindo o desenvolvimento de softwares robustos, de
-alta performance, fácil uso e com possibilidade de simular modelos robóticos,
+alta performance, de fácil uso e com possibilidade de simular modelos robóticos,
 sensores e controle em ambientes virtuais. De acordo com
 \cite{staranowicz2011survey}, os ambientes de desenvolvimento em robótica
 evoluíram devido à emergente interação entre robôs e seres humanos, o que exige
 grande robustez e simulação prévia, como em aplicações médicas, assistência em
-ambientes nocivos, robôs de limpeza de casa e outros. Dessa forma, a comunidade
-robótica reconheceu a necessidade do desenvolvimento de softwares abertos para
-simulação e interface em robótica.
+ambientes nocivos, e outros. Dessa forma, a comunidade robótica reconheceu a
+necessidade do desenvolvimento de softwares abertos para simulação e interface
+em robótica.
+
+Em \cite{staranowicz2011survey} e \cite{kramer2007development} foi realizada uma
+compilação de RDEs, apontando suas vantagens, desvantagens e aplicações. Neste
+trabalho, são destacados os dois sistemas abertos mais populares: Player e ROS,
+e, por fim, é justificado a utilização de ROS para ser a RDE do robô DORIS.
 
 
-\subsection{ROS}
+\subsection{Player}
+Em 2001, Player/Stage \cite{gerkey2003player} foi projetado para ser uma
+interface de programação, não um ambiente de desenvolvimento, focando em
+programação de dispositivos (drivers) e sensores, em vez de robôs. Os
+dispositivos são independentes entre si e são registrados em um servidor,
+podendo ser acessados por clientes (programas de controle). Cada cliente usa uma
+conexão com o servidor para transferência de dados, preservando operações
+concorrentes. Múltiplos clientes podem subscrever a um mesmo dispositivo e podem
+eviar comandos simultaneamente, mas não há fila e comandos antigos são
+descartados. Stage, a segunda parte do software, é um simulador de dispositivo.
+
+O objetivo de Player é a separação de interface e função. O fato de servidores
+se comunicarem via soquete TCP/IP possibilita que clientes possam ser escritos
+em qualquer linguagem de programação com suporte a soquete, por exemplo Python,
+C++, Java e outros. Clientes podem operar em qualquer host que possua conexão,
+possibilitando independência de localização.
+
+
+
+\subsection{Robot Operating System - ROS}
+
+ROS é um software aberto que provê camada de abstração de hardware (CAH -
+hardware abstraction), controle baixo nível de dispositivos, mensagens entre
+processos TCP/IP ou UDP, e gerenciamento de pacotes. Dentre todas, a mais
+importante característica de ROS é a presença de uma grande comunidade de pesquisadores que
+contribui para a expansão do software, possível, principalmente, pela
+repositório disponível no website ROS. O sistem se comporta de maneira
+semelhante ao Player em relação à conexão por soquete TCP/IP, possibilitando o
+uso de múltiplas linguagens.
+
+ROS, como o próprio autor \cite{quigley2009ros} salienta, não é um sistema
+operacional (SO)) no sentido tradicional de gerenciador de processos e
+agendamento, mas apresenta algumas ferramentas parecidas as de um SO como
+mensagens entre processos. O sistema é baseado em nós, mensagens, tópicos e
+serviços. 
+
+Nós são processos ou módulos de software no código de controle, por exemplo um
+nó \textit{camera} poderia processar todos os dados visuais. Nós podem se
+comunicar com outros nós por simples mensagens, podem publicar e subescrever a
+um ou múltiplos tópicos.
