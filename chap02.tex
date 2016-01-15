@@ -1246,17 +1246,74 @@ hardware abstraction), controle baixo nível de dispositivos, mensagens entre
 processos TCP/IP ou UDP, e gerenciamento de pacotes. Dentre todas, a mais
 importante característica de ROS é a presença de uma grande comunidade de pesquisadores que
 contribui para a expansão do software, possível, principalmente, pela
-repositório disponível no website ROS. O sistem se comporta de maneira
-semelhante ao Player em relação à conexão por soquete TCP/IP, possibilitando o
-uso de múltiplas linguagens.
+repositório disponível no website ROS. 
 
 ROS, como o próprio autor \cite{quigley2009ros} salienta, não é um sistema
-operacional (SO)) no sentido tradicional de gerenciador de processos e
-agendamento, mas apresenta algumas ferramentas parecidas as de um SO como
-mensagens entre processos. O sistema é baseado em nós, mensagens, tópicos e
-serviços. 
+operacional (SO) no sentido tradicional de gerenciador de processos e
+agendamento, mas apresenta algumas ferramentas parecidas, como
+mensagens entre processos. De acordo com o autor, a filosofia por trás do
+desenvolvimento deo ROS pode se resumida nos seguintes pontos:
+
+\begin{itemize}
+  \item Arquitetura de rede ponto-a-ponto (\textit{peer-to-peer}).
+  \item Tools.
+  \item Multi linguagens de programação.
+  \item \textit{Thin}.
+  \item Gratuito e aberto.
+\end{itemize}
+
+Um sistema desenvolvido em ROS é capaz de possuir diversos processos, em
+diferentes hosts, conectados por uma topologia ponto-a-ponto, em tempo de
+execução. Uma topologia com servidor central começa a se tornar problemática se
+computadores são conectados em uma rede heterogênea. ROS necessita de um
+mecanismo de busca para permitir que processos se encontrem em tempo de
+execução, chamado \textit{service} ou \textit{master}. 
+
+O sistem se comporta de maneira semelhante ao Player em relação à conexão por
+soquete TCP/IP, possibilitando o uso de múltiplas
+linguagens, como Python, C++, Octave e LISP.
+
+Em ROS, pequenas \textit{tools} são usadas para construir e
+executar os componentes, em vez um grande monolítico ambiente de
+desenvolvimento. As \textit{tools} realizam diversas tarefas, como navegar pela
+árvore de código, obter e definir parâmetros, visualizar a conexão
+ponto-a-ponto, medir a largura de banda utilizada, representar graficamente
+dados, gerar automaticamente documentações, e outros.
+
+A ideologia \textit{thin} de ROS é possibilitar que códigos, como drivers e
+algoritmos, possam ser reutilizados em outros middlewares, fora de ROS. Alguns
+exemplos são algoritmos de visão de OpenCV, e algoritmos de planejamento de
+OpenRAVE.
+
+Os conceitos fundamentais de ROS são nós, mensagens, tópicos e serviços.
 
 Nós são processos ou módulos de software no código de controle, por exemplo um
 nó \textit{camera} poderia processar todos os dados visuais. Nós podem se
-comunicar com outros nós por simples mensagens, podem publicar e subescrever a
-um ou múltiplos tópicos.
+comunicar com outros nós por simples mensagens (\textit{integer},
+\textit{floating point}, \textit{boolean}, etc), que são enviadas a um ou
+múltiplos tópicos (\textit{strings}, como ``mapa'' ou ``odometria''). Um nó
+interessado em certo tipo de mensagem deverá subescrever o tópico apropriado.
+Pode haver múltiplos publicadores e subscritores concorrentes a um mesmo tópico.
+
+Apesar de o modelo de comunicação do tipo publicador-subscritor ser flexível,
+sua rotina de \textit{broadcast} não é apropriada para transações síncronas. Em
+ROS, é chamado serviço (também definido por uma \textit{string}) um par de
+mensagens: um para pedido, outro para resposta, análogo à URI de um web service.
+A figura~\ref{roscomm} mostra os tipos de comunicação do sistema ROS.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.5\columnwidth]{figs/roscomm.jpg}
+\caption{Tipos de comunicação so sistema ROS.}
+\label{roscomm}
+\end{figure}
+
+A figura~\ref{rosarchitecture} é um resumo de todas as características
+discutidas acima, mostrando como funciona o ambiente de desenvolvimento ROS. 
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.5\columnwidth]{figs/rosarchitecture.jpg}
+\caption{Arquitetura do ambiente de desenvolvimento ROS.}
+\label{rosarchitecture}
+\end{figure} 
