@@ -1214,30 +1214,28 @@ ambientes nocivos, e outros. Dessa forma, a comunidade robótica reconheceu a
 necessidade do desenvolvimento de softwares abertos para simulação e interface
 em robótica.
 
-Em \cite{staranowicz2011survey} e \cite{kramer2007development} foi realizada uma
-compilação de RDEs, apontando suas vantagens, desvantagens e aplicações. Neste
-trabalho, são destacados os dois sistemas abertos mais populares: Player e ROS,
+Em \cite{staranowicz2011survey} e \cite{kramer2007development}, foram realizadas
+compilações de RDEs, apontando suas vantagens, desvantagens e aplicações.
+Neste trabalho, são destacados os dois sistemas abertos mais populares: Player e ROS,
 e, por fim, é justificado a utilização de ROS para ser a RDE do robô DORIS.
 
 
 \subsection{Player}
 Em 2001, Player/Stage \cite{gerkey2003player} foi projetado para ser uma
 interface de programação, não um ambiente de desenvolvimento, focando em
-programação de dispositivos (drivers) e sensores, em vez de robôs. Os
+programação de dispositivos (drivers) e sensores, em vez de robôs. Em Player, os
 dispositivos são independentes entre si e são registrados em um servidor,
 podendo ser acessados por clientes (programas de controle). Cada cliente usa uma
-conexão com o servidor para transferência de dados, preservando operações
+conexão com o servidor para transferência de dados, possibilitando operações
 concorrentes. Múltiplos clientes podem subscrever a um mesmo dispositivo e podem
-eviar comandos simultaneamente, mas não há fila e comandos antigos são
+enviar comandos simultaneamente, porém não há fila, logo comandos antigos são
 descartados. Stage, a segunda parte do software, é um simulador de dispositivo.
 
 O objetivo de Player é a separação de interface e função. O fato de servidores
 se comunicarem via soquete TCP/IP possibilita que clientes possam ser escritos
-em qualquer linguagem de programação com suporte a soquete, por exemplo Python,
-C++, Java e outros. Clientes podem operar em qualquer host que possua conexão,
-possibilitando independência de localização.
-
-
+em qualquer linguagem de programação que possua esse suporte, por
+exemplo Python, C++, Java e outros. Clientes podem operar em qualquer host que
+possua conexão, possibilitando independência de localização.
 
 \subsection{Robot Operating System - ROS}
 
