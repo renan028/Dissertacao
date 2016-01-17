@@ -1214,10 +1214,41 @@ ambientes nocivos, e outros. Dessa forma, a comunidade robótica reconheceu a
 necessidade do desenvolvimento de softwares abertos para simulação e interface
 em robótica.
 
+As arquiteturas híbridas são normalmente decompostas em camadas, isto fica
+explícito, por exemplo, na arquitetura de três camadas. Os componentes da
+arquitetura necessitam se comunicar entre si, trocar dados e enviar comandos. A
+forma de comunicação entre componentes, comumente chamada \textit{middleware},
+é o cerne no desenvolvimento de uma RDE, e é uma das mais importantes e
+restritivas decisões no projeto de uma arquitetura robótica. De acordo com
+\cite{kortenkamp2008robotic}, durante o desenvolvimento de arquiteturas, a
+grande maioria dos problemas e a maior parte do tempo gasto em depuração
+(\textit{debugging}) está ligado à comunicação entre os componentes. Há
+basicamente dois tipos: cliente-servidor (\textit{client-server})) e
+editor-subscritor (\textit{publish-subscriber}).
+
+Em um protocolo de comunicação cliente-servidor (ou ponto-a-ponto), componentes
+falam diretamente com outros componentes. A grande vantagem deste protocolo é a
+definição prévia da interface
+
+The
+biggest advantage of a client-server protocol is that the
+interfaces are very clearly defined in advance and
+everyone knows when the interface has changed.
+Another advantage is that it allows for a distributed
+approach to communication with no central module that
+must distribute data. A disadvantage of client-server
+protocols is that they introduce significant overhead,
+especially if many components need the same
+information. It should be noted that CORBA and ICE
+also have a broadcast mechanism (called an event
+channel, or the notification service, in CORBA). 
+
 Em \cite{staranowicz2011survey} e \cite{kramer2007development}, foram realizadas
 compilações de RDEs, apontando suas vantagens, desvantagens e aplicações.
 Neste trabalho, são destacados os dois sistemas abertos mais populares: Player e ROS,
-e, por fim, é justificado a utilização de ROS para ser a RDE do robô DORIS.
+e, por fim, é justificado a escolha por ROS como o RDE do robô DORIS.
+
+
 
 
 \subsection{Player}
