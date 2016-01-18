@@ -707,10 +707,9 @@ baseado em comportamento apresenta problemas com escala e contextualização
 O problema com escala é resultado das interconexões, que
 podem crescer de maneira fatorial em relação ao número de comportamentos. 
 A contextualização é um problema de sistemas de subsunção, onde subsistemas são
-incluídos em um sistema mais amplo. Como cada comportamento é uma FSM, operando
-concorrentemente com as outras, o comportamento corrente é o único estado no
-qual o veículo como um todo funcionará, apesar de todos os estados estarem sendo
-executados.
+incluídos em um sistema mais amplo. Todos os comportamentos estão operando
+ao mesmo tempo e anulando as saídas de outros comportamentos, de forma que
+apenas uma é a saída do veículo. Portanto, há computação ineficiente.
 
 Apenas em 1996, Bellingham e Consi \cite{bellingham1994second}
 propuseram um controle por camadas (\emph{Layered Control}) a fim de resolver o
@@ -782,18 +781,20 @@ realizada antes mesmo de o cérebro tomar conhecimento do estímulo periférico.
 Dessa forma, não há planejamento, não há modelo de mundo, apenas uma reação ao
 estímulo. Esse comportamento é extremamente importante e necessário para a
 sobrevivência do ser humano. Por exemplo, quando encostamos a mão em
-uma panela quente temos a reação imediata de retirar a mão sem intervenção do
+uma panela quente, temos a reação imediata de retirar a mão sem intervenção do
 cérebro, sem replanejamento, cujo processamento levaria tempo suficiente para
-causar danos severos. É fácil, portanto, perceber que tais comportamentos devem
-ser necessário também em robôs.
+causar danos severos. É fácil, portanto, perceber que tais comportamentos são
+necessários a robôs.
 
 Robôs simples, como por exemplo um robô para limpar trilhos de trêm, ou robôs
 para limpar o chão, podem ter o custo reduzido e executar extraordinariamente
 bem suas tarefas sem a necessidade de planejamento e modelos complexos do mundo.
 Durante a execução de sua tarefa, um robô limpador de trilhos só precisa saber
-que é necessário sair do trilho ao avistar um trêm, e para isso basta um par
+que é necessário sair do trilho ao avistar um trêm, logo basta um par
 estímulo-motor e uma supressão de tarefa (no caso, a tarefa de continuar
-limpando o trilho). 
+limpando o trilho). Os grandes motivadores do aparecimento da
+arquitetura reativa foram as aplicações simples para alguns robôs e a baixa
+capacidade dos processadores da época.
 
 Não é comum na literatura encontrarmos controle de missão em arquiteturas
 reativas e é comum alguns autores se referirem a esses robôs como
@@ -1024,20 +1025,60 @@ Monitor de desempenho   & Piloto, Navegador, Planejador de missão \\ \hline
 \subsubsection{Arquitetura de três camadas}
 De acordo com Murphy, esta arquitetura pertence ao estilo Estado-hierárquico por
 ser organizado em três camadas baseadas no estado de conhecimento: Planejador,
-Executivo e Funcional.
+Executivo e Funcional. A arquitetura de três camadas é a mais aplicada em robôs
+de grande complexidade , como AUVs e robôs do desafio DARPA (GRACE e Stanley).
+Para melhor entendimento das funções das três camadas, será utilizado o exemplo
+empregado em \cite{kortenkamp2008robotic}: considere um robô de entregas em
+escritório, operando em um ambiente conhecido (mapeado).
 
-O planejador é a uma camada composta pelo planejador de missão e o
-cartógrafo, gerando objetivos e planos estratégicos. Esses objetivos são
-repassados para a camada intermediária, chamada Executivo. 
+O planejador é uma camada composta pelo planejador de missão e o
+cartógrafo. O planejador de missão gera objetivos e planos estratégicos, e
+os repassa para a camada intermediária, chamada Executivo. O cartógrafo é
+responsável por armazenar e atualizar o modelo do mundo, além de poder prover
+diferentes modelos para as diferentes funções do robô, a fim de otimizar a
+execução. A componente planejador olha para o futuro.
+ 
+No exemplo do robô de escritório, a componente de planejamento analisa as
+entregas do dia, verifica os recursos do robô, atualiza o mapa, determina as
+melhores rotas de entrega e agendamento, quando o robô deve se recarregar, e
+replanejar quando necessário, por exemplo, quando um escritório estiver
+fechado, o robô deve alterar o agendamento para realizar a entrega mais tarde.
 
 A camada Executivo utiliza técnicas de planejamento reativo para selecionar um
-conjunto de comportamentos de uma biblioteca, e desenvolve uma rede de tarefa
-especificando a sequência de execução para os comportamentos a um subobjetivo
-particular. De acordo com Murphy, o Executor seria a camada responsável por
-sequenciar e monitorar o desempenho de uma arquitetura híbrida.
+conjunto de comportamentos de uma biblioteca de comportamentos, e desenvolve uma
+rede de tarefa \textit{task network} especificando a sequência de execução para
+os comportamentos a um subobjetivo particular. De acordo com Murphy, o Executivo
+seria a camada responsável por sequenciar e monitorar o desempenho de uma
+arquitetura híbrida. Ele é responsável por traduzir os planos de alto nível da
+camada Planejador em comportamentos de baixo nível, chamando estes na hora
+apropriada. É possível que a camada Executiva aloque e monitore os recursos,
+substituindo esta função do Planejador.
+
+No exemplo do robô de escritório, uma tarefa de alto nível seria entregar uma
+carta a um escritório. O executivo deveria decompor esta tarefa em subtarefas,
+deve usar um planejador de trajetórias geométrico para determinar a sequência de
+corredores ao qual deve passar e interseções que deve virar, anunciar que a
+pessoa tem uma carta e monitorar se a pessoa pegou a carta. Se a pessoa não
+receber a carta depois de um determinado tempo, uma falha deve ser acionada, e
+uma ação de recuperação deve ser tomada, como anunciar novamente à pessoa ou
+notificar o planejamento a reagendar a entrega.
 
 Os comportamentos selecionados para uma tarefa pelo Executor formam a camada
-Funcional. A tabela~\ref{3Ttable} resume os componentes desta arquitetura
+Funcional. Esta camada é o nível mais baixo nesta arquitetura, conectando
+diretamente sensores e atuadores. É neste nível que a teoria de controle
+tradicional reside, como a implementação de controles PID, filtros de Kalman e
+etc.
+
+No exemplo do robô de escritório, alguns comportamentos possíveis para o robô
+são: 1) mover a uma determinada localização, evitando obstáculos; 2) mover por
+um corredor, evitando obstáculos; 3) achar uma porta; 4) achar maçaneta da
+porta; 5) agarrar a maçaneta da porta; 6) girar maçaneta da porta; 7) atravessar
+porta; 8) determinar localização; 9) achar número do escritório; 10) anunciar
+entrega. Estes comportamentos combinam sensores (visão, distância por
+infravermelho, e outros) a atuadores (motores das rodas, motores do manipulador
+e outros).
+
+A tabela~\ref{3Ttable} resume os componentes desta arquitetura
 híbrida.
 
 A arquitetura do AUV Phoenix foi destacada por ser um AUV e, portanto, ser uma
@@ -1190,17 +1231,6 @@ desempenho e é capaz de adaptação e reconfiguração.
 \end{figure}
 
 
-%TODO falar de blackboard quando for falar de ROS
-% Antes de Brooks, em 1983, Elfes, A. \cite{elfes1983distributed},já havia
-% idealizado uma arquitetura em módulos e controle distribuído a fim de atingir
-% efetividade em processamento paralelo, flexibilidade de interação com os
-% diversos sensores, distribuir capacidades de decisão e flexibilidade de
-% expansão e modificação do sistema.
-% Porém o sistema de comunicação entre módulos era centralizado
-% (\emph{Blackboard}) e só realizavam uma determinada tarefa sob o comando de um
-% Plano de Controle (\emph{Control Plan}). O usuário ainda deveria explicitamente
-% codificiar paralelismo, os casos das exceções e condições inesperadas.
-
 \section{Robotic Development Environments}
 
 A tecnologia em robótica e o número de aplicações de robôs autônomos aumentaram
@@ -1227,29 +1257,40 @@ basicamente dois tipos: cliente-servidor (\textit{client-server})) e
 editor-subscritor (\textit{publish-subscriber}).
 
 Em um protocolo de comunicação cliente-servidor (ou ponto-a-ponto), componentes
-falam diretamente com outros componentes. A grande vantagem deste protocolo é a
-definição prévia da interface
+falam diretamente com outros componentes. As vantagens deste protocolo são:
+definição prévia da interface; é uma abordagem distribuída para comunicação, já
+que não há um módulo central que distribui os dados. Uma desvantagem deste
+protocolo é o \textit{overhead}, que é significativo se muitos componentes
+precisam de uma mesma informação.
 
-The
-biggest advantage of a client-server protocol is that the
-interfaces are very clearly defined in advance and
-everyone knows when the interface has changed.
-Another advantage is that it allows for a distributed
-approach to communication with no central module that
-must distribute data. A disadvantage of client-server
-protocols is that they introduce significant overhead,
-especially if many components need the same
-information. It should be noted that CORBA and ICE
-also have a broadcast mechanism (called an event
-channel, or the notification service, in CORBA). 
+Em um protocolo de comunicação \textit{publish-subscriber} (ou
+\textit{broadcast}), um componente publica dados e qualquer outro componente
+pode subscrever (ouvir) a esse dado. Normalmente, há um processo central que
+roteia os dados entre \textit{publish} e \textit{subscriber}. Em uma arquitetura
+típica, um componente pode publicar e subscrever a vários tipos de informações.
+As vantagens desse protocolo de comunicação são: simplicidade e pouco
+\textit{overhead}; ideal quando não se sabe quantos componentes diferentes
+necessitarão dos dados (como em muitas interfaces); componentes não ficam
+sobrecarregados em caso de múltiplos pedidos de um mesmo dado. Suas principais
+desvantagens são: difícil de \textit{debug}, pois normalemente a sintaxe da
+mensagem está escondida em uma simples \textit{string} (uma \textit{lista}
+pode ser enviado como \textit{string} e o componente subscritor retraduz);
+utilização de um servidor central que distribui as mensgens (recebe dos
+\textit{publishers} e envia aos \textit{subscribers}), o que pode criar um único
+ponto de falha e sobrecarga.
+
+A utilização do protocolo de comuicação tipo \textit{publish-subscriber} já
+aparecia em arquiteturas robóticas antes de Brooks. Em 1983, Elfes
+\cite{elfes1983distributed} idealiza uma arquitetura em módulos e controle
+distribuído a fim de atingir efetividade em processamento paralelo,
+flexibilidade de interação com os diversos sensores, distribuir capacidades de
+decisão e flexibilidade de expansão e modificação do sistema. O sistema de
+comunicação entre módulos era centralizado e chamado de \textit{Blackboard}.
 
 Em \cite{staranowicz2011survey} e \cite{kramer2007development}, foram realizadas
-compilações de RDEs, apontando suas vantagens, desvantagens e aplicações.
-Neste trabalho, são destacados os dois sistemas abertos mais populares: Player e ROS,
-e, por fim, é justificado a escolha por ROS como o RDE do robô DORIS.
-
-
-
+compilações de RDEs, apontando suas vantagens, desvantagens, aplicações e
+os tipos de comunicação. Neste trabalho, são destacados os dois sistemas abertos
+mais populares: Player e ROS, e, por fim, é justificado a escolha por ROS como o RDE do robô DORIS.
 
 \subsection{Player}
 Em 2001, Player/Stage \cite{gerkey2003player} foi projetado para ser uma
