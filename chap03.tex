@@ -1,6 +1,75 @@
 \chapter{Arquitetura proposta}
 
+O capítulo~\ref{bibliografia} apresentou os conceitos necessários para o
+entendimento desta dissertação, mostrou a evolução das arquiteturas robóticas e
+controles de missão, e as diversas aplicações em robôs modernos. A autonomia de
+um robô depende, em grande parte, do desenvolvimento desta arquitetura robótica.
+
+Neste capítulo, será apresentada a implementação da arquitetura híbrida de
+três camadas, utilizando o ambiente de desenvolvimento ROS, para o robô DORIS.
+
 \section{Robô DORIS}
+DORIS é um robô desenvolvido pela COPPE/UFRJ, em colaboração com Petrobras e
+Statoil, para aplicação \textit{offshore}: monitoramento e inspeção em
+plataformas de petróleo. O robô é controlado de maneira autônoma ou teleoperado,
+permitindo que o operador acompanhe o estado da missão, e monitore a informação
+dos sensores. O robô apresenta as seguintes funcionalidades
+\cite{carvalho2013doris}:
+
+\begin{itemize}
+  \item Detecção de anomalias por vídeo: uso de múltiplas câmeras (luz visível,
+  infravermelho, fisheye e estéreo) para detectar anomalias, como objetos abandonados, fumaça,
+  fogo, intrusos e vazamentos.
+  \item Detecção de anomalias por áudio: microfones detectam áudios anômalos,
+  como explosões, e realizam diagnóstico de mau funcionamento de máquinas, comparando os sons recebidos com
+  assinaturas obtidas previamente.
+  \item Detecção de anomalias por vibração: DORIS possui um manipulador com
+  sensor de vibração em seu efetuador para inspecionar o funcionamento de máquinas, a partir de
+  algoritmos com classificadores de falhas.
+  \item Detecção de anomalias por sensor de gás: sensor de hidrocarboneto
+  detecta o vazamento de gases.
+  \item Mapeamento 3D do ambiente: DORIS é capaz de reconstruir um ambiente 3D a
+  partir de câmeras e Laser.
+  \item Detecção de anomalias por temperatura: DORIS possui um sensor de
+  temperatura e umidade.
+  \item Detecção de anomalias por câmera de infravermelho: uma câmera de
+  infravermelho pode detectar pessoas, indicar a presença de intrusos ou
+  indentificar incêncidos.
+\end{itemize}
+
+DORIS é um robô móvel e se locomove em um trilho pelo uso de dois gimbals que
+contêm atuadores e rodas. O robô foi desenvolvido dentro da filosofia
+de modularidade, isto é, novos sensores podem ser integrados ao sistema, ou até
+um novo módulo do robô pode ser adicionado, a fim de melhorar seu desempenho
+dentro do escopo da aplicação de inspeção em um ambiente. Isso exige a
+flexibilidade e modularidade do sistema mecânico, software e sistema
+elétrico/eletrônico.
+
+O sistema é alimentado por quatro baterias, composto por um computador
+embarcado com processador de alto desempenho e memória, e um \textit{solid-state drive} para armazenamento. Possui
+comunicações: Wireless IEEE 802.11n com a base (operador); \textit{Controller
+Area Network} (CAN) entre computador embarcado e drivers dos atuadores; rede \textit{Local
+Gigabit Ethernet} para os diversos componentes internos do robô; Rádio 2.4/5.0
+GHz para emergência. Possui atuadores: quatro motores 200 W EC-4pole para
+locomoção; quatro motores para as juntas do mannipulador. Sensores:
+câmera fixa; câmera térmica; câmera \textit{fisheye}; duas webcams; e uma
+\textit{Inertial Measurement Unit} (IMU). Além disso, há um
+sistema eletrônico de suporte de veículo, chamado \textit{Vehicle Support
+System (VSS)} \cite{freitas2015embedded}, capaz de detectar falhas eletrônicas,
+distribuir energia de maneira ótima entre componentes e proteger o robô em
+situações emergenciais.
+
+O VSS possui funções que independem do software e da arquitetura robótica, são
+considerados de alto risco e, portanto, não estão disponíveis para
+programador e usuário. Em detalhes, as funções do VSS são:
+\begin{itemize}
+  \item Detecção de falhas: em dispositivos, pelo monitoramento de
+  corrente/tensão; no módulo, pela verificação de temperatura/umidade;
+  \item Proteção de dispositivos contra sobrecorrente graças a fusíveis;
+  \item Distribuição ótima de energia e monitoramento de baterias;
+  \item Botão de emergência para desligamento manual ou via rádio.
+\end{itemize}
+
 
 \subsection{Funcionalidades}
 
