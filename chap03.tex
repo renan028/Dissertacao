@@ -13,7 +13,7 @@ arquitetura de software, mas sim uma arquitetura que depende dos
 componentes físicos do robô (hardware) e a sua aplicação. Dessa forma, faz-se
 necessário apresentar o objeto de estudo desta dissertação.
 
-\section{Robô DORIS}
+\section{Robô DORIS}\label{doris}
 DORIS é um robô desenvolvido pela COPPE/UFRJ, em colaboração com Petrobras e
 Statoil, para aplicação \textit{offshore}: monitoramento e inspeção em
 plataformas de petróleo. O robô é controlado de maneira autônoma ou teleoperado,
@@ -75,17 +75,52 @@ programador e usuário. Em detalhes, as funções do VSS são:
   \item Botão de emergência para desligamento manual ou via rádio.
 \end{itemize}
 
-O trilho por onde o robô se desloca é contruído a partir de tubos de
+O trilho por onde o robô se desloca é construído a partir de tubos de
 policloreto de polivinila (PVC) e possui seções retas, curvas ortogonais de
 subida, descida, para a direita e para a esquerda. Os segmentos curvos são tubos
-de 1 m dobrados $90^o$, resultando em curvaturas de aproximadamente 630 mm. O
-trilho foi construído no Centro de Pesquisas e Desenvolvimento da Petrobras
-(CENPES) e sua extensão é cerca de 140 m.
+de 1 m dobrados $90^o$, resultando em curvaturas de aproximadamente 630 mm. Um
+trilho para testes foi construído no Centro de Pesquisas e
+Desenvolvimento da Petrobras (CENPES) e sua extensão é cerca de 140 m.
 
-\section{Arquitetura híbrida em três camadas}
+\section{A arquitetura robótica e o controle de missão implementados}
+
+Na seção~\ref{doris}, foi apresentado o robô DORIS e suas funcionalidades. Como
+foi definido na seção~\ref{conceitos}, pela visão do autor, o conceito de
+\emph{arquitetura robótica} não é equivalente apenas a uma arquitetura de
+software, necessitando da avaliação do robô como um todo, isto é, seus
+elementos de hardware e sua aplicação. Assim como o desenvolvedor do RDE ROS
+\cite{quigley2009ros} evidencia que não há melhor RDE, já que todos apresentam
+vantagens e desvantagens e o melhor depende de sua aplicação, também não há
+melhor arquitetura robótica, pois esta depende dos hardwares do robô e também da
+sua aplicação.
+
+DORIS é um robô móvel com a funcionalidade de inspeção em um ambiente não muito
+dinâmico, usando técnicas que exigem grande processamento de imagem (câmeras) e
+outros sensores. O usuário final poderá, com o auxílio de uma interface,
+programar as missões: inspeção até uma posição do trilho, inspeção de
+equipamento, ir até uma posição do trilho, e ronda (inspeção global). Além
+disso, o usuário pode tomar o controle manual do robô, e visualizar as
+respostas dos sensores.
+ 
+As funcionalidades de inspeção do robô exigem a construção e manutenção do
+modelo do mundo, pois há constante comparação com a situação esperada e
+possíveis anomalias. Também fica claro que não é só um modelo do mundo que se
+faz necessário, mas a construção de modelos distintos para cada funcionalidade
+de forma a otimizar as missões. Além disso, robôs \textit{offshore} exigem
+grande robustez, por trabalharem em ambientes hostis, e que demandam ações rápidas em situações
+emergenciais. As exigências de um controle de missão para inspeção flexível,
+modelos de mundo atualizados e a robustez no controle do robô demandam uma
+arquitetura híbrida.
 
 \subsection{Camada planejador}
-
+%TODO lembrar de mapa de equipamentos e quais precisam de manipulador
+%TODO mapa de postes
+%TODO mapa de distancias ao chao
+%TODO mapa 3D
+%TODO mapas analiticos
+%TODO mapa das seções do trilho.
+%TODO mapa audio
 \subsection{Camada executiva}
+%TODO falar das prioridades
 
 \subsection{Camada funcional}
