@@ -5,8 +5,13 @@ entendimento desta dissertação, mostrou a evolução das arquiteturas robóticas e
 controles de missão, e as diversas aplicações em robôs modernos. A autonomia de
 um robô depende, em grande parte, do desenvolvimento desta arquitetura robótica.
 
-Neste capítulo, será apresentada a implementação da arquitetura híbrida de
-três camadas, utilizando o ambiente de desenvolvimento ROS, para o robô DORIS.
+Neste capítulo, será apresentada uma implementação da arquitetura híbrida de
+três camadas, utilizando o ambiente de desenvolvimento ROS, para um robô
+móvel que executa tarefas de inspeção, a DORIS. Como definido no
+capítulo~\ref{bibliografia}, a arquitetura robótica não é apenas uma
+arquitetura de software, mas sim uma arquitetura que depende dos
+componentes físicos do robô (hardware) e a sua aplicação. Dessa forma, faz-se
+necessário apresentar o objeto de estudo desta dissertação.
 
 \section{Robô DORIS}
 DORIS é um robô desenvolvido pela COPPE/UFRJ, em colaboração com Petrobras e
@@ -37,11 +42,11 @@ dos sensores. O robô apresenta as seguintes funcionalidades
   indentificar incêncidos.
 \end{itemize}
 
-DORIS é um robô móvel e se locomove em um trilho pelo uso de dois gimbals que
-contêm atuadores e rodas. O robô foi desenvolvido dentro da filosofia
+DORIS é um robô móvel que se locomove em um trilho pelo uso de dois gimbals, os
+quais contêm atuadores e rodas. O robô foi desenvolvido dentro da filosofia
 de modularidade, isto é, novos sensores podem ser integrados ao sistema, ou até
 um novo módulo do robô pode ser adicionado, a fim de melhorar seu desempenho
-dentro do escopo da aplicação de inspeção em um ambiente. Isso exige a
+dentro do escopo da aplicação de inspeção. Isso exige a
 flexibilidade e modularidade do sistema mecânico, software e sistema
 elétrico/eletrônico.
 
@@ -49,14 +54,14 @@ O sistema é alimentado por quatro baterias, composto por um computador
 embarcado com processador de alto desempenho e memória, e um \textit{solid-state drive} para armazenamento. Possui
 comunicações: Wireless IEEE 802.11n com a base (operador); \textit{Controller
 Area Network} (CAN) entre computador embarcado e drivers dos atuadores; rede \textit{Local
-Gigabit Ethernet} para os diversos componentes internos do robô; Rádio 2.4/5.0
+Gigabit Ethernet} para os diversos componentes internos do robô; e rádio 2.4/5.0
 GHz para emergência. Possui atuadores: quatro motores 200 W EC-4pole para
-locomoção; quatro motores para as juntas do mannipulador. Sensores:
+locomoção; e quatro motores para as juntas do mannipulador. Sensores:
 câmera fixa; câmera térmica; câmera \textit{fisheye}; duas webcams; e uma
 \textit{Inertial Measurement Unit} (IMU). Além disso, há um
 sistema eletrônico de suporte de veículo, chamado \textit{Vehicle Support
 System (VSS)} \cite{freitas2015embedded}, capaz de detectar falhas eletrônicas,
-distribuir energia de maneira ótima entre componentes e proteger o robô em
+distribuir energia de maneira ótima entre os componentes e proteger o robô em
 situações emergenciais.
 
 O VSS possui funções que independem do software e da arquitetura robótica, são
@@ -70,8 +75,12 @@ programador e usuário. Em detalhes, as funções do VSS são:
   \item Botão de emergência para desligamento manual ou via rádio.
 \end{itemize}
 
-
-\subsection{Funcionalidades}
+O trilho por onde o robô se desloca é contruído a partir de tubos de
+policloreto de polivinila (PVC) e possui seções retas, curvas ortogonais de
+subida, descida, para a direita e para a esquerda. Os segmentos curvos são tubos
+de 1 m dobrados $90^o$, resultando em curvaturas de aproximadamente 630 mm. O
+trilho foi construído no Centro de Pesquisas e Desenvolvimento da Petrobras
+(CENPES) e sua extensão é cerca de 140 m.
 
 \section{Arquitetura híbrida em três camadas}
 

@@ -37,14 +37,15 @@ robótica.
 O sistema robótico é composto por diversos elementos de hardware e
 software que são interdependentes e necessários para o funcionamento do sistema.
 Como o propósito deste trabalho é o desenvolvimento de uma arquitetura robótica
-para o DORIS, sendo considerados os aspectos físicos, lógicos e a aplicabilidade do
-robô, entende-se que uma arquitetura para robô móvel descreve uma maneira de se construir o
-controle inteligente do robô, os módulos do sistema, como estes
+para o robô DORIS, sendo considerados os aspectos físicos, lógicos e a
+aplicabilidade do robô, entende-se que:
+
+ \emph{Definição:} Uma \emph{arquitetura robótica} descreve
+uma maneira de se construir o controle inteligente do robô, os módulos do sistema, como estes
 módulos interagem entre si e seus elementos de hardware associados, visando sua
-aplicação. A evolução das arquiteturas apresentadas nesta revisão
-bibliográfica mostra que os elementos de hardware assumem um papel de grande
+aplicação. Os elementos de hardware e a aplicação assumem um papel de grande
 importância durante o desenvolvimento dessas arquiteturas, por exemplo como um
-fator limitador, assim como a aplicação e o meio em que o robô está inserido.
+fator limitador.
 
 De acordo com \cite{siegwart2004autonomous}, os componentes básicos de uma
 arquitetura para robôs são classificados em três grupos: \textit{Percepção}, que
@@ -74,12 +75,14 @@ planejamento de missão é ampliado para múltiplos robôs: planejamento de missão
 é o processo de determinar o que cada robô deve fazer para alcançar, de uma
 maneira conjunta, os objetivos da missão, em um ambiente dinâmico.
 
-Neste trabalho, o controle de missão de robôs é o componente da arquitetura
-robótica que organiza e executa todas as tarefas do robô de maneira ótima,
-exerce o papel de traduzir os comandos de missão do usuário ao robô, provê feedback ao
-operador (\textit{execution monitoring}), e contém as diretivas do robô. Como
-faz parte da arquitetura, as seções que seguem buscam, em cada arquitetura, destacar de forma exemplificada
-alguns controles de missão. 
+Neste trabalho, entende-se como controle de missão de sistemas robóticos:
+
+\emph{Definição:} o controle de missão de robôs é o componente da arquitetura
+robótica que permite ao operador definir as missões de um veículo,
+exerce o papel de traduzir os comandos de missão do usuário ao robô, provê
+feedback ao operador (\textit{execution monitoring}), e contém as diretivas do
+robô. Como faz parte da arquitetura, as seções que seguem buscam, em cada
+arquitetura, destacar de forma exemplificada alguns controles de missão.
 
 A robô DORIS é um robô móvel com aplicação de inspeção em um ambiente não
 muito dinâmico. Apresenta missões semelhantes a um AUV, apesar de sua dinâmica
@@ -167,7 +170,6 @@ autônomas (figura~\ref{manipulador}).
 \label{manipulador}
 \end{figure}
 
-%TODO: Verificar controle de missão dos modelos
 \subsection{Arquiteturas deliberativas}
 As arquiteturas deliberativas são sistemas hierárquicos com a lógica
 \textit{SPA}. São utilizados em sistemas robóticos até hoje, quando a aplicação
@@ -311,14 +313,6 @@ $N$ e as subtarefas de saída que podem ser usadas na tarefa;
 Os quatro PNT's são combinados para realizarem a tradução de tarefas no Nível
 de Coordenação: remetente, sistema de visão, desvio de obstáculo
 e controle de rastreamento, e planejamento de trajetórias. 
-%Será brevemente descrito o componente Remetente (\emph{Dispatcher}) do modelo
-% de Nível de Coordenação para melhor entendimento do PNT.
-
-%Foram definidas quatro tarefas para o Nível de Coordenação: 1) \emph{wmu}:
-%atualização da memória 3-D do ambiente; 2) \emph{mod}: detecção de objetos em
-%movimento; 3) \emph{pp}: planejamento de trajetórias; 4) \emph{moac}: desvio de
-%obstáculos e controle de rastreamento. A figura~\ref{Saridis_2} mostra o modelo
-%de rede de Petri para o Remetente.
 
 \begin{figure}[!ht]
 \centering
