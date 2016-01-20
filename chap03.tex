@@ -105,12 +105,30 @@ respostas dos sensores.
 As funcionalidades de inspeção do robô exigem a construção e manutenção do
 modelo do mundo, pois há constante comparação com a situação esperada e
 possíveis anomalias. Também fica claro que não é só um modelo do mundo que se
-faz necessário, mas a construção de modelos distintos para cada funcionalidade
+faz necessário, mas a construção de modelos distintos para cada componente
 de forma a otimizar as missões. Além disso, robôs \textit{offshore} exigem
 grande robustez, por trabalharem em ambientes hostis, e que demandam ações rápidas em situações
-emergenciais. As exigências de um controle de missão para inspeção flexível,
-modelos de mundo atualizados e a robustez no controle do robô demandam uma
-arquitetura híbrida.
+emergenciais. As exigências de um controle de missão para modos
+flexíveis de inspeção, a manutenção de modelos de mundo e a robustez
+no controle do robô demandam uma arquitetura híbrida.
+
+No capítulo~\ref{bibliografia}, foi explicitada algumas formas de arquitetura
+híbrida, mas aquela com maior número de aplicações bem sucedidas é a arquitetura
+híbrida de três camadas, utilizadas desde a aplicação do carro autônomo do
+desafio DARPA (Stanley) até a aplicação de exploração do robô da NASA no
+planeta Marte. 
+
+Escolhida a arquitetura híbrida de três camadas como arquitetura robótica da
+DORIS, faz-se ainda necessário explicitar a implementação de cada camada, isto
+é, como e qual executará as funções descritas por Murphy: sequenciador,
+gerenciador de recurso, cartógrafo, planejador de missão, e monitor de
+desempenho. A arquitetura de três camadas é formada por: Funcional, Executiva e
+Deliberativa, e como cada arquitetura de três camadas apresenta suas
+peculiaridades, as camadas desenvolvidas para o robô DORIS são descritas nas
+subseções adiante.
+
+
+\subsection{Camada Funcional}
 
 \subsection{Camada planejador}
 %TODO lembrar de mapa de equipamentos e quais precisam de manipulador
@@ -123,4 +141,3 @@ arquitetura híbrida.
 \subsection{Camada executiva}
 %TODO falar das prioridades
 
-\subsection{Camada funcional}
