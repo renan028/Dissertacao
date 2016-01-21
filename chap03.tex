@@ -122,13 +122,75 @@ Escolhida a arquitetura híbrida de três camadas como arquitetura robótica da
 DORIS, faz-se ainda necessário explicitar a implementação de cada camada, isto
 é, como e qual executará as funções descritas por Murphy: sequenciador,
 gerenciador de recurso, cartógrafo, planejador de missão, e monitor de
-desempenho. A arquitetura de três camadas é formada por: Funcional, Executiva e
-Deliberativa, e como cada arquitetura de três camadas apresenta suas
-peculiaridades, as camadas desenvolvidas para o robô DORIS são descritas nas
+desempenho. A arquitetura de três camadas é formada por: camada Funcional,
+camada Executiva e camada Planejador, e como cada arquitetura de três camadas
+apresenta suas peculiaridades, as camadas desenvolvidas para o robô DORIS são descritas nas
 subseções adiante.
 
 
 \subsection{Camada Funcional}
+
+A camada funcional é a primeira implementada e exaustivamente testada no
+robô DORIS. Como nas outras arquiteturas de três camadas previamente
+apresentadas, a camada Funcional é o nível mais baixo, conecta sensores a
+atuadores, implementa controladores PID, e diversos outros algoritmos, por
+exemplo para a localização do robô. Utiliza-se Ubuntu/Linux como sistema
+operacional e ROS como RDE para a implementação do nível funcional, já que este
+apresenta todas as vantagens descritas na subseção~\ref{ros}, e linguagem de programação C++, a fim de
+se garantir maior eficiência computacional.
+
+A camada funcional seguiu a recomendação dos desenvolvedores do ROS, sendo
+estruturado de maneira semelhante à camada funcional do sistema CLARAty. Neste,
+a camada funcional é uma interface com todo o sistema de hardware e suas
+capacidades. É um software orientado a objeto, obtendo assim modularidade de
+hardware, e uma estruturação apropriada para usar as propriedades de
+herança, em software. A figura~\ref{claratyfunc} mostra a organização da camada
+Funcional da arquitetura CLARAty.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.5\columnwidth]{figs/claratyfunc.jpg}
+\caption{Organização da camada Funcional CLARAty}
+\label{claratyfunc}
+\end{figure}
+
+Foi proposto o \textit{Robot Package Software}. Neste sistema,
+\emph{Tools} (janelas gráficas) e \emph{Componentes} (unidades de comunicação e
+processamento) são agrupados em \textit{Robot Package} (bibliotecas dinâmicas).
+Os componentes que lidam com hardware rodam no computador embarcado do robô,
+já os componentes que interagem com as \textit{tools} rodam no computador base.
+Os diversos componentes, tanto do computador embarcado quanto da base, se
+comunicam através de mensagens ROS, permitindo que a base controle o robô, na
+função de teleoperação \cite{freitas2015embedded}. Os componentes do robô são
+o foco de estudos desta dissertação, já que os componentes da base não estão
+diretamente ligados à autonomia do robô, mas apenas a uma fração do controle de
+missão, que diz respeito à interface com o usuário e \textit{feedback} dos
+planos ao usuário.
+
+Dois \textit{Robot Packages} fazem parte no desenvolvimento do robô DORIS:
+\textit{General Package} e \textit{DORIS Package}, derivado do primeiro. Outros
+robôs desenvolvidos por GSCAR, como o ROV LUMA, possuem seus pacotes
+específicos, derivados do \textit{General Package}. 
+
+O \textit{General Package} contém os componentes e \textit{tools} gerais
+relacionados a vídeo, áudio, tabela de dados, \textit{gamepad} (para controle
+remoto de robôs), e configurações de dispositivos que podem ser usados em outros
+robôs
+
+O \textit{DORIS Package} é um pacote mais específico ao robô DORIS e lida com
+seus elementos de hardware e suas funcionalidades. Do ponto de vista de uma
+arquitetura robótica, neste pacote foram implementados os \emph{comportamentos}
+específicos do robô DORIS.  Os diversos componentes implementados para o DORIS
+foram divididos em funcionalidades, neste trabalho, a fim de proporcionar melhor
+entendimento.
+
+Para a comunicação CAN
+%Referenciar DFKI tb
+
+
+
+
+
 
 \subsection{Camada planejador}
 %TODO lembrar de mapa de equipamentos e quais precisam de manipulador
@@ -140,4 +202,4 @@ subseções adiante.
 %TODO mapa audio
 \subsection{Camada executiva}
 %TODO falar das prioridades
-
+%TODO recursos compartilhados, como fica?
