@@ -82,7 +82,7 @@ de 1 m dobrados $90^o$, resultando em curvaturas de aproximadamente 630 mm. Um
 trilho para testes foi construído no Centro de Pesquisas e
 Desenvolvimento da Petrobras (CENPES) e sua extensão é cerca de 140 m.
 
-\section{A arquitetura robótica e o controle de missão implementados}
+\section{A arquitetura robótica implementada}
 
 Na seção~\ref{doris}, foi apresentado o robô DORIS e suas funcionalidades. Como
 foi definido na seção~\ref{conceitos}, pela visão do autor, o conceito de
@@ -184,10 +184,111 @@ específicos do robô DORIS.  Os diversos componentes implementados para o DORIS
 foram divididos em funcionalidades, neste trabalho, a fim de proporcionar melhor
 entendimento.
 
-Para a comunicação CAN
-%Referenciar DFKI tb
+Como já descrito na seção~\ref{doris}, os atuadores para locomoção e para o
+manipulador do DORIS se comunicam via CAN-Bus, que provê velocidade e
+transferência confiável dos dados \cite{corrigan2008introduction}. Esta
+comunicação extra, exigiu a implementação do componente \emph{CANOpen}, que utiliza a biblioteca
+SocketCAN disponivel em Linux. Um componente \emph{EPOS} é classe derivada de
+\emph{CANOpen} e especifica este tipo de comunicação com o hardware EPOS
+(driver) utilizado no DORIS, além de implementar outras caracterísiticas do
+driver, como os dados dos encoders dos motores: posição (odometria), velocidade
+e corrente.
+Além disso, há a \emph{EPOSNodelet}, classe derivada de \emph{EPOS}, que implementa a comunicação ROS. A implementação dos
+componentes respeita a sugestão do desenvolvedor do \textit{framework}, de forma
+que sempre há a criação de uma classe padrão C++ e uma classe derivada dentro do
+ambiente ROS, que usa os métodos do \textit{framework}.
 
+Os componentes que executam o controle de locomoção do robô são:
+\emph{Controller}, \emph{ControllerNodelet} (derivada de \emph{Controller}),
+\emph{MotionController} (derivada de \emph{Controller}),
+\emph{MotionControllerNodelet} (derivada de \emph{MotionController}),
+\emph{PositionController} (derivada de \emph{Controller}) e
+\emph{PositionControllerNodelet} (derivada de \emph{PositionController}). Os
+componentes \emph{Controller} e \emph{ControllerNodelet} (componente
+\emph{Controller} com os recursos de ROS) são classes genéricas de controle,
+sendo necessária a implementação do controle para o robô específico,
+componentes \emph{MotionController} e \emph{PositionController}.
 
+Os quatro hardwares EPOS possuem uma malha de controle PD ou
+PID para realizar o controle do robô por velocidade ou corrente, porém de
+maneira independente para cada motor. A sincronia e ajustes dessas malhas de
+controle são realizados no componente \emph{MotionController}. Este componente
+se comunica por serviço de ROS (\textit{service}) com o componente
+\emph{EPOSNodelet}, enviando os valores de velocidade desejados para cada motor.
+Por exemplo, observe que, em uma curva, devido à distância entre os dois gimbals
+do robô e à distância entre as rodas dos gimbals, os motores devem possuir
+velocidades diferentes. O \emph{MotionController} envia set-points de
+velocidade às EPOS e pode alterar os parâmetros de aceleração e
+desaceleração. Além disso, este componente é responsável por receber entradas do
+componente \emph{Joystick} e \emph{Interface}, que podem controlar o robô pela
+base, ou \emph{MissionController}, o componente de missão autônoma. Há apenas
+a prioridade do \emph{MissionController} sobre todos os outros controladores,
+tal que, com exceção do \emph{MissionController}, o componente que irá
+controlar será o primeiro que pedir o controle.
+
+O componente \emph{PositionController} será futuramente integrado ao
+\emph{MotionController}. Sua funcionalidade é realizar um controle de posição,
+logo possui uma malha interna de controle, não disponível no hardware da EPOS, e
+se comunica com o componente \emph{MotionController}, enviando set-points de
+velocidades. É um controle proporcional de posição com saturação de velocidade.
+
+Ainda em fase de aperfeiçoamento, os componentes de localização
+\emph{Localization} e \emph{LocalizationNodelet} recebem mensagens de ROS
+(\textit{subscriber}) do componente \emph{EPOSNodelet}, os dados da odometria,
+isto é, quanto cada roda girou. Dentro de \emph{Localization} é feita uma média
+para estimar quanto o robô se locomoveu. Em implementação, está sendo feito um
+sistema inteligente de localização com os dados dos sensores IMU e LaserScan. A
+fusão de sensores permitirá estimar de maneira precisa a posição do robô. O
+\emph{LocalizationNodelet} ainda envia mensagens (\emph{Publish}) para o
+\emph{PositionController}, \emph{MotionController} e \emph{RVIZ}, um componente
+de vizualização para o usuário.
+
+Os diversos componentes de sensores, no robô, são: \emph{AudioSender},
+\emph{AudioSenderNodelet} (derivada de \emph{AudioSender}),
+\emph{VideoSender}, \emph{VideoSenderNodelet} (derivada de
+\emph{VideoSender}), \emph{VideoWebcamera} (derivada de
+\emph{VideoSenderNodelet}), \emph{AxisVideo} (derivada de
+\emph{VideoSenderNodelet}), \emph{LMS1xx}, \emph{IMU}, \emph{IMUNodelet} e
+\emph{ColorDetector}.
+
+O componente \emph{AudioSender} é um driver que faz a interface com os diversos
+microfone disponíveis no robô. Comunica-se (\textit{publisher}) por mensagem de
+ROS com o componente da base \emph{AudioReceiverNodelet} (\textit{subscriber})
+para disponibilizar os dados ao usuário. Futuramente, irá se comunicar
+(\textit{publisher}) com o \emph{InspectionAudioNodelet} (\textit{subscriber}),
+um componente que compara o áudio da base de dados do robô e detecta anomalias através de um algoritmo de reconhecimento de padrões.
+
+O componente \emph{VideoWebcamera} é um driver que faz a interface com as duas
+câmeras webcams disponíveis no robô. Comunica-se
+(\textit{publisher}) com o componente da base
+\emph{VideoReceiverNodelet} (\textit{subscriber}) para disponibilizar os dados
+ao usuário, e com o componente \emph{ColorDetection} (\textit{subscriber}), um
+algoritmo que verifica a porcentagem de vermelho obtida em cada frame da
+câmera. Futuramente, o componente \emph{ColorDetection} irá se comunicar
+(\textit{publisher}) com o \emph{Localization} (\textit{subscriber}), já que a
+informação de vermelho no trilho será utilizada para calibrar a
+localização.
+
+O componente \emph{LMS1xx} é um driver que faz a interface com o LaserScan,
+sensor que realiza um escaneamento a laser do ambiente. Comunica-se
+(\textit{publisher}) com o componente da base \emph{LaserReceiverNodelet}
+(\textit{subscriber}) para disponibilizar os dados ao usuário. Futuramente, irá
+também se comunicar com o \emph{PoleDetection} (\textit{subscriber}), que possui
+um algoritmo para detecção de postes, e o \emph{Localization} (\textit{subscriber}), já que
+este é mais um sensor que provê dados para o sistema de localização (altura do
+robô).
+
+O componente \emph{IMU} é um driver que faz a interface com a IMU.
+Ele envia uma lista de dados: velocidade, orientação, posição, pólos
+magnéticos e outros. Futuramente, também irá se comunicar com o
+\emph{Localization}.
+
+O componente \emph{AxisVideo} é um driver que faz a interface com a câmera fixa
+da AXIS. Comunica-se (\textit{publisher}) com o componente
+da base de mesmo nome para disponibilizar os dados ao usuário.
+
+A FIGURA represente o esquema de comunicação entre os diversos componentes e
+suas hierarquias.
 
 
 
@@ -200,6 +301,9 @@ Para a comunicação CAN
 %TODO mapas analiticos
 %TODO mapa das seções do trilho.
 %TODO mapa audio
+%TODO Mapa audio de anomalias
+%TODO falar de SLAM
 \subsection{Camada executiva}
 %TODO falar das prioridades
 %TODO recursos compartilhados, como fica?
+%TODO Referenciar DFKI tb

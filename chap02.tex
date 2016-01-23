@@ -1377,7 +1377,14 @@ A figura~\ref{roscomm} mostra os tipos de comunicação do sistema ROS.
 \end{figure}
 
 A figura~\ref{rosarchitecture} é um resumo de todas as características
-discutidas acima, mostrando como funciona o ambiente de desenvolvimento ROS. 
+discutidas acima, mostrando como funciona o ambiente de desenvolvimento ROS. Há
+um computador na base, rodando nós de ROS, e um computador embarcado no robô,
+também rodando nós de ROS. Os componentes no robô são drivers que se comunicam
+com os diversos hardwares do robô (sensores e atuadores), algoritmos para
+processamento (imagens e outros), e controladores dos atuadores robô. Na base,
+componentes mostram os status do robô para o usuário e exercem a função de
+visualização. Está sendo representada tanto a comunicação tipo
+\textit{service} (servidor-cliente), quanto a comunicação broadcast.
 
 \begin{figure}[!ht]
 \centering
@@ -1385,3 +1392,19 @@ discutidas acima, mostrando como funciona o ambiente de desenvolvimento ROS.
 \caption{Arquitetura do ambiente de desenvolvimento ROS.}
 \label{rosarchitecture}
 \end{figure} 
+
+As vanatagens da utilização de ROS no desenvolvimento de sistemas robóticos são
+diversas, como comentado em \cite{dastani2013programming}. ROS é amplamente
+utilizado como \textit{framework} para a camada funcional de uma arquitetura
+híbrida. É um sistema flexível e que possui um repositório crescente de pacotes
+de software no estado da arte. Esses pacotes fazem interface com diversos
+hardwares robóticos, e algoritmos que realizam diferentes tarefas do robô, como
+SLAM, processamento de imagem e etc. O acesso a este repositório facilita e
+agiliza a prototipagem e o desenvolvimento de complexos sistemas robóticos.
+Os módulos da camada funcional, nós de ROS, podem ser programados
+em diferentes linguagens, como Python, C++ e Java. Os módulos podem ser
+iniciados, interrompidos e reiniciados em tempo de execução, e se comunicam
+entre si numa rede \textit{peer-to-peer}. Há as duas formas de
+comunicação entre os módulos: o estilo síncrono baseado servidor-cliente e o
+assíncrono \textit{publisher-subscriber}. Alem disso, ROS suporta simuladores
+robóticos como Stage, Gazebo, MORSE e OpenRAVE.
