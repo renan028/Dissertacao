@@ -232,6 +232,12 @@ logo possui uma malha interna de controle, não disponível no hardware da EPOS, e
 se comunica com o componente \emph{MotionController}, enviando set-points de
 velocidades. É um controle proporcional de posição com saturação de velocidade.
 
+O manipulador da DORIS utiliza mais quatro EPOS (quatro motores) e exigirá ainda
+a implementação de um controle de força para sensoriamento de equipamentos ao
+toque, a partir de um sensor de vibração. Componentes como \emph{ForceControl} e
+\emph{InspectionVibration} ainda estão em desenvolvimento em.
+%TODO referencia marco
+
 Ainda em fase de aperfeiçoamento, os componentes de localização
 \emph{Localization} e \emph{LocalizationNodelet} recebem mensagens de ROS
 (\textit{subscriber}) do componente \emph{EPOSNodelet}, os dados da odometria,
@@ -285,10 +291,135 @@ magnéticos e outros. Futuramente, também irá se comunicar com o
 
 O componente \emph{AxisVideo} é um driver que faz a interface com a câmera fixa
 da AXIS. Comunica-se (\textit{publisher}) com o componente
-da base de mesmo nome para disponibilizar os dados ao usuário.
+da base de mesmo nome para disponibilizar os dados ao usuário. Futuramente, o
+algoritmo de detecção de anomalias por vídeo será integrado ao sistema ROS,
+logo um componente \emph{InspectionVideo} será \emph{subscriber} do mesmo
+tópico.
 
 A FIGURA represente o esquema de comunicação entre os diversos componentes e
 suas hierarquias.
+
+\subsection{Camada Executivo}
+%TODO falar das prioridades
+%TODO recursos compartilhados, como fica?
+%TODO Referenciar DFKI tb
+Como já definido na subseção~\ref{3t}, em uma linguagem ROS, a camada Executiva
+usa técnicas de planejamento reativo para selecionar os nós, ou componentes, que
+entrarão em execução de uma biblioteca de componentes existentes. Ela sequencia
+a execução dos componentes para a realização de um certo objetivo, monitora o
+desempenho, traduz os planos de alto nível da camada Planejador em
+comportamentos de baixo nível, executando-os apropriadamente. Na arquitetura
+implementada, a camada Executiva também aloca e monitora os recursos
+(gerenciamento de recursos). A camada Executivo é o foco da implementação do
+autor desta dissertação e, junto com a camada Planejador, permite a autonomia do
+robô.
+
+A camda Executivo elaborada para a DORIS usará técnicas da arquitetura de
+subsunção simplificada, onde o módulo básico de comportamento será a máquina de
+estado aumentada (\emph{AFSM}) da figura~\ref{afsm} sem \textit{Reset}.
+Como já comentado na subseção~\ref{brooks}, apesar de possuírem inúmeras
+vantagens, a arquitetura reativa possui problemas de \emph{situatedness} e
+escala, os quais a camada Executiva deve se preocupar em resolver.
+
+O problema de escala ocorre devido ao número de interconexões de uma arquitetura
+reativa, o qual aumenta exponencialmente em relação ao aumento de coportamentos.
+Isto ocorre, pois um comportamento obtem os dados de outros
+comportamentos através de interconexões (um comportamento de nível 1 necessita
+estar interconectado a comportamentos de nível 0 para obter os seus dados). Este
+problema já havia sido resolvido por uma arquitetura com comunicação do tipo
+\textit{blackboard} \cite{elfes1983distributed}, onde os dados dos sensores são
+disponibilizados a todo os componentes, pois há um componente central que
+armazena os dados e envia a todos que necessitam. Em ROS, a comunicação de
+estilo \emph{publish-subscriber} resolve o problema, sem a necessidade de
+implementação extra, já que todos os componentes podem ``ouvir'' os dados
+publicados por outro componentes.
+
+Alguns comportamentos devem ser executados apenas em situações específicas, não
+durante todo o funcionamento do robô. O problema de \emph{situatedness} é a
+execução de todos os comportamentos ao mesmo tempo, mesmo quando estes não são
+necessários. Apesar de estarem sendo executados, não são percebidos na saída
+do robô, pois estão sendo suprimidos por comportamentos de nível superior
+(subsunção). O comportamento \emph{desvio de obstáculos}, por exemplo,
+só faz sentido quando o robô está em movimento, e o comportamento \emph{toque
+com manipulador} só fará sentido quando o robô está próximo de um equipamento. 
+
+Outro problema da arquitetura de subsunção é a \emph{ciência da falha}
+(\textit{cognizant failure}), isto é, comportamentos não sabem quando seus
+processos estão em falha e continuam a execução sem resultados promissores. A
+camada Executiva deve reportar a falha à camada Planejador (\textit{execution
+monitoring}), e suspender sua execução (\textit{error recovery}).
+
+As subseções a seguir detalham a implementação da camada Executivo,
+identificando como é realizada cada responsabilidade: Sequenciador,
+Selecionador, Gerenciador de recursos, e Monitoramento da execução e
+recuperação de erros (\textit{Execution monitoring and error recovery}). Como
+o ambiente de desenvolvimento da camada Funcional é ROS, optou-se pela
+utilização da camada Executivo SMACH \cite{bohren2010smach}, por demonstrar
+resultados positivos em diversas aplicações, e já ser integrada ao sistema ROS.
+Foram adicionadas algumas funcionalidades à camada a fim de garantir todas as
+responsabilidades de uma camada Executivo. A linguagem de programação utilizada
+foi Python.
+
+\subsubsection{Sequenciador}
+
+O Sequenciador da camada Executivo é, normalmente, um controlador hierárquico de
+máquina de estados ou Redes de Petri \cite{peterson1981petri}. Algumas
+linguagens foram desenvolvidas para ajudar programadores na implementação desta
+camada: \textit{Reactive Action Packages} (RPAs) \cite{firby1987investigation},
+\textit{Procedural Reasoning System} (PRS) \cite{georgeff1989decision},
+\textit{Execution Support Language} (ESL) \cite{gat1997esl}, \textit{Task
+Description Language} (TDL) \cite{simmons1998task}, \textit{Plan Execution
+Interchange Language} (PLEXIL) \cite{verma2005plan}. Como a camada
+Funcional foi desenvolvida em ROS, o autor optou por analisar camadas
+Executivo integradas ao sistema ROS: Petri Net Plans (PNP)
+\cite{ziparo2006petri}, e SMACH \cite{bohren2010smach}.
+
+Todas as linguagens mencionadas provêem suporte à decomposição hierárquica de
+tarefas e subtarefas, capacidades de expressar condicionais e iterações, e
+suportam restrições temporais seriais ou paralelas entre tarefas (por exemplo,
+tarefa B deve começar após 10s do término da tarefa A - serial). Com exceção de
+PLEXIL, todas suportam recursividade de tarefas. Com exceção de TDL, as
+linguagens provêem suporte explícito para codificação de pré e pós-condições de
+tarefas e para especificação de critério de sucesso. ESL, PLEXIL e SMACH
+suportam sinalização de eventos (avisam quando há transição de tarefas). ESL,
+TDL e SMACH suportam terminação de tarefas baseado na ocorrência de eventos
+(por exemplo, quando a tarefa B termina, A deve começar). As linguagens RAPs,
+PRS e ESL incluem uma base de dados simbólica (modelo do mundo) que se conecta
+aos sensores diretamente ou à camada Funcional, a fim de manter um modelo
+síncrono do mundo. O modo de monitoramento de tarefas é específico em cada
+linguagem e será analisado a subseção~\ref{monitoamento}.
+ 
+
+\paragraph{Petri Net Plans (PNP)}
+
+\paragraph{SMACH}
+
+\subsubsection{Gerenciador de recursos}
+
+
+\subsubsection{Monitoramento de tarefas e recuperação de
+erros}\label{monitoamento}
+% The languages presented differ considerably in how
+% they deal with execution monitoring and exception
+% handling. ESL and TDL both provide explicit
+% execution monitoring constructs and support exceptions
+% that are thrown and then caught by registered
+% handlers in a hierarchical fashion. This type of
+% exception handling is similar to that used in C++, Java,
+% and Lisp. ESL and TDL also support clean up
+% procedures that can be invoked when tasks are
+% terminated. RAPs and PLEXIL use return values to
+% signal failure, and do not have hierarchical exception
+% handling. PLEXIL, though, does support clean up
+% procedures that are run when tasks fail. PRS has
+% support for execution monitoring, but not exception
+% handling. ESL and PRS support the notion of resources
+% that can be shared. Both provide support for
+% automatically preventing contention amongst tasks for
+% the resources. In the other executive languages, this
+% must be implemented separately (although there are
+% plans to extend PLEXIL in this area).
+
 
 
 
@@ -303,7 +434,3 @@ suas hierarquias.
 %TODO mapa audio
 %TODO Mapa audio de anomalias
 %TODO falar de SLAM
-\subsection{Camada executiva}
-%TODO falar das prioridades
-%TODO recursos compartilhados, como fica?
-%TODO Referenciar DFKI tb
