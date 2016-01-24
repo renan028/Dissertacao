@@ -128,7 +128,7 @@ apresenta suas peculiaridades, as camadas desenvolvidas para o robô DORIS são de
 subseções adiante.
 
 
-\subsection{Camada Funcional}
+\subsection{Implementação da camada Funcional}
 
 A camada funcional é a primeira implementada e exaustivamente testada no
 robô DORIS. Como nas outras arquiteturas de três camadas previamente
@@ -299,55 +299,15 @@ tópico.
 A FIGURA represente o esquema de comunicação entre os diversos componentes e
 suas hierarquias.
 
-\subsection{Camada Executivo}
+\subsection{Implementação da camada Executivo}
 %TODO falar das prioridades
 %TODO recursos compartilhados, como fica?
 %TODO Referenciar DFKI tb
-Como já definido na subseção~\ref{3t}, em uma linguagem ROS, a camada Executiva
-usa técnicas de planejamento reativo para selecionar os nós, ou componentes, que
-entrarão em execução de uma biblioteca de componentes existentes. Ela sequencia
-a execução dos componentes para a realização de um certo objetivo, monitora o
-desempenho, traduz os planos de alto nível da camada Planejador em
-comportamentos de baixo nível, executando-os apropriadamente. Na arquitetura
-implementada, a camada Executiva também aloca e monitora os recursos
-(gerenciamento de recursos). A camada Executivo é o foco da implementação do
-autor desta dissertação e, junto com a camada Planejador, permite a autonomia do
-robô.
-
-A camda Executivo elaborada para a DORIS usará técnicas da arquitetura de
-subsunção simplificada, onde o módulo básico de comportamento será a máquina de
-estado aumentada (\emph{AFSM}) da figura~\ref{afsm} sem \textit{Reset}.
-Como já comentado na subseção~\ref{brooks}, apesar de possuírem inúmeras
-vantagens, a arquitetura reativa possui problemas de \emph{situatedness} e
-escala, os quais a camada Executiva deve se preocupar em resolver.
-
-O problema de escala ocorre devido ao número de interconexões de uma arquitetura
-reativa, o qual aumenta exponencialmente em relação ao aumento de coportamentos.
-Isto ocorre, pois um comportamento obtem os dados de outros
-comportamentos através de interconexões (um comportamento de nível 1 necessita
-estar interconectado a comportamentos de nível 0 para obter os seus dados). Este
-problema já havia sido resolvido por uma arquitetura com comunicação do tipo
-\textit{blackboard} \cite{elfes1983distributed}, onde os dados dos sensores são
-disponibilizados a todo os componentes, pois há um componente central que
-armazena os dados e envia a todos que necessitam. Em ROS, a comunicação de
-estilo \emph{publish-subscriber} resolve o problema, sem a necessidade de
-implementação extra, já que todos os componentes podem ``ouvir'' os dados
-publicados por outro componentes.
-
-Alguns comportamentos devem ser executados apenas em situações específicas, não
-durante todo o funcionamento do robô. O problema de \emph{situatedness} é a
-execução de todos os comportamentos ao mesmo tempo, mesmo quando estes não são
-necessários. Apesar de estarem sendo executados, não são percebidos na saída
-do robô, pois estão sendo suprimidos por comportamentos de nível superior
-(subsunção). O comportamento \emph{desvio de obstáculos}, por exemplo,
-só faz sentido quando o robô está em movimento, e o comportamento \emph{toque
-com manipulador} só fará sentido quando o robô está próximo de um equipamento. 
-
-Outro problema da arquitetura de subsunção é a \emph{ciência da falha}
-(\textit{cognizant failure}), isto é, comportamentos não sabem quando seus
-processos estão em falha e continuam a execução sem resultados promissores. A
-camada Executiva deve reportar a falha à camada Planejador (\textit{execution
-monitoring}), e suspender sua execução (\textit{error recovery}).
+A camada Executivo elaborada para a DORIS usa SMACH, como linguagem da camada
+Executivo, e implementadas técnicas da arquitetura de subsunção simplificada,
+onde o módulo básico de comportamento será a máquina de estado aumentada (\emph{AFSM}) da figura~\ref{afsm} sem \textit{Reset}.
+A camada Executivo é o foco da implementação do autor desta dissertação e, junto
+com a camada Planejador, permite a autonomia do robô. 
 
 As subseções a seguir detalham a implementação da camada Executivo,
 identificando como é realizada cada responsabilidade: Sequenciador,
@@ -362,37 +322,6 @@ foi Python.
 
 \subsubsection{Sequenciador}
 
-O Sequenciador da camada Executivo é, normalmente, um controlador hierárquico de
-máquina de estados ou Redes de Petri \cite{peterson1981petri}. Algumas
-linguagens foram desenvolvidas para ajudar programadores na implementação desta
-camada: \textit{Reactive Action Packages} (RPAs) \cite{firby1987investigation},
-\textit{Procedural Reasoning System} (PRS) \cite{georgeff1989decision},
-\textit{Execution Support Language} (ESL) \cite{gat1997esl}, \textit{Task
-Description Language} (TDL) \cite{simmons1998task}, \textit{Plan Execution
-Interchange Language} (PLEXIL) \cite{verma2005plan}. Como a camada
-Funcional foi desenvolvida em ROS, o autor optou por analisar camadas
-Executivo integradas ao sistema ROS: Petri Net Plans (PNP)
-\cite{ziparo2006petri}, e SMACH \cite{bohren2010smach}.
-
-Todas as linguagens mencionadas provêem suporte à decomposição hierárquica de
-tarefas e subtarefas, capacidades de expressar condicionais e iterações, e
-suportam restrições temporais seriais ou paralelas entre tarefas (por exemplo,
-tarefa B deve começar após 10s do término da tarefa A - serial). Com exceção de
-PLEXIL, todas suportam recursividade de tarefas. Com exceção de TDL, as
-linguagens provêem suporte explícito para codificação de pré e pós-condições de
-tarefas e para especificação de critério de sucesso. ESL, PLEXIL e SMACH
-suportam sinalização de eventos (avisam quando há transição de tarefas). ESL,
-TDL e SMACH suportam terminação de tarefas baseado na ocorrência de eventos
-(por exemplo, quando a tarefa B termina, A deve começar). As linguagens RAPs,
-PRS e ESL incluem uma base de dados simbólica (modelo do mundo) que se conecta
-aos sensores diretamente ou à camada Funcional, a fim de manter um modelo
-síncrono do mundo. O modo de monitoramento de tarefas é específico em cada
-linguagem e será analisado a subseção~\ref{monitoamento}.
- 
-
-\paragraph{Petri Net Plans (PNP)}
-
-\paragraph{SMACH}
 
 \subsubsection{Gerenciador de recursos}
 

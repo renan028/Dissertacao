@@ -1,7 +1,7 @@
 \chapter{Revisão Bibliográfica}\label{bibliografia}
 
 A modelagem de robôs de acordo com suas principais funcionalidades e o
-desenvolvimento de novas arquiteturas são o âmago no estudo de
+desenvolvimento de novas arquiteturas são o âmago no estudo de autonomia e
 controle de missão de robôs móveis. Dessa forma, arquitetura robótica e controle
 de missão são conceitos relacionados, e, portanto, o cerne desta pesquisa
 bibliográfica.
@@ -40,7 +40,7 @@ Como o propósito deste trabalho é o desenvolvimento de uma arquitetura robótica
 para o robô DORIS, sendo considerados os aspectos físicos, lógicos e a
 aplicabilidade do robô, entende-se que:
 
- \emph{Definição:} Uma \emph{arquitetura robótica} descreve
+\textbf{Definição:} Uma \textbf{arquitetura robótica} descreve
 uma maneira de se construir o controle inteligente do robô, os módulos do sistema, como estes
 módulos interagem entre si e seus elementos de hardware associados, visando sua
 aplicação. Os elementos de hardware e a aplicação assumem um papel de grande
@@ -77,18 +77,21 @@ maneira conjunta, os objetivos da missão, em um ambiente dinâmico.
 
 Neste trabalho, entende-se como controle de missão de sistemas robóticos:
 
-\emph{Definição:} o controle de missão de robôs é o componente da arquitetura
+\textbf{Definição:} o controle de missão de robôs é o componente da arquitetura
 robótica que permite ao operador definir as missões de um veículo,
 exerce o papel de traduzir os comandos de missão do usuário ao robô, provê
 feedback ao operador (\textit{execution monitoring}), e contém as diretivas do
-robô. Como faz parte da arquitetura, as seções que seguem buscam, em cada
-arquitetura, destacar de forma exemplificada alguns controles de missão.
+robô. 
+
+O controle de missão faz parte da arquitetura robótica, portanto
+as seções que seguem buscam, em cada arquitetura, destacar de forma
+exemplificada alguns controles de missão.
 
 A robô DORIS é um robô móvel com aplicação de inspeção em um ambiente não
 muito dinâmico. Apresenta missões semelhantes a um AUV, apesar de sua dinâmica
-ser bem mais simplificada, já que este se move ao longo de um trilho.
+ser mais simplificada, já que este se move ao longo de um trilho.
 Entretanto, como a aplicação (inspeção) é igual, os hardwares são equivalentes
-por ser um robô móvel com vários sensores, e alguns desafios são comuns, é de
+por ser um robô móvel com vários sensores, e alguns desafios são comuns. É de
 se esperar que a arquitetura robótica possa apresentar muitas semelhanças. Desta
 forma, durante a apresentação das arquiteturas, será sempre destacada uma
 arquitetura em AUV.
@@ -1242,22 +1245,30 @@ ambientes nocivos, e outros. Dessa forma, a comunidade robótica reconheceu a
 necessidade do desenvolvimento de softwares abertos para simulação e interface
 em robótica.
 
-As arquiteturas híbridas são normalmente decompostas em camadas, isto fica
-explícito, por exemplo, na arquitetura de três camadas. Os componentes da
-arquitetura necessitam se comunicar entre si, trocar dados e enviar comandos. A
-forma de comunicação entre componentes, comumente chamada \textit{middleware},
-é o cerne no desenvolvimento de uma RDE, e é uma das mais importantes e
-restritivas decisões no projeto de uma arquitetura robótica. De acordo com
-\cite{kortenkamp2008robotic}, durante o desenvolvimento de arquiteturas, a
-grande maioria dos problemas e a maior parte do tempo gasto em depuração
-(\textit{debugging}) está ligado à comunicação entre os componentes. Há
-basicamente dois tipos: cliente-servidor (\textit{client-server})) e
-editor-subscritor (\textit{publish-subscriber}).
+As arquiteturas híbridas são, normalmente, decompostas em camadas, isto fica
+explícito, por exemplo, na arquitetura de três camadas. Há linguagens e
+softwares que visam ajudar na implementação de cada camada. Em seguida, são
+abordados os softwares e linguagens para cada camada, analisando os
+principais ambientes de desenvolvimento atuais, destacando vantagens e
+desvantagens, e justificando a escolha do autor. 
+
+\subsection{Camada Funcional}
+
+Os componentes da arquitetura necessitam se comunicar entre si,
+trocar dados e enviar comandos. A forma de comunicação entre componentes,
+comumente chamada \textit{middleware}, é o cerne no desenvolvimento de uma RDE,
+e é uma das mais importantes e restritivas decisões no projeto de uma
+arquitetura robótica. De acordo com \cite{kortenkamp2008robotic}, durante o
+desenvolvimento de arquiteturas, a grande maioria dos problemas e a maior parte
+do tempo gasto em depuração (\textit{debugging}) está ligado à comunicação
+entre os componentes. Há basicamente dois estilos de comunicação:
+cliente-servidor (\textit{client-server})) e editor-subscritor
+(\textit{publish-subscriber}).
 
 Em um protocolo de comunicação cliente-servidor (ou ponto-a-ponto), componentes
 falam diretamente com outros componentes. As vantagens deste protocolo são:
-definição prévia da interface; é uma abordagem distribuída para comunicação, já
-que não há um módulo central que distribui os dados. Uma desvantagem deste
+definição prévia da interface; e é uma abordagem distribuída para comunicação,
+já que não há um módulo central que distribui os dados. Uma desvantagem deste
 protocolo é o \textit{overhead}, que é significativo se muitos componentes
 precisam de uma mesma informação.
 
@@ -1286,11 +1297,12 @@ decisão e flexibilidade de expansão e modificação do sistema. O sistema de
 comunicação entre módulos era centralizado e chamado de \textit{Blackboard}.
 
 Em \cite{staranowicz2011survey} e \cite{kramer2007development}, foram realizadas
-compilações de RDEs, apontando suas vantagens, desvantagens, aplicações e
-os tipos de comunicação. Neste trabalho, são destacados os dois sistemas abertos
-mais populares: Player e ROS, e, por fim, é justificado a escolha por ROS como o RDE do robô DORIS.
+compilações de RDEs da camada Funcional, apontando suas vantagens, desvantagens,
+aplicações e os tipos de comunicação. Neste trabalho, são destacados os dois
+sistemas abertos mais populares: Player e ROS, e, por fim, é justificado a
+escolha por ROS como o RDE do robô DORIS.
 
-\subsection{Player}
+\subsubsection{Player}
 Em 2001, Player/Stage \cite{gerkey2003player} foi projetado para ser uma
 interface de programação, não um ambiente de desenvolvimento, focando em
 programação de dispositivos (drivers) e sensores, em vez de robôs. Em Player, os
@@ -1307,7 +1319,7 @@ em qualquer linguagem de programação que possua esse suporte, por
 exemplo Python, C++, Java e outros. Clientes podem operar em qualquer host que
 possua conexão, possibilitando independência de localização.
 
-\subsection{Robot Operating System - ROS}\label{ros}
+\subsubsection{Robot Operating System - ROS}\label{ros}
 
 ROS é um software aberto que provê camada de abstração de hardware (CAH -
 hardware abstraction), controle baixo nível de dispositivos, mensagens entre
@@ -1408,3 +1420,118 @@ entre si numa rede \textit{peer-to-peer}. Há as duas formas de
 comunicação entre os módulos: o estilo síncrono baseado servidor-cliente e o
 assíncrono \textit{publisher-subscriber}. Alem disso, ROS suporta simuladores
 robóticos como Stage, Gazebo, MORSE e OpenRAVE.
+
+\subsection{Camada Executivo}
+
+Como já definido na subseção~\ref{3t}, em uma linguagem ROS, a camada Executiva
+usa técnicas de planejamento reativo para selecionar os nós, ou componentes, que
+entrarão em execução de uma biblioteca de componentes existentes. Ela sequencia
+a execução dos componentes para a realização de um certo objetivo, monitora o
+desempenho, traduz os planos de alto nível da camada Planejador em
+comportamentos de baixo nível, executando-os apropriadamente. Na arquitetura
+implementada, a camada Executiva também aloca e monitora os recursos
+(gerenciamento de recursos). 
+
+Como já comentado na subseção~\ref{brooks}, apesar de possuírem inúmeras
+vantagens, a arquitetura reativa possui problemas de \emph{situatedness} e
+escala, os quais a camada Executiva deve se preocupar em resolver.
+
+O problema de escala ocorre devido ao número de interconexões de uma arquitetura
+reativa, o qual aumenta exponencialmente em relação ao aumento de coportamentos.
+Isto ocorre, pois um comportamento obtem os dados de outros
+comportamentos através de interconexões (um comportamento de nível 1 necessita
+estar interconectado a comportamentos de nível 0 para obter os seus dados). Este
+problema já havia sido resolvido por uma arquitetura com comunicação do tipo
+\textit{blackboard} \cite{elfes1983distributed}, onde os dados dos sensores são
+disponibilizados a todo os componentes, pois há um componente central que
+armazena os dados e envia a todos que necessitam. Em ROS, a comunicação de
+estilo \emph{publish-subscriber} resolve o problema, sem a necessidade de
+implementação extra, já que todos os componentes podem ``ouvir'' os dados
+publicados por outro componentes.
+
+Alguns comportamentos devem ser executados apenas em situações específicas, não
+durante todo o funcionamento do robô. O problema de \emph{situatedness} é a
+execução de todos os comportamentos ao mesmo tempo, mesmo quando estes não são
+necessários. Apesar de estarem sendo executados, não são percebidos na saída
+do robô, pois estão sendo suprimidos por comportamentos de nível superior
+(subsunção). O comportamento \emph{desvio de obstáculos}, por exemplo,
+só faz sentido quando o robô está em movimento, e o comportamento \emph{toque
+com manipulador} só fará sentido quando o robô está próximo de um equipamento. 
+
+Outro problema da arquitetura de subsunção é a \emph{ciência da falha}
+(\textit{cognizant failure}), isto é, comportamentos não sabem quando seus
+processos estão em falha e continuam a execução sem resultados promissores. A
+camada Executiva deve reportar a falha à camada Planejador (\textit{execution
+monitoring}), e suspender sua execução (\textit{error recovery}).
+
+
+O Sequenciador da camada Executivo é, normalmente, um controlador hierárquico de
+máquina de estados ou Redes de Petri \cite{peterson1981petri}. Algumas
+linguagens foram desenvolvidas para ajudar programadores na implementação desta
+camada: \textit{Reactive Action Packages} (RPAs) \cite{firby1987investigation},
+\textit{Procedural Reasoning System} (PRS) \cite{georgeff1989decision},
+\textit{Execution Support Language} (ESL) \cite{gat1997esl}, \textit{Task
+Description Language} (TDL) \cite{simmons1998task}, \textit{Plan Execution
+Interchange Language} (PLEXIL) \cite{verma2005plan}. Como a camada
+Funcional foi desenvolvida em ROS, o autor optou por analisar camadas
+Executivo integradas ao sistema ROS: Petri Net Plans (PNP)
+\cite{ziparo2006petri}, e SMACH \cite{bohren2010smach}.
+
+Todas as linguagens mencionadas provêem suporte à decomposição hierárquica de
+tarefas e subtarefas, capacidades de expressar condicionais e iterações, e
+suportam restrições temporais seriais ou paralelas entre tarefas (por exemplo,
+tarefa B deve começar após 10s do término da tarefa A - serial). Com exceção de
+PLEXIL, todas suportam recursividade de tarefas. Com exceção de TDL, as
+linguagens provêem suporte explícito para codificação de pré e pós-condições de
+tarefas e para especificação de critério de sucesso. ESL, PLEXIL e SMACH
+suportam sinalização de eventos (avisam quando há transição de tarefas). ESL,
+TDL, PNP e SMACH suportam terminação de tarefas baseado na ocorrência de eventos
+(por exemplo, quando a tarefa B termina, A deve começar). As linguagens RAPs,
+PRS e ESL incluem uma base de dados simbólica (modelo do mundo) que se conecta
+aos sensores diretamente ou à camada Funcional, a fim de manter um modelo
+síncrono do mundo. O modo de monitoramento de tarefas é específico em cada
+linguagem e será analisado a subseção~\ref{monitoamento}.
+
+As linguagens lidam de maneira diferentes em relação a monitoramento de execução
+e recuperação de erros. ESL, TDL, SMACH e PNPs provêem monitoramento explícito
+de tarefas, verificam erros com registros, como feito em C++ e Java, e suportam
+procedimentos de ``limpeza'', quando as tarefas são terminadas. RAPs e PLEXIL
+retornam valores para indicar falha, e não possuem verificação de erros. PRS
+suporta monitoramento da execução, mas não verificação de erros. ESL e PRS
+provêem a noção de recursos compoartilhados e gerenciamento de recursos.
+
+Detalha-se, em seguida, a camada Executivo integradas ao sistema ROS.
+
+\subsubsection{Petri Net Plans (PNP)}
+
+Petri Net Plans \cite{ziparo2011petri} é uma linguagem baseada em Redes de
+Petri (\textit{Petri Nets} - PN), desenvolvida em 2006 com integração ao sistema
+ROS. A linguagem permite o projeto de comportamentos intuitivos e eficientes
+para multi-robôs. Suas principais características são a
+possibilidade de concorrência e interrupção de tarefas, análise de planos
+baseado em ferramentas padrão de PN, e o desenvolvimento de comportamentos de
+maneira distribuída para multi-robôs garantindo coordenação e colaboração. O
+autor do sistema comenta que PNP é a primeira abordagem sistemática e
+metodológica para projetar planos baseados em PNs.
+
+A grande vantagem da metodologia de projeto da camada Executivo em PNP é
+a exploração das técnicas e ferramentas de análise de planos das PN. PNP é
+introduzido como um subconjunto de PNs, baseando-se em primitivas de modelagem
+de linguagens de ação inspirada por Situation Calculus \cite{mccarthy1969some},
+como ConGolog \cite{de2000congolog}. A linguagem resultante é mais expressiva
+que a maioria das abordagens na literatura, permitindo formas complexas de
+sensoriamento, laços, interrupções, concorrência, coordenação e cooperação.
+Comparando-se  com sistemas baseados em máquina de estados (FSA), as PNs são
+geralmente exponencialmente mais compactas, já que, por exemplo, uma PN finita
+pode representar uma FSA infinita.
+
+Dentre as diversas aplicações realizadas com PNP, destacam-se: um robô com rodas
+usado para busca e missões de resgate; e quatro robôs AIBO utilizados para o
+futebol de robôs.
+
+Apesar das inúmeras vantagens, a linguagem ainda não foi utilizada em robôs
+que exijam robustez. Além disso, a interface com ROS ainda está em
+desenvolvimento, ainda não é possível executar PNs em paralelo, e a construção
+das PNs requerem software externo independente (JARP).
+ 
+\subsubsection{SMACH}
