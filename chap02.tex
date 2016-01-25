@@ -1535,3 +1535,81 @@ desenvolvimento, ainda não é possível executar PNs em paralelo, e a construção
 das PNs requerem software externo independente (JARP).
  
 \subsubsection{SMACH}
+
+Em 2011, Bohren testa SMACH, camada Executivo, no robô PR2, integrado
+ao sistema ROS~\ref{bohren2011towards}. PR2 é um robô planejado a executar uma
+tarefa com grande repetição e robustez, em um ambiente bem definido, numa
+aplicação que requer interação com o ser humano, e que há métricas de sucesso ou
+falha: servir bebidas (isto é, localizar, manusear e entregar). O sistema é
+completamente autônomo e integrou capacidades como: identificação dinâmica de
+obstáculos, identificação de geladeiras, tipos de bebidas, e faces humanas.
+Componentes de planejamento incluem: navegação, planejamento movimentos
+(\textit{Motion Planning}) para manipulador com objetivo e restrições de
+trajetória, e módulos de \textit{grasping} (segurar objetos).
+
+Há três tipos de componentes na arquitetura do PR2: 
+\begin{itemize}
+  \item \textit{subsistemas de propósito geral}: contêm códigos que não são
+  específicos à aplicação e podem ser usados por outras. Exemplos: controle de
+  \textit{grasping} de manipulador, controle de trajetória de manipulador,
+  cinemática inversa de manipulador, controle de força e velocidade de
+  manipulador, planejamento de trajetória não-holonômico, planejamento de
+  trajetória holonômico, sensor laser, sensor das juntas do manipulador, sensor
+  de áudio, e etc.
+  \item \textit{código de aplicação específica}: representa a coleção de
+processamento de dados de sensores e ações de alto nível que são particulares à
+aplicação. Exemplo: camada Executivo, abrir porta, pegar bebida, fechar porta,
+entregar bebidas, detecção de rostos, e outros.
+  \item \textit{interface de usuário}. Exemplo: visualizador SMACH, RViz
+  (visualizador integrado ao ROS), interface Web, e outros.
+\end{itemize}
+
+O PR2 utiliza um novo \textit{framework} de camada Executivo, o qual permite a
+implementação de sequência de tarefas ``bem definidas'', isto é, a operação
+nominal, modos de falha e sequências de recuperação de falhas podem ser
+descritas explicitamente. O novo \textit{framework} é uma biblioteca
+independente de ROS, desenvolvida em Python, chamada SMACH. SMACH provê
+estruturas para geração procedural de programas baseados em máquinas de estado
+concorrentes em hierarquia. Além disso, apesar de ser uma biblioteca
+independente de ROS, provê módulos de integração como mensagens, tópicos e ações
+\textit{actionlibs}.
+
+SMACH pode ser usado para a construção e execução hierárquica de máquinas de
+estado concorrentes (o formalismo pode ser encontrado em \textit{statecharts}
+\cite{harel1987statecharts}). As características do sistema são detalhados a
+seguir, já que a implementação da arquitetura do robô DORIS também utiliza SMACH
+como parte de sua camada Executivo:
+
+1) Estruturas: há duas interfaces primárias definidas por SMACH:
+
+\begin{itemize}
+  \item \textbf{\textit{State}} (Estado): uma interface para um objeto
+  representando um \textit{state of execution} (estado de execução) com um conjunto potencial de
+  \textit{outcomes} (resultados). \textit{States} só necessitam definir uma
+  única função \textit{execute}, que bloqueia até retornar um \textit{outcome}
+  para aquele \textit{state}. \textit{Outcomes} de \textit{states} podem ser
+  pensados como uma ``interface'' para um dado \textit{state}.
+  \item \textbf{\textit{Container}}: uma interface para um objeto representando
+  uma coleção de um ou mais \textit{states}. \textit{Containers} definem
+  diferentes políticas de execução baseadas em seus \textit{states} filhos e
+  \textit{outcomes}.
+\end{itemize}
+
+O SMACH \textit{container} mais simples é o \textit{StateMachine} (Máquina de
+Estado). Uma máquina de estado SMACH pode ser entendida como diagramas de fluxo
+de estados, onde nós são estados em execução (o robô fazendo algo) e arestas
+representam transições de um estado para outro via um \textit{outcome}. Estes
+\textit{containers} podem ser compostos hierarquicamente e podem ter seus
+próprios \textit{outcomes}. 
+
+SMACH também provê um \textit{container} simples do
+tipo \textit{split-join} (dividir-juntar): \textit{Concurrence} (Concorrente).
+Diferente do \textit{StateMachine}, que executa um \textit{state} por vez em
+série, o \textit{Concurrence} executa mais de um \textit{state} simultaneamente.
+Os \textit{outcomes} de um \textit{Concurrence} podem ser definidas em sua
+construção. O \textit{Concurrence} padrão do SMACH só termina quando todos os
+seus filhos terminam, mas isso pode ser configurado.
+
+2) Dados:
+
+
