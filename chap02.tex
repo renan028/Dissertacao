@@ -1466,7 +1466,7 @@ monitoring}), e suspender sua execução (\textit{error recovery}).
 
 
 O Sequenciador da camada Executivo é, normalmente, um controlador hierárquico de
-máquina de estados ou Redes de Petri \cite{peterson1981petri}. Algumas
+máquinas de estados ou Redes de Petri \cite{peterson1981petri}. Algumas
 linguagens foram desenvolvidas para ajudar programadores na implementação desta
 camada: \textit{Reactive Action Packages} (RPAs) \cite{firby1987investigation},
 \textit{Procedural Reasoning System} (PRS) \cite{georgeff1989decision},
@@ -1521,7 +1521,7 @@ de linguagens de ação inspirada por Situation Calculus \cite{mccarthy1969some},
 como ConGolog \cite{de2000congolog}. A linguagem resultante é mais expressiva
 que a maioria das abordagens na literatura, permitindo formas complexas de
 sensoriamento, laços, interrupções, concorrência, coordenação e cooperação.
-Comparando-se  com sistemas baseados em máquina de estados (FSA), as PNs são
+Comparando-se  com sistemas baseados em máquinas de estados (FSA), as PNs são
 geralmente exponencialmente mais compactas, já que, por exemplo, uma PN finita
 pode representar uma FSA infinita.
 
@@ -1537,7 +1537,7 @@ das PNs requerem software externo independente (JARP).
 \subsubsection{SMACH}
 
 Em 2011, Bohren testa SMACH, camada Executivo, no robô PR2, integrado
-ao sistema ROS~\ref{bohren2011towards}. PR2 é um robô planejado a executar uma
+ao sistema ROS~\cite{bohren2011towards}. PR2 é um robô planejado a executar uma
 tarefa com grande repetição e robustez, em um ambiente bem definido, numa
 aplicação que requer interação com o ser humano, e que há métricas de sucesso ou
 falha: servir bebidas (isto é, localizar, manusear e entregar). O sistema é
@@ -1576,19 +1576,27 @@ independente de ROS, provê módulos de integração como mensagens, tópicos e ações
 
 SMACH pode ser usado para a construção e execução hierárquica de máquinas de
 estado concorrentes (o formalismo pode ser encontrado em \textit{statecharts}
-\cite{harel1987statecharts}). As características do sistema são detalhados a
-seguir, já que a implementação da arquitetura do robô DORIS também utiliza SMACH
-como parte de sua camada Executivo:
+\cite{harel1987statecharts}). 
 
-1) Estruturas: há duas interfaces primárias definidas por SMACH:
+A) Características do SMACH
+
+As características do sistema SMACH são aqui detalhadas, já que a implementação
+da arquitetura do robô DORIS também utiliza SMACH como parte de sua camada
+Executivo.
+
+1) \textit{Structures} (Estruturas): há duas interfaces primárias definidas por
+SMACH:
 
 \begin{itemize}
   \item \textbf{\textit{State}} (Estado): uma interface para um objeto
   representando um \textit{state of execution} (estado de execução) com um conjunto potencial de
   \textit{outcomes} (resultados). \textit{States} só necessitam definir uma
-  única função \textit{execute}, que bloqueia até retornar um \textit{outcome}
+  única função \textit{execute}, que o bloqueia até retornar um \textit{outcome}
   para aquele \textit{state}. \textit{Outcomes} de \textit{states} podem ser
-  pensados como uma ``interface'' para um dado \textit{state}.
+  pensados como uma ``interface'' para um dado \textit{state} e devem ser
+  definidos durante a construção. Um \textit{outcome} exemplo de um estado
+  seria: \textit{succeeded} (sucesso), \textit{aborted} (abortado) ou
+  \textit{preempted} (colocado em espera devido a nova tarefa).
   \item \textbf{\textit{Container}}: uma interface para um objeto representando
   uma coleção de um ou mais \textit{states}. \textit{Containers} definem
   diferentes políticas de execução baseadas em seus \textit{states} filhos e
@@ -1610,6 +1618,91 @@ Os \textit{outcomes} de um \textit{Concurrence} podem ser definidas em sua
 construção. O \textit{Concurrence} padrão do SMACH só termina quando todos os
 seus filhos terminam, mas isso pode ser configurado.
 
-2) Dados:
+2) \textit{User Data} (dados do usuário): os planos construídos em SMACH
+possuem certas capacidades não disponíveis em máquinas de estados
+finitos formais. Cada \textit{container} SMACH tem um dicionário de escopo local
+de dados de usuário que pode ser acessado por seus estados filho. Estados podem
+armazenar e carregar dados desta estrutura em tempo de execução. Como os
+\textit{outcomes}, estas entradas e saídas podem ser consideradas parte da
+interface para um estado e devem ser declarados durante a construção.
+\textit{Containers} podem, também, possuir entradas e saídas chave
+(\textit{input and output keys}), a fim de mover dados entre escopos.
 
+Apesar de esta característica deixar a análise dos estados mais complexa, ela
+deixa o sistema muito poderoso. Ela permite que dados sejam passados entre
+estados consecutivos, e, além disso, os dados podem ser acumulados por vários
+estados de forma que estejam disponíveis, no futuro, a um ramo durante a
+execução. Isto significa que um estado ``completo'' de uma árvore SMACH, em um
+determinado momento, é a união dos estados ativos do nível de execução em cada
+\textit{container} e os conteúdos de dicionários do \textit{user data} em cada
+\textit{container}. A figura~\ref{container} mostra um \textit{container}
+exemplo do SMACH, chamado \textit{SM\_TOP}, que possui dois estados \textit{FOO}
+e \textit{BAR}, tal que as entradas do \textit{container SM\_TOP}
+(\textit{input keys}) são recebidas pelo estado \textit{FOO}, os dados de saída
+de \textit{FOO} são entradas do estado \textit{BAR} e os dados de saída de
+\textit{BAR} são os dados de saída do \textit{container SM\_TOP}.
 
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.8\columnwidth]{figs/container.png}
+\caption{Container \textit{SM_TOP} que possui dois estados e transições de
+dados.}
+\label{container}
+\end{figure}
+
+B) Prototipagem e visualizador
+
+SMACH foi projetado para permitir prototipagem rápida e intuitiva de aplicações
+robóticas. A biblioteca de interface SMACH-ROS provê a visualização, em tempo de
+execução, dos planos criados em SMACH, o SMACH Viewer. O visualizador SMACH
+renderiza a estrutura dos planos, realça os estados sendo executados em tempo real, e lista
+os conteúdos do dicionário de dados para um dado \textit{container}. Esta
+ferramenta permite ao desenvolvedor:
+\begin{itemize}
+  \item Descobrir pontos de falha e rapidamente adicionar novos estados que
+  possam estimar a natureza da falha ou para recuperação.
+  \item O SMACH Viewer é suficientemente intuitivo, de forma que o programador
+  rapidamente encontra erros.
+  \item A estrutura é bastante modular, logo os processos que são executados no
+  robô podem ser divididos para múltiplos programados sem conflito.
+  \item SMACH pode ser executado a partir do meio de um plano sem alteração no
+  código.
+  \item SMACH possui propagação de \textit{preemption}, isto significa que
+  um pedido de cancelamento vindo do nível superior da árvore de execução atua
+  no estado ativo e propaga a ação de cancelamento por todos os estados da
+  folha, cancelando tarefas concorrentes de maneira segura.
+\end{itemize}
+
+C) Padrões de projeto (\textit{Design Patterns})
+
+Padrão de projeto é uma solução geral reutilizável para um problema que ocorre
+com frequência dentro de um determinado contexto no projeto de software. Uma
+camada Executivo pode usar o \textbf{Sequenciador} hierárquico de máquinas de
+estados do SMACH para estruturar um plano, mas este \textit{framework} não é uma
+camada Executivo completa, pois esta camada possui outras responsabilidades
+(seção~\ref{3t}). SMACH utiliza padrões de projeto de ROS para suprir a
+responsabilidade de monitoramento de execução.
+
+1) Coordenação de dados: os estados em SMACH podem ser ações do tipo
+\textit{actionlibs}, implementadas no ambiente ROS. Esse tipo de ação recebe uma
+mensagem objetivo e retorna mensagens de resultados e status
+(\textit{succeeded, aborted e preempted}).
+
+2) \textit{Preemption} mútua e monitoramento de tópicos: \textit{containers}
+concorrentes podem ter diversas políticas de terminação definidas como funções
+de terminação. Um padrão de projeto é o \textit{preemption} mútuo de duas
+tarefas concorrentes, útil quando o término de uma ação deveria causar o término
+de outra.
+
+D) Aplicações
+
+Além da demonstração de desempenho na utilização de SMACH em PR2
+\cite{bohren2011towards}, há outros sistemas que já fazem uso desta camada
+Executivo. A dissertação de mestrado \cite{Kolbe2013} implementa
+uma camada Planejador em cima de SMACH. O \textit{Deutsches
+Forschungszentrum für Künstliche Intelligenz} (DFKI), um dos maiores institutos
+sem fins lucrativos de pesquisa no campo de inovação de tecnologia de software e
+robótica baseado em métodos de inteligência artificial desenvolveu um robô
+móvel autônomo de dois braços, AILA \cite{lemburg2011aila}, que usa SMACH como
+camada de nível Executivo. E já há sistemas que se baseiam na filosofia SMACH, como em
+\cite{wachsmuth2012tobi}.
