@@ -303,24 +303,48 @@ suas hierarquias.
 %TODO falar das prioridades
 %TODO recursos compartilhados, como fica?
 %TODO Referenciar DFKI tb
-A camada Executivo elaborada para a DORIS usa SMACH, como linguagem da camada
-Executivo, e implementadas técnicas da arquitetura de subsunção simplificada,
-onde o módulo básico de comportamento será a máquina de estado aumentada (\emph{AFSM}) da figura~\ref{afsm} sem \textit{Reset}.
-A camada Executivo é o foco da implementação do autor desta dissertação e, junto
-com a camada Planejador, permite a autonomia do robô. 
+A camada Executivo elaborada para a DORIS usa SMACH (subseção~\ref{smach}) como
+linguagem da camada Executivo, e implementa a técnica de função de coordenação
+competitiva (subseção~\ref{reativa}) da arquitetura de subsunção, onde o módulo
+básico de comportamento reativo é uma máquina de estados aumentada
+(\emph{AFSM}) da figura~\ref{afsm} sem \textit{Reset}. A camada Executivo é o
+foco da implementação do autor desta dissertação e, junto com a camada
+Planejador, permite a autonomia do robô.
 
 As subseções a seguir detalham a implementação da camada Executivo,
 identificando como é realizada cada responsabilidade: Sequenciador,
 Selecionador, Gerenciador de recursos, e Monitoramento da execução e
 recuperação de erros (\textit{Execution monitoring and error recovery}). Como
 o ambiente de desenvolvimento da camada Funcional é ROS, optou-se pela
-utilização da camada Executivo SMACH \cite{bohren2010smach}, por demonstrar
+utilização da camada Executivo SMACH \cite{bohren2010smach} por demonstrar
 resultados positivos em diversas aplicações, e já ser integrada ao sistema ROS.
 Foram adicionadas algumas funcionalidades à camada a fim de garantir todas as
 responsabilidades de uma camada Executivo. A linguagem de programação utilizada
-foi Python.
+é Python.
 
-\subsubsection{Sequenciador}
+\subsubsection{Sequenciador e Selecionador}
+SMACH é um \textit{framework} para projetar máquinas de estados hierárquicas
+concorrentes. As máquinas de estados de SMACH possuem características bem
+peculiares não encontradas em máquinas de estados formais, como a \textit{user
+data}, comentada na subseção~\ref{smach}. O Sequenciador desenvolvido para a
+DORIS utilizará as capacidades de SMACH para a modelagem das tarefas do robô.
+
+Dependendo da aplicação, robôs, como seres humanos, possuem um conjunto de
+processos que estão sempre em execução, e outros conjuntos de processos que só
+entrarão em execução dependendo da tarefa que o robô irá executar. Por exemplo,
+em um ser humano, os processos vitais como ``respirar'' e ``o bombear do
+coração'' estão sempre em execução, sendo que alguns podem ser postos em espera
+por um tempo, como ``respirar'', e outros são incontroláveis, como ``o bombear
+do coração''. A camada Executivo é a camada, em DORIS, que assumirá
+esta responsabilidade de \textbf{Selecionador}, simulando este mesmo princípio
+encontrado na natureza, extremamente necessário para garantir robustez e
+proteção. 
+
+ 
+
+
+A concepção da camada Executivo é de se criar vários processos sendo executados
+em
 
 
 \subsubsection{Gerenciador de recursos}
