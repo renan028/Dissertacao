@@ -888,22 +888,22 @@ com grande robustez de hardware e software.
 \label{curiosity}
 \end{figure}
 
-\subsection{Aquitetura híbrida}
+\subsection{Aquitetura híbrida}\label{hibrida}
 Em \cite{arkin1998behavior}, Arkin aponta quatro possíveis estratégias para o
 projeto de arquiteturas híbridas:
 
 \begin{itemize}
-  \item Seleção: o planejador é visto como um configurador. O planejador
+  \item Seleção: a deliberação é vista como um configurador. O planejador
   determina a composição de comportamentos e parâmetros usados durante a
   execução. O planejador pode reconfigurá-los quando necessário devido a falhas
   no sistema.
-  \item Conselho: o planejador é visto como um aconselhador. O planejador sugere
-  mudanças que o controle reativo pode ou não usar.
-  \item Adaptação: o planejador é visto como um adaptador. O planejador
+  \item Conselho: a deliberação é vista como um aconselhador. O planejador
+  sugere mudanças que o controle reativo pode ou não usar.
+  \item Adaptação: a deliberação é vista como um adaptador. O planejador
   continuamente altera os componentes reativos ativos de acordo com as mudanças
   nas condições do mundo e requisitos de tarefas.
-  \item Adiamento: o planejador é visto como um recurso para ser usado em último
-  caso. Neste caso, os planos só são elaborados quando necessários.
+  \item Adiamento: a deliberação é vista como um recurso para ser usado em
+  último caso. Neste caso, os planos só são elaborados quando necessários.
 \end{itemize}
 
 Em \cite{murphy2000introduction}, Murphy afirma que apesar de arquiteturas
@@ -911,17 +911,16 @@ híbridas variarem em como a função deliberativa (o planejador) atua no sistema,
 os componentes implementados em uma arquitetura híbrida são semelhantes,
 possuindo geralmente os seguintes módulos:
 
-\begin{itemize}
+\begin{itemize}\label{murphy}
   \item Sequenciador: agente que gera o conjunto de comportamentos a serem
   usados para completar uma subtarefa, e determina qualquer sequência e
   condições de ativação. A sequência é normalmente representada como uma rede de
-  dependências ou FSMs, mas o sequenciador gera essa estrutura ou ou
-  dinamicamente a adapta.
+  dependências ou FSMs, mas o sequenciador gera essa estrutura ou dinamicamente a adapta.
   \item Gerenciador de recursos: agente que aloca recursos aos comportamentos.
   Este agente está diretamente ligado aos sensores do robô, podendo verificar
   qual o sensor é mais adequado para cada situação do robô. 
   \item Cartógrafo: agente responsável por criar, armazenar e atualizar o mapa,
-  modelo do mundo.
+  os modelos do mundo.
   \item Planejador de missão: agente que interage com o usuário, traduz a
   mensagem do usuário para os termos do robô, e contrói um plano de missão. Por
   exemplo, um robô ``assistente'' poderia receber o comando ``Robô, traga um
@@ -1040,10 +1039,11 @@ diferentes modelos para as diferentes funções do robô, a fim de otimizar a
 execução. A componente planejador olha para o futuro.
  
 No exemplo do robô de escritório, a componente de planejamento analisa as
-entregas do dia, verifica os recursos do robô, atualiza o mapa, determina as
-melhores rotas de entrega e agendamento, quando o robô deve se recarregar, e
-replanejar quando necessário, por exemplo, quando um escritório estiver
-fechado, o robô deve alterar o agendamento para realizar a entrega mais tarde.
+entregas do dia, pode verificar os recursos do robô, atualiza o mapa,
+pode determinar as melhores rotas de entrega e agendamento, pode estimar quando
+o robô deve se recarregar, e replaneja quando necessário, por exemplo, quando
+um escritório estiver fechado, o robô deve alterar o agendamento para realizar
+a entrega mais tarde.
 
 A camada Executivo utiliza técnicas de planejamento reativo para selecionar um
 conjunto de comportamentos de uma biblioteca de comportamentos, e desenvolve uma
@@ -1428,7 +1428,7 @@ usa técnicas de planejamento reativo para selecionar os nós, ou componentes, que
 entrarão em execução de uma biblioteca de componentes existentes. Ela sequencia
 a execução dos componentes para a realização de um certo objetivo, monitora o
 desempenho, traduz os planos de alto nível da camada Planejador em
-comportamentos de baixo nível, executando-os apropriadamente. Na arquitetura
+tarefas, executando-os apropriadamente. Na arquitetura
 implementada, a camada Executiva também aloca e monitora os recursos
 (gerenciamento de recursos). 
 
@@ -1706,3 +1706,5 @@ robótica baseado em métodos de inteligência artificial desenvolveu um robô
 móvel autônomo de dois braços, AILA \cite{lemburg2011aila}, que usa SMACH como
 camada de nível Executivo. E já há sistemas que se baseiam na filosofia SMACH, como em
 \cite{wachsmuth2012tobi}.
+
+\subsection{Camada Planejador}

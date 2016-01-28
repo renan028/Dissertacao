@@ -305,22 +305,23 @@ suas hierarquias.
 %TODO Referenciar DFKI tb
 A camada Executivo elaborada para a DORIS usa SMACH (subseção~\ref{smach}) como
 linguagem da camada Executivo, e implementa a técnica de função de coordenação
-competitiva (subseção~\ref{reativa}) da arquitetura de subsunção, onde o módulo
+competitiva (subseção~\ref{reativa}), a arquitetura de subsunção, onde o módulo
 básico de comportamento reativo é uma máquina de estados aumentada
 (\emph{AFSM}) da figura~\ref{afsm} sem \textit{Reset}. A camada Executivo é o
 foco da implementação do autor desta dissertação e, junto com a camada
 Planejador, permite a autonomia do robô.
 
 As subseções a seguir detalham a implementação da camada Executivo,
-identificando como é realizada cada responsabilidade: Sequenciador,
-Selecionador, Gerenciador de recursos, e Monitoramento da execução e
-recuperação de erros (\textit{Execution monitoring and error recovery}). Como
-o ambiente de desenvolvimento da camada Funcional é ROS, optou-se pela
-utilização da camada Executivo SMACH \cite{bohren2010smach} por demonstrar
-resultados positivos em diversas aplicações, e já ser integrada ao sistema ROS.
-Foram adicionadas algumas funcionalidades à camada a fim de garantir todas as
-responsabilidades de uma camada Executivo. A linguagem de programação utilizada
-é Python.
+identificando como é realizada cada responsabilidade: Tradutor (planos do
+Planejador em tarefas), Sequenciador, Selecionador, Gerenciador de recursos, e
+Monitoramento da execução e recuperação de erros (\textit{Execution monitoring
+and error recovery}). Como o ambiente de desenvolvimento da camada Funcional é
+ROS, optou-se pela utilização da camada Executivo SMACH \cite{bohren2010smach}
+por demonstrar resultados positivos em diversas aplicações, e já ser integrada
+ao sistema ROS. Foram adicionadas algumas funcionalidades à camada a fim de
+garantir todas as responsabilidades de uma camada Executivo. A linguagem de
+programação utilizada é Python.
+
 
 \subsubsection{Sequenciador e Selecionador}
 SMACH é um \textit{framework} para projetar máquinas de estados hierárquicas
@@ -377,7 +378,7 @@ erros}\label{monitoamento}
 
 
 
-\subsection{Camada planejador}
+\subsection{Implementação da camada Planejador}\label{planejador}
 %TODO lembrar de mapa de equipamentos e quais precisam de manipulador
 %TODO mapa de postes
 %TODO mapa de distancias ao chao
@@ -386,4 +387,112 @@ erros}\label{monitoamento}
 %TODO mapa das seções do trilho.
 %TODO mapa audio
 %TODO Mapa audio de anomalias
+%TODO Mapa de equipamentos
 %TODO falar de SLAM
+\subsubsection{Planejador de missão e Tradutor}
+A camada Planejador enviará missões à camada Executivo, quando estas estiverem
+agendadas ou quando o usuário requisitar. Na subseção~\ref{hibrida}, em
+\ref{murphy}, foi exemplificada a responsabilidade de \textbf{Tradutor} da
+camada Planejador com um robô assistente que serve cafés. A implementação desta
+responsabilidade no DORIS é realizada por um dicionário codificado no robô.
+Este método é normalmente conhecido na literatura como \textit{encoded
+knowledge} (conhecimento codificado), que são dados incorporados ao código
+fonte \textit{hard coded}.
+
+As missões do robô podem ser classificadas em: \textbf{Missões Simples},
+\textbf{Missões Complexas} e \textbf{Missões Desconhecidas}. Todas as missões
+possuem \textit{argumentos}, entradas mínimas do usuário necessários para a
+execução da missão.
+
+As missões simples não necessitam de tradução por já estarem em nível
+mínimo de máquinas de estados SMACH. Por exemplo:
+\begin{itemize}
+  \item \textbf{GOTO}: missão de locomoção do robô até um ponto do trilho. Os
+  \textit{argumentos} para esta missão são: posição desejada no trilho, em valor
+  absoluto; velocidade desejada, um valor fuzzy: ``slow'' (devagar), ``normal''
+  (normal) ou ``fast'' (rápida); direção de movimento, 1 para sentido de
+  locomoção para frente (baterias chegam por último) e -1 para sentido
+  contrário; número de voltas desejado, em caso de trilho fechado, antes de o
+  robô atingir a posição requisitada. O único argumento obrigatório é posição
+  desejada, de forma que os valores padrão são: velocidade ``fast''; direção de
+  movimento de velocidade mínima; e zero voltas.
+  \item \textbf{RECORD\_TYPE}: gravar dados de sensores no robô. Há um 
+ \textit{argumentos} para esta missão que pode ser preenchido como: vídeo, áudio
+ e termografia. Cada tipo representa uma missão de gravar dados de um sensor
+ específico (câmera, microfone e câmera termográfica, respectivamente).
+  \item \textbf{STOP\_RECORD\_TYPE}: parar gravação de dados de sensores no
+  robô. Assim como a inicialização da missão, há um \textit{argumento} que deve
+  ser preenchido: o tipo de gravação, que irá resultar na utilização do sensor
+  apropriado para a execução da tarefa.
+  \item \textbf{START\_DETECTING\_ANOMALIES\_TYPE}: iniciar algum detector
+  específico de anomalia. Há três tipos de detecção de anomalias
+  que podem ser escolhidos: vídeo, áudio e termografia. Para cada um deles, há
+  uma máquina de estados específica: iniciar algoritmo detector de anomalias por
+  câmera, microfones ou câmera termográfica, respectivamente.
+  \item \textbf{END\_DETECTING\_ANOMALIES\_TYPE}: finalizar algum detector
+  específico de anomalia. Assim como iniciar, finalizar apresenta os mesmos três
+  tipos de detecção de anomalias: vídeo, áudio e termografia. E Para cada um
+  deles, há uma máquina de estados específica: iniciar algoritmo detector de
+  anomalias por câmera, microfones ou câmera termográfica, respectivamente.
+\end{itemize}
+
+As missões complexas, de mais alto nível, são combinações de
+missões simples. Estas necessitam ser traduzidas pelo Planejador com os
+argumentos corretos. Por exemplo:
+\begin{itemize}
+  \item \textbf{GOTO\_BASE}: missão de locomoção do robô à base.
+  Não há \textit{argumentos} para esta missão. Tradução necessária para camada
+  Executivo: \textbf{GOTO}: posição zero, velocidade ``fast''.
+  \item \textbf{INSPECTION}: missão para inspecionar planta em um trecho.
+  Necessita que o usuário escolha até onde inspecionar (posição final absoluta
+  no trilho) e o tipo de inspeção: vídeo, áudio e termográfico. Tradução: para cada tipo selecionado realizar
+  \textbf{START\_DETECTING\_ANOMALIES\_TYPE}; \textbf{GOTO}:
+  velocidade ``slow'' (observe que inspeção requer velocidade mínima); para cada
+  tipo realizar \textbf{STOP\_DETECTING\_ANOMALIES\_TYPE}.
+  \item \textbf{PATROL}: realizar uma ronda completa, isto é, inspecionar toda a
+  planta. Não há \textit{argumentos} para esta missão. Tradução:
+  \textbf{INSPECTION}: todos os sensores, posição final do trilho.
+  \item \textbf{MANIPULATOR\_INSPECTION}: inspecionar um equipamento com
+  manipulador. O \textit{argumento} desta missão é o equipamento a
+  ser inspecionado. O robô deve ir à posição que se encontra o equipamento, tocar o
+  equipamento com o sensor de vibração através do manipulador, e executar uma
+  detecção de anomalias por vibração. Em linguagem da camada Executivo, seria
+  \textbf{GOTO}: posição do equipamento (requer verificar mapa de equipamentos),
+  velocidade ``fast''; \textbf{MANIPULATOR\_POSITION\_CONTROL}: posição
+  referente ao equipamento; \textbf{MANIPULATOR\_FORCE\_CONTROL};
+  \textbf{START\_DETECTING\_ANOMALIES\_VIBRATION}.
+\end{itemize}  
+
+As missões desconhecidas são missões que não estão
+descritas no robô, isto é, missões que, até o momento, não pertencem ao
+dicionário do robô. Até esta fase da implementação, DORIS não permite que o
+usuário use missões desconhecidas. O motivo principal disso é que o robô não
+interage com o ser humano de maneira direta, mas apenas através de uma
+interface. Vale, porém, explicitar situações de aplicações robóticas em que
+missões desconhecidas são essenciais:
+
+\begin{enumerate}
+  \item Robô que serve bebidas: uma missão desconhecida é o usuário pedir
+  uma bebida que não exista em sua base de conhecimento (mapa de bebidas).
+  Durante a tarefa de reconhecer a bebida na geladeira, o robô irá falhar. Porém, o Planejador
+  poderia executar uma busca por fotos de bebida em algum site de buscas, antes
+  de executar a tarefa, e atualizar a sua base de conhecimento (mapa de
+  bebidas), de forma que a tarefa tenha resultado positivo com novo dado.
+  \item J.A.R.V.I.S., a inteligência artificial das histórias em quadrinhos
+  Iron Man (homem de ferro): comandos por voz normalmente são complexos, já que
+  há diversas maneiras de pedir que um plano a um robô. Pro exemplo, os planos
+  ``Robô, preciso de uma tesoura'', ``Robô, dê-me uma tesoura'', ``Robô,
+  traga-me uma tesoura'' são planos equivalentes, ditos de maneira diferentes.
+  Todas estas diferentes formas devem estar disponíveis em alguma base de
+  conhecimento, dentro ou fora do robô, como na nuvem (\textit{cloud}), a qual
+  deveria ser compartilhada com todos os robôs que exercem a mesma função.
+  RoboEarth \cite{hunziker2013rapyuta} é uma ideia visionária que está buscando
+  criar uma \textit{internet dos robôs} (como a \textit{internet das coisas}),
+  já está sendo integrada ao ambiente ROS, e sua contribuição é criar um
+  repositório na nuvem com missões compartilhadas para todos os robôs que a
+  utilizam.
+\end{enumerate}
+
+\subsubsection{Agendador}
+
+\subsubsection{Cartógrafo}
