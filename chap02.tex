@@ -1708,3 +1708,62 @@ camada de nível Executivo. E já há sistemas que se baseiam na filosofia SMACH, c
 \cite{wachsmuth2012tobi}.
 
 \subsection{Camada Planejador}
+
+Na subseção~\ref{3t}, o Planejador é definido como uma camada composta pelo
+planejador de missão e o cartógrafo (modelo do mundo). A camada determina as
+atividades do robô de longo prazo baseada em objetivos de alto nível. Enquanto a camada Funcional
+possui responsabilidades de com o aqui e agora, e a camada Executivo
+com o que acabou de acontecer e o que deve acontecer depois, a camada Planejador
+olha para o futuro. Nesta subseção, aborda-se as RDEs voltadas para a camada
+Planejador, como elas funcionam internamente, e destaca-se o Rapyuta, uma
+camada Planejador visionária que está sendo integrada ao ambiente ROS.
+
+A duas abordagens mais comuns são o planejador de rede de tarefas hierárquicas
+(\textit{hierarchical task net} - HTN) e o planejador/agendador. Os HTN, como o
+O-Plan (\textit{The open planning architecture}\cite{currie1991plan}) e
+o SHOP (\textit{simple hierarchical ordered planner})\cite{nau1999shop},
+decompõem tarefas em subtarefas de uma maneira similar às camadas Executivas. A
+diferença é que os HTN operam em um alto nível de abstração, tomam em
+conta a utilização de recursos, e possuem métodos de lidar com conflitos entre
+tarefas (tarefas que necessitam o mesmo recurso, ou uma tarefa negando uma
+pré-condição necessária por outra tarefa). A base de conhecimento do robô é o
+arquivo (dicionário) de tarefas.
+
+O planejador/agendador, como em \cite{chien2000using} e
+\cite{muscettola1998remote}, são úteis em aplicações onde tempo e recursos são
+limitados. A camada Planejador cria planos de alto nível que agenda quando
+tarefas devem ocorrer, mas tipicamente deixa ao Executivo a responsabilidade de
+determinar exatamente como alcançar as objetivos. Planejador/agendador organizam
+as tarefas e os recursos do robô cronologicamente e com prazos a fim de evitar
+conflitos (motores, energia, comunicação e outros). A base de conhecimento do
+robô inclue os objetivos das tarefas, os recursos necessários, suas durações, e
+restrições entre tarefas.
+
+\subssubection{Rapyuta}
+Rapyuta é a \textit{RoboEarth Cloud Engine}, uma
+Plataforma como serviço (\textit{Platform-as-a-Service} - PaaS) de código
+aberto, serviço de hospedagem e implementação de hardware e software, usado para
+prover aplicações por meio da internet projetado especificamente para
+aplicações robóticas. A grande motivação é o número cada vez maior de robôs
+saindo do ambiente industrial para o ambiente doméstico, praticando tarefas
+caseiras como servindo bebidas, dobrando toalhas e outras. Algumas tarefas
+domésticas, no entanto, exigem grande poder computacional, e os computadores
+embarcados cada vez consomem mais bateria, restringindo a mobilidade do robô,
+reduzindo tempo de operação e aumentando os custos. A computação interna do
+robô pode ser reduzida se algumas computações que não exijam tempo real puderem
+ser realizadas na nuvem, como planejamento de segurar objetos (\extit{gasp
+planning}), mapeamento, e navegação.
+
+Rapyuta é um projeto que busca resolver os desafios de construir uma plataforma
+robótica em núvem. O \textit{framework} é baseado em um modelo de computação
+elástico \cite{hu2012cloud} que aloca dinamicamente ambientes de computação
+segura para robôs. Esses ambientes de computação são interconectados, permitindo
+que robôs compartilhem dispositivos e informações entre si, tornando Rapyuta uma
+plataforma para multi-robôs. Além disso, os ambientes de computação provêem
+acesso com banda larga ao RoboEarth, repositório de conhecimento, permitindo que
+robôs tenham conhecimento da experiência de outros robôs. Os robôs podem
+submeter e pegar dados do repositório RoboEarth, e ainda processar
+planejamentos dentro da ferramenta.
+
+Rapyuta é compatível com ROS, o que permite a execução de todos os pacotes de
+código aberto disponíveis em ROS.
