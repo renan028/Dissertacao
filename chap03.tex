@@ -171,13 +171,13 @@ realizadas sequencialmente pelo robô.
 serem definidos (\textit{argumentos}), que o usuário pode dar ao robô, em uma
 interface. A \textbf{missão} é um conjunto de tarefas.
 
-\textbf{Definição}: \textbf{Tarefa} é o processo básico definido na
-camada Executivo SMACH. A tarefa é um processo executado pelo robô com um
-determinado objetivo e seu conjunto ordenado sequencialmente completam a missão.
-Uma tarefa pode ser cancelada por outras tarefas (subsunção). Em linguagem de
-arquitetura robótica, esta definição se confunde com \textbf{comportamentos} por
+\textbf{Definição}: \textbf{Tarefa} é um processo executado pelo robô com um
+determinado objetivo, e o conjunto de tarefas ordenado sequencialmente compõe a
+missão. Uma tarefa pode ser cancelada por outras tarefas (subsunção). Em
+linguagem de arquitetura robótica, esta definição se confunde com \textbf{comportamentos} por
 ser um processo básico e ser modelado como uma AFSM, porém é uma definição mais
-geral por não necessariamente envolver um par estímulo-reação/sensor-atuador.
+geral por não necessariamente envolver um par estímulo-reação/sensor-atuador. \textbf{Tarefa} é o processo básico definido na
+camada Executivo SMACH.
 
 
 \subsubsection{Controle de missão} 
@@ -254,7 +254,7 @@ argumentos corretos. Por exemplo:
   tipo realizar \textbf{STOP\_DETECTING\_ANOMALIES\_TYPE}.
   \item \textbf{PATROL}: realizar uma ronda completa, isto é, inspecionar toda a
   planta. Não há \textit{argumentos} para esta missão. Tradução:
-  \textbf{INSPECTION}: todos os sensores, posição final do trilho.
+  \textbf{INSPECTION} (todos os sensores, posição final do trilho).
   \item \textbf{MANIPULATOR\_INSPECTION}: inspecionar um equipamento com
   manipulador. O \textit{argumento} desta missão é o equipamento a
   ser inspecionado. O robô deve ir à posição que se encontra o equipamento, tocar o
@@ -283,7 +283,7 @@ missões desconhecidas são essenciais:
   bebidas), de forma que a tarefa tenha resultado positivo com novo dado.
   \item J.A.R.V.I.S., a inteligência artificial das histórias em quadrinhos
   Iron Man (homem de ferro): comandos por voz normalmente são complexos, já que
-  há diversas maneiras de pedir que um plano a um robô. Pro exemplo, os planos
+  há diversas maneiras de pedir um plano a um robô. Por exemplo, os planos
   ``Robô, preciso de uma tesoura'', ``Robô, dê-me uma tesoura'', ``Robô,
   traga-me uma tesoura'' são planos equivalentes, ditos de maneira diferentes.
   Todas estas diferentes formas devem estar disponíveis em alguma base de
@@ -304,6 +304,7 @@ $$\textbf{INSPECTION('AUDIO',50)}$$
 $$\textbf{STOP\_RECORD\_TYPE()}$$ 
 $$\textbf{RECORD\_TYPE('AUDIO')}$$
 $$\textbf{GOTO\_BASE()}$$
+$$\textbf{STOP\_RECORD\_TYPE()}$$ 
 
 O controle de missão da camada Planejador traduz sequencialmente o plano nas
 missões simples:
@@ -315,6 +316,7 @@ $$\textbf{GOTO(50)}$$
 $$\textbf{STOP\_DETECTING\_ANOMALIES\_TYPE('AUDIO')}$$
 $$\textbf{STOP\_RECORD\_TYPE()}$$ 
 $$\textbf{GOTO(0)}$$
+$$\textbf{STOP\_RECORD\_TYPE()}$$ 
 
 Os status, motivo de interrupções, e possíveis erros ocorridos de cada missão
 são fornecidos pela camada Executivo. O controle de missão tem acesso fácil a
@@ -536,7 +538,7 @@ um algoritmo para detecção de postes, e o \emph{Localization} (\textit{subscribe
 este é mais um sensor que provê dados para o sistema de localização (altura do
 robô).
 
-O componente \emph{IMU} é um driver que faz a interface com a IMU.
+O componente \emph{IMU} é um driver que faz a interface com a \emph{IMU}.
 Ele envia uma lista de dados: velocidade, orientação, posição, pólos
 magnéticos e outros. Futuramente, também irá se comunicar com o
 \emph{Localization}.
@@ -553,6 +555,119 @@ suas hierarquias.
 
 \subsubsection{Planejamento de velocidades}
 
+A DORIS se locomove em um trilho (mapa unidimensional), logo não há a
+necessidade de computação de um \textit{Motion Planning} complexo. Quando uma
+missão do tipo \textbf{GOTO} é requisitada, apenas são calculadas as
+velocidades de segurança e compensação das rodas do robô, não a trajetória, pois
+só há uma trajetória possível, ou duas, caso o trilho seja circular. Apesar de o
+\textit{Motion Planning} estar na camada Funcional, ele também é fundamental
+para a autonomia do robô, portanto o autor desenvolveu sua implementação. 
+
+O processo chamado \textit{MasterPlanning} é um \textit{thread} inicializado
+junto ao robô e que subscreve ao tópico \textit{DORIS/Vehicle/Path\_Planning}
+para obter os parâmetros de entrada e publica sua saída ao tópico
+\textit{DORIS/Vehicle/Path\_Planning/Plan}. Suas entradas são: localização
+atual do robô; localização objetivo; direção de movimento (1 ou -1 - sentido
+natural ou sentido contrário); número de voltas desejado antes de chegar à
+localização objetivo; e se o trilho é circular (verdadeiro ou falso). Sua saída
+é uma matriz com $n$ linhas e três colunas: a primeira coluna representa a posição
+do trilho onde ocorre troca de velocidade máxima; a segunda coluna é a
+velocidade máxima; a terceira é o \textit{set-point} de posição.
+
+A matriz de saída será utilizada pela tarefa
+\textit{Motion\_Planning\_Position} da camada Executivo, a qual se comunica com
+o processo da camada Funcional \textit{PositionController}. Portanto, no modo
+autônomo, DORIS será controlada por posição, havendo a necessodade de
+especificar velocidades máximas para cada trecho do trilho. O mapa do
+trilho é uma matriz de duas colunas: a primeira coluna representa o tipo de
+trecho do trilho (reta, transição reta-subida, transição reta-descida, subida,
+descida, curva à direita, curva à esquerda); a segunda coluna se refere ao
+comprimento do trecho. O robô pode acelerar nas retas, mas deve reduzir a
+velocidade em curvas, onde há compensação de velocidades devido ao comprimento
+do robô e à distância entre as rodas em um mesmo gimbal, e em subidas e
+descidas, onde grandes velocidades produzirão muito esforço e desgaste nos
+motores/engrenagens.
+
+Durante uma missão do tipo \textit{GOTO}, a tarefa
+\textit{Motion\_Planning\_Position}, após obter a localização do robô, envia um
+pedido de planejamento de velocidades ao processo \textit{MasterPlanning}, em
+uma mensagem com todas as entradas necessárias. \textit{MasterPlanning} tem
+acesso ao mapa do trilho, disponibilizado pelo Cartógrafo,
+e possui um dicionário de três possíveis velocidades máximas ($V_{max}$):
+``fast'', ``normal'' e ``slow'', mapeadas em 0.6, 0.3 e 0.1 m/s respectivamente.
+
+As velocidades máximas dos trechos do trilho são proporconais à $V_{max}$ e
+escolhidas empiricamente: $V_{reto} = V_{max}$; $V_{reto-subida} = 0.7*V_{max}$;
+$V_{reto-descida} = 0.7*V_{max}$; $V_{curva} = 0.85*V_{max}$; $V_{subida} =
+0.5*V_{max}$; $V_{descida} = 0.5*V_{max}$. A fim de garantir que o robô chegue
+em determinado trecho respeitando a velocidade máxima deste, o
+\textit{MasterPlanning} calcula a posição de troca de velocidade máxima pela
+equação de Torricelli: $v_{f}^2 = v_{0}^2+2a\Delta S$. $\Delta S$
+representa a distância percorrida, ou seja, a posição de troca de velocidades
+e $a$ é a aceleração/desaceleração máxima da EPOS ($a=0.11 m/s^2$).
+
+\textbf{Exemplo}
+
+Suponha que o robô está na posição 0 do trilho e começa a execução da tarefa
+\textit{Motion\_Planning\_Position} da missão \textit{GOTO(10,'fast')}. A função
+$master\_planning(0,'fast',10)$ retorna a matriz~\ref{matrizvmax}, que pode ser
+interpretada graficamente em ~\ref{plvl}. 
+
+\begin{table}[!ht]
+\centering
+\caption{Matriz de velocidades máximas em cada trecho do trilho do ponto 0 ao
+10.}
+\label{matrizvmax}
+\begin{tabular}{ccc}
+\hline
+\multicolumn{1}{l}{Ponto de troca (m)} & \multicolumn{1}{l}{$V_{max}$ (m/s)} &
+\multicolumn{1}{l}{Set-point (m)} \\ \hline 0                                  &
+0.6                           & 10                            \\
+1.907                              & 0.42                          & 10                            \\
+3.355                              & 0.3                           & 10                            \\
+4.495                              & 0.42                          & 10                            \\
+5.506                              & 0.6                           & 10                            \\
+5.847                              & 0.51                          & 10                            \\
+7.308                              & 0.6                           & 10                            \\
+8.334                              & 0.42                          & 10                            \\
+9.282                              & 0.3                           & 10                           
+\end{tabular}
+\end{table}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.8\columnwidth]{figs/masterplot.png}
+\caption{representação gráfica do plano de velocidades do robô para uma missão
+de GOTO(10,'fast').}
+\label{plvl}
+\end{figure}
+
+O mapa das seções do trilho até a posição 10, disponível pelo Cartógrafo, está
+representado na tabela~\ref{mapatrilho}. Observe que o trecho inicial ``Reto"
+possui comprimento 2.733 m e velocidade máxima 0.6 m/s, mas antes de o robô
+chegar no final do trecho, ele começa o processo de desaceleração em 1.907 m de
+forma a ser possível fazer a troca de trecho na velocidade máxima permitida para
+a ``Transição reto-subida'' (0.42 m/s).
+
+\begin{table}[!ht]
+\centering
+\caption{Mapa das seções do trilho}
+\label{mapatrilho}
+\begin{tabular}{ccc}
+\hline
+Tipo de trecho         & Comprimento (m) & Soma (m)  \\ \hline
+Reto                   & 2.733       & 2.733 \\
+Transição reto-subida  & 1.011       & 3.744 \\
+Subida                 & 0.750       & 4.495 \\
+Transição subida-reto  & 1.011       & 5.506 \\
+Reto                   & 0.790       & 6.297 \\
+Curva à esquerda       & 1.011       & 7.308 \\
+Reto                   & 1.852       & 9.160 \\
+Transição reto-descida & 0.510       & 9.670 \\
+Descida                & 0.790       & 10.46
+\end{tabular}
+\end{table}
+
 \subsection{Implementação da camada Executivo}
 %TODO falar das prioridades
 %TODO recursos compartilhados, como fica?
@@ -560,9 +675,9 @@ A camada Executivo elaborada para a DORIS usa SMACH (subseção~\ref{smach}) como
 \textit{framework}, e implementa a técnica de função de coordenação competitiva
 (subseção~\ref{reativa}), a arquitetura de subsunção, onde o módulo básico de
 comportamento reativo é uma máquina de estados aumentada (\emph{AFSM}), como a
-figura~\ref{afsm} sem \textit{Reset}. A camada Executivo é o foco da
-implementação do autor desta dissertação e, junto com a camada Planejador,
-permite a autonomia do robô.
+figura~\ref{afsm} sem \textit{Reset}. A camada Executivo é essencial para a
+autonomia do robô, portanto também é o escopo da implementação do autor e, junto
+com a camada Planejador.
 
 As subseções a seguir detalham a implementação da camada Executivo,
 identificando como é realizada cada responsabilidade: Sequenciador,
@@ -584,7 +699,7 @@ peculiares não encontradas em máquinas de estados formais, como a \textit{user
 data}, comentada na subseção~\ref{smach}. O Sequenciador desenvolvido para a
 DORIS utilizará as capacidades de SMACH para a modelagem das tarefas do robô.
 
-A responsabilidade Sequenciador é quebrar as missões do Planejador em tarefas ,
+A responsabilidade Sequenciador é quebrar as missões do Planejador em tarefas,
 que, no caso do SMACH, são sequências de máquinas de estados SMACH. O
 programador deve, por tanto, modelar a quebra de uma missão em tarefas
 utilizando o \textit{framework} SMACH e adicionar a decomposição à base de
@@ -600,28 +715,50 @@ do coração''.
 
 \textbf{Definição}: \textbf{Processo reativo vital} é um processo que deve ser
 executado sempre que o robô estiver em modo autônomo. É o tipo de processo vital
-ao robô, garante robustez, proteção e a sobrevivência do sistema e aos seus dispositivos.
+ao robô, garante robustez, proteção ou a sobrevivência do sistema e aos seus
+dispositivos.
+
+Os \textbf{processos reativos vitais} criados para a DORIS são:
+\begin{itemize}
+  \item \textbf{STATE\_OF\_CHARGE}: verifica a energia disponível do robô
+  (nível das baterias). Caso esta esteja inferior a $5\%$, o robô deve parar
+  todos as missões e processos reativos.
+  \item \textbf{STATE\_OF\_TEMPERATURE\_AND\_HUMIDITY}: verifica condições de
+  temperatura e umidade externas. Quando essas estão fora do nível de operação,
+  o robô suspende as missões.
+\end{itemize}
 
 Dependendo da missão a ser realizada, além das tarefas que a especificam, um
-conjunto de processos paralelos começa a ser executado de maneira automática, às vezes inconscientemente, a fim de
+conjunto de processos paralelos começa a ser executado de maneira automática a fim de
 garantir o sucesso da missão, ou como novas formas de proteção do
 sistema aos novos perigos que a missão pode impor. Para o ser humano, em missões
 como ``palestrar'', ``produzir um relatório'', e ``ir a um evento'', os
 processos ``falar'', ``escrever'' e ``desviar de pessoas e objetos'' são
-automáticos e executados somente durante a realização da missão. 
+automáticos e executados somente durante a realização das missões. 
 
 \textbf{Definição}: \textbf{Processo reativo específico} é um processo
 executado paralelamente às tarefas da missão, quando esta começa a ser
 realizada. São processos específicos de uma determinada missão, e
-inicializados automaticamente de maneira insconsciente. Podem garantir
+inicializados automaticamente. Podem garantir
 robustez, proteção, sobrevivência do sistema, ou melhorar a execução da missão.
+
+No DORIS, um \textbf{processo reativo específico} foi implementado para
+a missão simples \textbf{GOTO}: 
+
+\begin{itemize}
+  \item \textbf{OBSTACLE\_DETECTION}: detecta a presença de obstáculos por
+  câmera fixa (algoritmo de anomalias no trilho) ou pelo sensor de consumo de
+  corrente dos motores, que, ao ficar muito elevado, representa choque com algum
+  obstáculo \cite{christensen2011cost}.
+\end{itemize}
 
 Os \textbf{processos reativos vitais} e os \textbf{processos reativos
 específicos} podem interromper a execução de tarefas das missões temporaria ou
 definitivamente. Por exemplo, uma falha no bombeamento do coração cancela
 imediatamente qualquer missão em execução. Esta característica de supressão dos
 \textbf{processos reativos} foi modelada pela função de coordenação competitiva,
-subsunção. Desta forma, 
+subsunção. Desta forma, foi implementada uma classe para a AFSM padrão de todas
+as tarefas da DORIS, implementada em SMACH:
 
 
 A camada Executivo é a camada, em DORIS, que assumirá
