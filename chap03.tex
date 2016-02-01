@@ -511,43 +511,43 @@ Os diversos componentes de sensores, no robô, são: \emph{AudioSender},
 \emph{VideoSenderNodelet}), \emph{LMS1xx}, \emph{IMU}, \emph{IMUNodelet} e
 \emph{ColorDetector}.
 
-O componente \emph{AudioSender} é um driver que faz a interface com os diversos
+O componente \textit{AudioSender} é um driver que faz a interface com os diversos
 microfone disponíveis no robô. Comunica-se (\textit{publisher}) por mensagem de
-ROS com o componente da base \emph{AudioReceiverNodelet} (\textit{subscriber})
+ROS com o componente da base \textit{AudioReceiverNodelet} (\textit{subscriber})
 para disponibilizar os dados ao usuário. Futuramente, irá se comunicar
-(\textit{publisher}) com o \emph{InspectionAudioNodelet} (\textit{subscriber}),
+(\textit{publisher}) com o \textit{InspectionAudioNodelet} (\textit{subscriber}),
 um componente que compara o áudio da base de dados do robô e detecta anomalias através de um algoritmo de reconhecimento de padrões.
 
-O componente \emph{VideoWebcamera} é um driver que faz a interface com as duas
+O componente \textit{VideoWebcamera} é um driver que faz a interface com as duas
 câmeras webcams disponíveis no robô. Comunica-se
 (\textit{publisher}) com o componente da base
-\emph{VideoReceiverNodelet} (\textit{subscriber}) para disponibilizar os dados
-ao usuário, e com o componente \emph{ColorDetection} (\textit{subscriber}), um
+\textit{VideoReceiverNodelet} (\textit{subscriber}) para disponibilizar os dados
+ao usuário, e com o componente \textit{ColorDetection} (\textit{subscriber}), um
 algoritmo que verifica a porcentagem de vermelho obtida em cada frame da
-câmera. Futuramente, o componente \emph{ColorDetection} irá se comunicar
-(\textit{publisher}) com o \emph{Localization} (\textit{subscriber}), já que a
+câmera. Futuramente, o componente \textit{ColorDetection} irá se comunicar
+(\textit{publisher}) com o \textit{Localization} (\textit{subscriber}), já que a
 informação de vermelho no trilho será utilizada para calibrar a
 localização.
 
-O componente \emph{LMS1xx} é um driver que faz a interface com o LaserScan,
+O componente \textit{LMS1xx} é um driver que faz a interface com o LaserScan,
 sensor que realiza um escaneamento a laser do ambiente. Comunica-se
-(\textit{publisher}) com o componente da base \emph{LaserReceiverNodelet}
+(\textit{publisher}) com o componente da base \textit{LaserReceiverNodelet}
 (\textit{subscriber}) para disponibilizar os dados ao usuário. Futuramente, irá
-também se comunicar com o \emph{PoleDetection} (\textit{subscriber}), que possui
-um algoritmo para detecção de postes, e o \emph{Localization} (\textit{subscriber}), já que
+também se comunicar com o \textit{PoleDetection} (\textit{subscriber}), que possui
+um algoritmo para detecção de postes, e o \textit{Localization} (\textit{subscriber}), já que
 este é mais um sensor que provê dados para o sistema de localização (altura do
 robô).
 
-O componente \emph{IMU} é um driver que faz a interface com a \emph{IMU}.
+O componente \textit{IMU} é um driver que faz a interface com a \textit{IMU}.
 Ele envia uma lista de dados: velocidade, orientação, posição, pólos
 magnéticos e outros. Futuramente, também irá se comunicar com o
-\emph{Localization}.
+\textit{Localization}.
 
-O componente \emph{AxisVideo} é um driver que faz a interface com a câmera fixa
+O componente \textit{AxisVideo} é um driver que faz a interface com a câmera fixa
 da AXIS. Comunica-se (\textit{publisher}) com o componente
 da base de mesmo nome para disponibilizar os dados ao usuário. Futuramente, o
 algoritmo de detecção de anomalias por vídeo será integrado ao sistema ROS,
-logo um componente \emph{InspectionVideo} será \emph{subscriber} do mesmo
+logo um componente \textit{InspectionVideo} será \textit{subscriber} do mesmo
 tópico.
 
 A FIGURA represente o esquema de comunicação entre os diversos componentes e
@@ -597,8 +597,8 @@ e possui um dicionário de três possíveis velocidades máximas ($V_{max}$):
 ``fast'', ``normal'' e ``slow'', mapeadas em 0.6, 0.3 e 0.1 m/s respectivamente.
 
 As velocidades máximas dos trechos do trilho são proporconais à $V_{max}$ e
-escolhidas empiricamente: $V_{reto} = V_{max}$; $V_{reto-subida} = 0.7*V_{max}$;
-$V_{reto-descida} = 0.7*V_{max}$; $V_{curva} = 0.85*V_{max}$; $V_{subida} =
+escolhidas empiricamente: $V_{reto} = V_{max}$; $V_{reto/subida} = 0.7*V_{max}$;
+$V_{reto/descida} = 0.7*V_{max}$; $V_{curva} = 0.85*V_{max}$; $V_{subida} =
 0.5*V_{max}$; $V_{descida} = 0.5*V_{max}$. A fim de garantir que o robô chegue
 em determinado trecho respeitando a velocidade máxima deste, o
 \textit{MasterPlanning} calcula a posição de troca de velocidade máxima pela
@@ -674,7 +674,7 @@ Descida                & 0.790       & 10.46
 A camada Executivo elaborada para a DORIS usa SMACH (subseção~\ref{smach}) como
 \textit{framework}, e implementa a técnica de função de coordenação competitiva
 (subseção~\ref{reativa}), a arquitetura de subsunção, onde o módulo básico de
-comportamento reativo é uma máquina de estados aumentada (\emph{AFSM}), como a
+comportamento reativo é uma máquina de estados aumentada (\textit{AFSM}), como a
 figura~\ref{afsm} sem \textit{Reset}. A camada Executivo é essencial para a
 autonomia do robô, portanto também é o escopo da implementação do autor e, junto
 com a camada Planejador.
@@ -696,14 +696,9 @@ linguagem Python.
 SMACH é um \textit{framework} para projetar máquinas de estados hierárquicas
 concorrentes. As máquinas de estados de SMACH possuem características bem
 peculiares não encontradas em máquinas de estados formais, como a \textit{user
-data}, comentada na subseção~\ref{smach}. O Sequenciador desenvolvido para a
-DORIS utilizará as capacidades de SMACH para a modelagem das tarefas do robô.
-
-A responsabilidade Sequenciador é quebrar as missões do Planejador em tarefas,
-que, no caso do SMACH, são sequências de máquinas de estados SMACH. O
-programador deve, por tanto, modelar a quebra de uma missão em tarefas
-utilizando o \textit{framework} SMACH e adicionar a decomposição à base de
-conhecimento da camada Executivo.
+data}, comentada na subseção~\ref{smach}. O \textbf{Sequenciador} e
+\textbf{Selecionador} desenvolvidos para a DORIS utilizarão as capacidades de
+SMACH e as vantagens de ROS para a modelagem das tarefas do robô.
 
 Como seres humanos, robôs deveriam possuir um conjunto de
 processos que estão sempre em execução, e outros conjuntos de processos que só
@@ -717,16 +712,6 @@ do coração''.
 executado sempre que o robô estiver em modo autônomo. É o tipo de processo vital
 ao robô, garante robustez, proteção ou a sobrevivência do sistema e aos seus
 dispositivos.
-
-Os \textbf{processos reativos vitais} criados para a DORIS são:
-\begin{itemize}
-  \item \textbf{STATE\_OF\_CHARGE}: verifica a energia disponível do robô
-  (nível das baterias). Caso esta esteja inferior a $5\%$, o robô deve parar
-  todos as missões e processos reativos.
-  \item \textbf{STATE\_OF\_TEMPERATURE\_AND\_HUMIDITY}: verifica condições de
-  temperatura e umidade externas. Quando essas estão fora do nível de operação,
-  o robô suspende as missões.
-\end{itemize}
 
 Dependendo da missão a ser realizada, além das tarefas que a especificam, um
 conjunto de processos paralelos começa a ser executado de maneira automática a fim de
@@ -742,38 +727,165 @@ realizada. São processos específicos de uma determinada missão, e
 inicializados automaticamente. Podem garantir
 robustez, proteção, sobrevivência do sistema, ou melhorar a execução da missão.
 
-No DORIS, um \textbf{processo reativo específico} foi implementado para
-a missão simples \textbf{GOTO}: 
-
-\begin{itemize}
-  \item \textbf{OBSTACLE\_DETECTION}: detecta a presença de obstáculos por
-  câmera fixa (algoritmo de anomalias no trilho) ou pelo sensor de consumo de
-  corrente dos motores, que, ao ficar muito elevado, representa choque com algum
-  obstáculo \cite{christensen2011cost}.
-\end{itemize}
-
-Os \textbf{processos reativos vitais} e os \textbf{processos reativos
+Os \textbf{processos reativos vitais} e \textbf{processos reativos
 específicos} podem interromper a execução de tarefas das missões temporaria ou
 definitivamente. Por exemplo, uma falha no bombeamento do coração cancela
 imediatamente qualquer missão em execução. Esta característica de supressão dos
 \textbf{processos reativos} foi modelada pela função de coordenação competitiva,
-subsunção. Desta forma, foi implementada uma classe para a AFSM padrão de todas
-as tarefas da DORIS, implementada em SMACH:
+subsunção. Desta forma, foi implementada uma classe, derivada de SMACH, para a
+AFSM padrão de todas as tarefas da DORIS. A classe também depende de ROS, e
+foi idealizada para absorver a vantagem do estilo de comunicação
+\textit{publish/subscriber}, tornando a modelagem das tarefas bastante modular.
+
+O módulo básico, chamado \textbf{SUPPRESSION\_STATE}, é um \textit{container}
+SMACH do tipo \textit{concurrence} (concorrente), isto
+é, um \textit{container} composto por dois \textit{containers} que são executados simultaneamente.
+Um dos \textit{containers} concorrentes é o \textit{MAIN}, composto por tarefas
+sequenciais que executam a missão. O outro \textit{container} concorrente é o
+\textit{SUPPRESSION\_MAIN}, responsável por abortar a missão
+(\textit{container} \textit{MAIN}) caso receba uma mensagem ROS
+'Abort' (em tópico específico) de outro módulo (exemplo na
+figura~\ref{supression}).
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.7\columnwidth]{figs/goto.png}
+\caption{Exemplo do módulo básico para a missão simples \textbf{GOTO}.}
+\label{supression}
+\end{figure}
+
+Desta forma, um \textbf{processo reativo vital} pode abortar uma missão,
+enviando uma mensagem ROS \textit{'Abort'} ao tópico
+\textit{'DORIS\_MCS\_MISSION'}. O módulo básico implementado torna a estrutura
+da camada Executivo muito mais flexível, modular e estimula o paralelismo, sem
+a preocupação de tarefas conflitantes, já que os conflitos são resolvidos pela
+subsunção, mais flexível que um esquema de prioridades. Além disso, a
+modelagem do robô fica mais intuitiva e correspondente à natureza.
+
+O problema de \textit{situatedness} (subseção~\ref{brooks}) é resolvida pela
+decomposição em \textit{processos reativos vitais},
+\textit{processos reativos específicos} e pelas tarefas que compõem
+sequencialmente a missão. Não são todos os comportamentos que estão
+sempre em execução, mas apenas os essenciais (``vitais'') para o robô e aqueles
+que possuem alguma relação com a missão. Essa responsabilidade de classificar
+os processos e escolher qual entrará em ação é chamada de \textbf{Selecionado},
+foi implementada na camada Executivo e resolve um grande problema de
+arquiteturas de subsunção.
+
+A responsabilidade Sequenciador é quebrar as missões do Planejador em tarefas,
+que, no caso do SMACH, são sequências de máquinas de estados SMACH. O
+programador deve, por tanto, modelar a quebra de uma missão em tarefas
+utilizando o \textit{framework} SMACH e adicionar a decomposição à base de
+conhecimento da camada Executivo.
 
 
-A camada Executivo é a camada, em DORIS, que assumirá
-esta responsabilidade de \textbf{Selecionador}, simulando este mesmo princípio
-encontrado na natureza, extremamente necessário para garantir robustez e
-proteção. 
+\paragraph{Processos reativos vitais na DORIS}
 
+Os \textbf{processos reativos vitais} criados para a DORIS são:
+\begin{itemize}
+  \item \textbf{STATE\_OF\_CHARGE}: verifica a energia disponível do robô
+  (nível das baterias). Caso esta esteja inferior a $5\%$, o robô deve parar
+  todos as missões e processos reativos. O processo envia mensagem 'Abort' aos
+  tópicos de todas as missões: \textit{'DORIS/MCS/INSPECTION'},
+  \textit{'DORIS/MCS/PATROL'},
+  \textit{'DORIS/MCS/RECORD\_TYPE'},\textit{'DORIS/MCS/GOTO'}; e a alguns
+  processos reativos: \textit{'DORIS/MCS/StateOfTempAndHum'}.
+  \item \textbf{STATE\_OF\_TEMPERATURE\_AND\_HUMIDITY}: verifica condições de
+  temperatura e umidade externas. Quando essas estão fora do nível de operação,
+  o robô suspende as missões. O processo envia mensagem 'Abort' aos
+  tópicos de todas as missões: \textit{'DORIS/MCS/INSPECTION'},
+  \textit{'DORIS/MCS/PATROL'},
+  \textit{'DORIS/MCS/RECORD\_TYPE'},\textit{'DORIS/MCS/GOTO'}.
+\end{itemize}
 
+\paragraph{Processos reativos específicos na DORIS}
 
+No DORIS, um \textbf{processo reativo específico} foi implementado para
+a missão simples \textbf{GOTO}: 
+%TODO decompor obstacle
+\begin{itemize}
+  \item \textbf{OBSTACLE\_DETECTION}: detecta a presença de obstáculos por
+  câmera fixa (algoritmo de anomalias no trilho) ou pelo sensor de consumo de
+  corrente dos motores, que, ao ficar muito elevado, representa choque com algum
+  obstáculo \cite{christensen2011cost}. Este processo aborta a tarefa
+  \textbf{MOTION\_POSITION\_CONTROL}, pertencente à missão \textbf{GOTO},
+  enviando mensagem ROS 'Abort' ao tópico
+  \textit{'DORIS/MCS/MOTION\_POSITION\_CONTROL'}.
+\end{itemize}
 
-A concepção da camada Executivo é de se criar vários processos sendo executados
-em
+Outro processo reativo específico para a missão \textbf{GOTO} é o
+\textbf{AVAILABLE\_ENERGY}, ainda não implementado. Este processo poderá
+calcular a variação da energia consumida durante uma missão e inferir se há
+energia suficiente para a conclusão. Caso não haja, a missão deve ser abortada.
+
+\paragraph{Tarefas na DORIS}
+As tarefas criadas para a DORIS são detalhadas sequencialmente, conforme a
+missão simples:
+\begin{itemize}
+  \item \textbf{GOTO}: \textbf{Localization}, \textbf{PathPlanning},
+  \textbf{Motion\_Control\_Position}. Figura~\ref{maingoto}.  
+\begin{itemize}
+  \item \textbf{Localization}: espera receber mensagem da camada Funcional com
+  a localização e a probabilidade. Caso esta probabilidade seja menor que 50\%,
+  o estado \textbf{Wander} é ativado. Figura~\ref{mainlocalization}
+\begin{itemize}
+  \item \textbf{Wander}: estado um loop que recebe a localização do robô e a
+  probabilidade. Caso a probabilidade seja menor que 50\%, o estado se comunica
+  com o \textit{MotionControllerNodelet} e realiza controle de velocidade
+  do robô a $0.1 m/s$, até que o robô consiga se localizar com maior precisão.
+  Quando a probabilidade mínima é alcançada, o estado retorna ``sucesso''.
+\end{itemize}  
+  \item \textbf{PathPlanning}: comnunica-se com o \textit{MasterPlanning} da
+  camada funcional para obter o plano de velocidades do robô, no trilho. Seu \textit{user data} é o plano de
+  velocidades.
+  \item \textbf{Motion\_Position\_Control}: comunica-se com o
+  \textit{PositionControlNodelet} da camada Funcional para enviar o plano de
+  velocidades. A tarefa fica em loop, obtendo localização do robô e enviando o
+  plano de velocidade, conforme a mudança de localização.
+  Figura~\ref{maincontrol}.
+\end{itemize}
+  \item \textbf{RECORD\_TYPE}: comunica-se com os a
+  camada Funcional para gravação dos dados no SSD
+  embarcado. Espera o comando de 'Abort', que será enviado pela
+  missão \textbf{STOP\_RECORD\_TYPE}. Figura~\ref{mainrecord}.
+  \item \textbf{STOP\_RECORD\_TYPE}: envia mensagem 'Abort' ao tópico
+  \textit{'/DORIS/MCS/RECORD'}.
+  \item \textbf{DETECT\_TYPE}: comunica-se com os algoritmos de inspeção da
+  camada Funcional. Espera o comando de 'Abort', que será enviado pela
+  missão \textbf{STOP\_DETECT\_TYPE}.
+\end{itemize}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.7\columnwidth]{figs/main_goto.png}
+\caption{Tarefas da missão simples \textbf{GOTO}.}
+\label{maingoto}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.7\columnwidth]{figs/mainlocalization.png}
+\caption{Estados da tarefa \textbf{Localization}.}
+\label{mainlocalization}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.7\columnwidth]{figs/mainmotioncontrol.png}
+\caption{Estados da tarefa \textbf{Motion\_Position\_Control}.}
+\label{maincontrol}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.7\columnwidth]{figs/mainrecord.png}
+\caption{Estados da tarefa \textbf{RECORD\_TYPE}.}
+\label{mainrecord}
+\end{figure}
 
 
 \subsubsection{Gerenciador de recursos}
+
 
 
 \subsubsection{Monitoramento de tarefas e recuperação de
