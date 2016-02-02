@@ -172,12 +172,15 @@ serem definidos (\textit{argumentos}), que o usuário pode dar ao robô, em uma
 interface. A \textbf{missão} é um conjunto de tarefas.
 
 \textbf{Definição}: \textbf{Tarefa} é um processo executado pelo robô com um
-determinado objetivo, e o conjunto de tarefas ordenado sequencialmente compõe a
-missão. Uma tarefa pode ser cancelada por outras tarefas (subsunção). Em
-linguagem de arquitetura robótica, esta definição se confunde com \textbf{comportamentos} por
-ser um processo básico e ser modelado como uma AFSM, porém é uma definição mais
-geral por não necessariamente envolver um par estímulo-reação/sensor-atuador. \textbf{Tarefa} é o processo básico definido na
-camada Executivo SMACH.
+determinado objetivo. O conjunto de tarefas ordenado sequencialmente compõe a
+missão. Uma tarefa pode ser cancelada por outras tarefas (subsunção). 
+
+\textbf{Definição}: \textbf{Estado} é o processo básico definido na
+camada Executivo SMACH. Em linguagem de arquitetura robótica, esta definição se
+confunde com \textbf{comportamentos} por ser um processo básico e ser modelado
+como uma AFSM, porém é uma definição mais geral por não necessariamente
+envolver um par estímulo-reação/sensor-atuador. Um conjunto de estados com um
+fim compõe uma tarefa.
 
 
 \subsubsection{Controle de missão} 
@@ -390,8 +393,8 @@ apresentadas, a camada Funcional é o nível mais baixo, conecta sensores a
 atuadores, implementa controladores PID, e diversos outros algoritmos, por
 exemplo para a localização do robô. Utiliza-se Ubuntu/Linux como sistema
 operacional e ROS como RDE para a implementação do nível funcional, já que este
-apresenta todas as vantagens descritas na subseção~\ref{ros}, e linguagem de programação C++, a fim de
-se garantir maior eficiência computacional.
+apresenta todas as vantagens descritas na subseção~\ref{ros}, e linguagem de
+programação C++, a fim de se garantir maior eficiência computacional.
 
 A camada funcional seguiu a recomendação dos desenvolvedores do ROS, sendo
 estruturado de maneira semelhante à camada funcional do sistema CLARAty. Neste,
@@ -669,8 +672,7 @@ Descida                & 0.790       & 10.46
 \end{table}
 
 \subsection{Implementação da camada Executivo}
-%TODO falar das prioridades
-%TODO recursos compartilhados, como fica?
+
 A camada Executivo elaborada para a DORIS usa SMACH (subseção~\ref{smach}) como
 \textit{framework}, e implementa a técnica de função de coordenação competitiva
 (subseção~\ref{reativa}), a arquitetura de subsunção, onde o módulo básico de
@@ -783,19 +785,18 @@ conhecimento da camada Executivo.
 
 Os \textbf{processos reativos vitais} criados para a DORIS são:
 \begin{itemize}
-  \item \textbf{STATE\_OF\_CHARGE}: verifica a energia disponível do robô
-  (nível das baterias). Caso esta esteja inferior a $5\%$, o robô deve parar
-  todos as missões e processos reativos. O processo envia mensagem 'Abort' aos
-  tópicos de todas as missões: \textit{'DORIS/MCS/INSPECTION'},
-  \textit{'DORIS/MCS/PATROL'},
-  \textit{'DORIS/MCS/RECORD\_TYPE'},\textit{'DORIS/MCS/GOTO'}; e a alguns
+  \item \textbf{STATE\_OF\_CHARGE}: obtém os status das baterias se
+  comunicando com o \textit{VSS} da camada Funcional. Caso a carga das
+  baterias esteja inferior a $5\%$, o robô deve parar todos as missões e
+  processos reativos. O processo envia mensagem 'Abort' aos tópicos de todas as
+  missões: \textit{'DORIS/MCS/INSPECTION'}, \textit{'DORIS/MCS/PATROL'}, \textit{'DORIS/MCS/RECORD\_TYPE'},\textit{'DORIS/MCS/GOTO'}; e a alguns
   processos reativos: \textit{'DORIS/MCS/StateOfTempAndHum'}.
-  \item \textbf{STATE\_OF\_TEMPERATURE\_AND\_HUMIDITY}: verifica condições de
-  temperatura e umidade externas. Quando essas estão fora do nível de operação,
-  o robô suspende as missões. O processo envia mensagem 'Abort' aos
-  tópicos de todas as missões: \textit{'DORIS/MCS/INSPECTION'},
-  \textit{'DORIS/MCS/PATROL'},
-  \textit{'DORIS/MCS/RECORD\_TYPE'},\textit{'DORIS/MCS/GOTO'}.
+  \item \textbf{STATE\_OF\_TEMPERATURE\_AND\_HUMIDITY}: obtém as condições de
+  temperatura e umidade externas se comunicando com o \textit{VSS}. Quando
+  as condições estão fora do nível de operação do robô, este suspende as
+  missões. O processo envia mensagem 'Abort' aos tópicos de todas as missões:
+  \textit{'DORIS/MCS/INSPECTION'}, \textit{'DORIS/MCS/PATROL'},
+  \textit{'DORIS/MCS/RECORD\_TYPE'}, \textit{'DORIS/MCS/GOTO'}, e outras.
 \end{itemize}
 
 \paragraph{Processos reativos específicos na DORIS}
@@ -804,14 +805,42 @@ No DORIS, um \textbf{processo reativo específico} foi implementado para
 a missão simples \textbf{GOTO}: 
 %TODO decompor obstacle
 \begin{itemize}
-  \item \textbf{OBSTACLE\_DETECTION}: detecta a presença de obstáculos por
-  câmera fixa (algoritmo de anomalias no trilho) ou pelo sensor de consumo de
-  corrente dos motores, que, ao ficar muito elevado, representa choque com algum
-  obstáculo \cite{christensen2011cost}. Este processo aborta a tarefa
-  \textbf{MOTION\_POSITION\_CONTROL}, pertencente à missão \textbf{GOTO},
-  enviando mensagem ROS 'Abort' ao tópico
-  \textit{'DORIS/MCS/MOTION\_POSITION\_CONTROL'}.
+  \item \textbf{OBSTACLE\_DETECTION}: detecta a presença de obstáculos. Foram
+  criados dois estados concorrentes SMACH, um faz a detecção
+  por câmera fixa por um algoritmo de anomalias no trilho (figura~\ref{camera}),
+ outro pelo sensor de consumo de corrente dos motores (comunicação com
+ EPOSNodelet da camada Funcional, figura~\ref{epos}), o qual se muito elevado,
+ representa choque com algum obstáculo (a mesma
+ logica deste estado pode ser encontrado em \cite{christensen2011cost}).
+ Caso um dos sensores detecte obstáculo, o estado seguinte do \textbf{OBSTACLE\_DETECTION} aborta a tarefa
+  \textbf{MOTION\_POSITION\_CONTROL}, pertencente à missão \textbf{GOTO}
+  (mensagem ROS 'Abort' ao tópico
+  \textit{'DORIS/MCS/MOTION\_POSITION\_CONTROL'}), e controla a velocidade do
+  robô para zero. A figura~\ref{mainoa} mostra o processo em alto nível. 
 \end{itemize}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.7\columnwidth]{figs/camera.png}
+\caption{Estado \textbf{CAMERA} do processo reativo específico
+\textbf{OBSTACLE\_DETECTION}.}
+\label{camera}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.7\columnwidth]{figs/epos.png}
+\caption{Estado \textbf{EPOS} do processo reativo específico
+\textbf{OBSTACLE\_DETECTION}.}
+\label{epos}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.7\columnwidth]{figs/mainoa.png}
+\caption{Estados do processo reativo específico \textbf{OBSTACLE\_DETECTION}.}
+\label{mainoa}
+\end{figure}
 
 Outro processo reativo específico para a missão \textbf{GOTO} é o
 \textbf{AVAILABLE\_ENERGY}, ainda não implementado. Este processo poderá
@@ -886,11 +915,79 @@ missão simples:
 
 \subsubsection{Gerenciador de recursos}
 
+A camada Executivo tem a responsabilidade de gerenciar os recursos do robô pelas
+missões, isto é, compartilhar, estabelecer prioridades e verificar a
+disponibilidade dos sensores e atuadores do robô aos processos em execução. 
 
+O compartilhamento de sensores, dados e processamento de sensores estão
+sempre disponíveis a todas funções e processos do robô, graças ao estilo de
+comunicação \textit{publish/subscriber} do \textit{framework} ROS. Os atuadores,
+no entando, só estão disponíveis a executar uma tarefa por vez. Por exemplo, o
+manipulador da DORIS não tem condições de inspecionar dois equipamentos ao mesmo
+tempo; um robô com um manipulador que serve bebidas não é capaz de buscar
+três bebidas simultaneamente; um robô submarino com apenas uma câmera sob um
+sistema \textit{Pan \& Tilt} (atuador) não pode compartilhar a câmera para navegação e
+observação da cauda simultaneamente. 
+
+ROS soluciona o problema de compartilhamento de sensores, e o Sequenciador,
+junto com a subsunção, resolve o problema de prioridades. As missões são
+sequenciais, não paralelas, logo não há perigo de compartilhamento de atuadores
+entre missões. O conflito ocorre quando processos reativos, paralelos às
+missões, necessitam do mesmo recurso da missão. O esquema de função de
+coordenação competitiva é a solução para os conflitos.
+
+Por fim, a disponibilidade de recursos é essencial para a execução das missões.
+Caso seja dada uma tarefa de inspeção com manipulador, na DORIS, o robô não deve
+executar todas as tarefas da missão e, ao fim, verificar que o sensor de
+vibração não está disponível. Os \textbf{processos de
+recursos disponíveis} são individuais para cada recurso e verificam se o sensor
+está disponível. Caso o recurso não esteja disponível, a missão que o utiliza é
+automaticamente abortada (subsunção).
+
+\textbf{Definição}: \textit{Processos de recursos disponíveis} são processos
+reativos que monitoram os status dos recursos do robô (sensores e atuadores).
+Estes processos podem abortar missões específicas, por exemplo, o
+uma falha no \textbf{processo de recurso disponível} \textit{EPOS\_RESOURCE}
+aborta a missão simples \textbf{GOTO} caso esta esteja no plano de missão do
+robô.
 
 \subsubsection{Monitoramento de tarefas e recuperação de
 erros}\label{monitoamento}
 
+O controle de missão da camada Planejador fornece ao usuário os status das
+missões e os erros, junto com os motivos das falhas. Entretanto, ele apenas
+interpreta e mostra os dados fornecidos pela camda Executivo, isto é, o
+controle de missão possui um \textit{thread} nó de ROS subscritor do tópico
+\textit{Warning} e \textit{loginfo}. A camda Executivo envia para este tópico os
+status das missões que estão sendo executadas.
 
+O SMACH possui um monitoramento de tarefas simplificado, de forma que todos os
+estados publicam no tópico \textit{loginfo} os eventos ocorridos: transições de
+estados, transições de \textit{containers}, \textit{outcomes} e \textit{user
+data}. O \textit{Smach Viewer} (visualizador SMACH) e o
+controle de missão subscrevem a este
+tópico e, desta forma, é possível gerar um log detalhado ao usuário.
 
+Além do uso do monitoramento simples do SMACH, foi desenvolvida uma classe
+derivada para reportar acontecimentos de subsunção de processos, ou seja, quando
+um \textit{processo reativo} aborta uma tarefa ou missão, o \textit{processo reativo} envia
+automaticamente uma mensagem ao tópico \textit{Warning}, reportando o motivo do
+cancelamento. Esta informação é a mais valiosa para o operador,
+visto que é extremamente importante o usuário saber o motivo detalhado do
+cancelamento de uma determinada missão. Por exemplo, pode haver diversos
+motivos para o robô falhar a missão \textit{INSPECTION('VIDEO',30)}, e o
+usuário, sem saber o motivo, pode tentar executar a missão diversas vezes
+obtendo sempre uma falha ``misteriosa''. A um programador seria ainda necessário
+o debug do código completamente, e mesmo somente nas tarefas que contém a missão
+é muito trabalhoso. O monitoramento de tarefas exige, portanto, explicações
+detalhadas da falha a fim de facilitar o uso do robô.
 
+A recuperação de erros pode ser implementada no SMACH como novas tarefas da
+missão. Como cada estado SMACH pode ter $n$ \textit{outcomes}, a falha de
+execução de um processo poderia levar a um estado de recuperação. Um exemplo
+disso é a implementação do \textbf{processo reativo específico}
+\textbf{OBSTACLE\_DETECTION}, o qual cancela a tarefa
+\textbf{MOTION\_POSITION\_CONTROL}. Em caso de cancelamento, a missão
+\textbf{GOTO} não é abortada por inteiro, mas entra em uma tarefa de
+recuperação, a qual busca uma nova trajetória para a DORIS (sentido contrário,
+em caso de trilho circular).
