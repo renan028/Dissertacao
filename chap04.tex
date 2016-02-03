@@ -1,6 +1,29 @@
-\chapter{Resultados e Discussões}
+\chapter{Resultados e Discussões}\label{result}
 
-\section{Metodologia para avaliaç{\~ a}o do M{\' e}todo}
+O capítulo~\ref{arquipro} detalhou a implementação das camadas da
+arquitetura robótica híbrida de três camadas. O detalhamento da implementação
+mostrou o caráter modular da arquitetura, o que torna possível o
+desenvolvimento da solução em estágios independentes de programação. A
+integração das camadas é trivial pelo \textit{framework} ROS e seu estilo
+simples de comunicação entre os componenetes de software.
 
-\section{Validaç{\~ a}o da rotina implementada}
+A modularidade da arquitetura permite a avaliação independente de cada camada e,
+por fim, a integração é apenas um teste de comunicação entre as camadas. Os
+testes da camada Funcional, no entanto, requerem o hardware, isto é, o robô
+DORIS. Os testes da camada Executivo e Planejador podem ser simuladas em
+ambiente de programação. Na seção~\ref{avametodologia} deste capítulo, será
+desenvolvida uma metodologia para a avaliação da arquitetura híbrida de três
+camadas e as seções seguintes, \ref{avafuncional}, \ref{avaexecutivo},
+\ref{avaplanejador}, resumem os testes de cada camada.
+
+\section{Metodologia para avaliação das camadas}\label{avametodologia}
+%TODO verificar os parâmetros de avaliação da arquitetura
+Há diversos critérios de avaliação de uma arquitetura robótica. As arquiteturas
+podem ser avaliadas em \textit{robustez}, \textit{modularidade}, 
+
+\section{Testes da implementação da camada Funcional}\label{avafuncional}
+
+\section{Testes da implementação da camada Executivo}\label{avaexecutivo}
+
+\section{Testes da implementação da camada Planejador}\label{avaplanejador}
 

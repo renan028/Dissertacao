@@ -1,4 +1,4 @@
-\chapter{Arquitetura proposta}
+\chapter{Arquitetura proposta}\label{arquipro}
 %TODO formalização da linguagem
 O capítulo~\ref{bibliografia} apresentou os conceitos necessários para o
 entendimento desta dissertação, mostrou a evolução das arquiteturas robóticas e
@@ -39,7 +39,7 @@ dos sensores. O robô apresenta as seguintes funcionalidades
   temperatura e umidade.
   \item Detecção de anomalias por câmera de infravermelho: uma câmera de
   infravermelho pode detectar pessoas, indicar a presença de intrusos ou
-  indentificar incêncidos.
+  indentificar incêndios.
 \end{itemize}
 
 DORIS é um robô móvel que se locomove em um trilho pelo uso de dois gimbals, os
@@ -56,7 +56,7 @@ comunicações: Wireless IEEE 802.11n com a base (operador); \textit{Controller
 Area Network} (CAN) entre computador embarcado e drivers dos atuadores; rede \textit{Local
 Gigabit Ethernet} para os diversos componentes internos do robô; e rádio 2.4/5.0
 GHz para emergência. Possui atuadores: quatro motores 200 W EC-4pole para
-locomoção; e quatro motores para as juntas do mannipulador. Sensores:
+locomoção; e quatro motores para as juntas do manipulador. Sensores:
 câmera fixa; câmera térmica; câmera \textit{fisheye}; duas webcams; e uma
 \textit{Inertial Measurement Unit} (IMU). Além disso, há um
 sistema eletrônico de suporte de veículo, chamado \textit{Vehicle Support
@@ -86,13 +86,15 @@ Desenvolvimento da Petrobras (CENPES) e sua extensão é cerca de 140 m.
 
 Na seção~\ref{doris}, foi apresentado o robô DORIS e suas funcionalidades. Como
 foi definido na seção~\ref{conceitos}, pela visão do autor, o conceito de
-\emph{arquitetura robótica} não é equivalente apenas a uma arquitetura de
-software, necessitando da avaliação do robô como um todo, isto é, seus
-elementos de hardware e sua aplicação. Assim como o desenvolvedor do RDE ROS
-\cite{quigley2009ros} evidencia que não há melhor RDE, já que todos apresentam
-vantagens e desvantagens e o melhor depende de sua aplicação, também não há
-melhor arquitetura robótica, pois esta depende dos hardwares do robô e também da
-sua aplicação.
+\emph{arquitetura robótica} não é equivalente a uma arquitetura de
+software, é necessária a avaliação do robô como um todo, isto é, seus
+elementos de hardware e sua aplicação. O desenvolvedor de ROS
+\cite{quigley2009ros} já afirmava que não há melhor RDE, já que
+todos apresentam vantagens e desvantagens, e o mesmo pode ser afirmado no
+contexto mais amplo de arquitetura robótica. A arquitetura ideal para um robô
+pode ser ineficiente para outro. A arquitetura robótica desenvolvida tenta
+ser geral para robôs com características e desafios semelhantes ao DORIS, como
+AUVs e UGVs.
 
 DORIS é um robô móvel com a funcionalidade de inspeção em um ambiente não muito
 dinâmico, usando técnicas que exigem grande processamento de imagem (câmeras) e
@@ -130,9 +132,9 @@ subseções adiante.
 \subsection{Implementação da camada Planejador}\label{planejador}
 
 As diversas arquiteturas robóticas de três camadas diferem em relação às
-responsabilidades da camada Planejador. \cite{kortenkamp2008robotic}, por
-exemplo, aponta que as responsabilidades mais comuns são criar
-redes de tarefas hierárquicas, ou agendamentos e gerenciamento de
+responsabilidades da camada Planejador. Kortenkamp \cite{kortenkamp2008robotic},
+por exemplo, aponta que as responsabilidades mais comuns da camada Planejador
+são criar redes de tarefas hierárquicas, ou agendamentos e gerenciamento de
 recursos.  Em \cite{arkin1998behavior}, o Planejador pode assumir
 responsabilidades de Adaptador, ou Selecionador, ou Conselheiro (ver seção
 \ref{hibrida}). A camada Planejador implementada na DORIS terá as seguintes
@@ -145,10 +147,10 @@ responsabilidades:
   usuário ao robô, provê feedback ao operador (\textit{execution monitoring}), 
  e contém as diretivas do robô.
   \item Agendador: é a responsabilidade de agendar as missões, e reorganizá-las
-  quando necessário ou quando não há um recurso disponível.
+  quando não há um recurso disponível ou em caso de falha.
   \item Cartógrafo: é a responsabilidade de criar, e realizar a manutenção dos
   mapas, ou modelos do mundo. Além disso, deve gerar novos mapas para otimizar
-  as diversas funções executadas no robô, quando há necessidade.
+  as diversas funções executadas no robô, quando houver necessidade.
 \end{itemize}
 
 Muitas arquiteturas especializadas em planejamento de trajetórias colocam
@@ -156,10 +158,10 @@ esta responsabilidade também para a camada Planejador, outras separam
 esta responsabilidade em duas camadas, como um planejamento global e um
 planejamento local. Na DORIS, não há um planejamento de trajetória, já que o
 trilho é um mapa unidimensional, porém há um planejamento de velocidades
-(parte do planejamento de movimento - \textit{Motion Planning}) que será
-responsabilidade da camada Funcional.
+(parte do planejamento de movimento - \textit{Motion Planning}) atribuído à
+camada Funcional.
 
-Antes de detalhar a implementação de cada responsabilidade da camada Planejador,
+Antes de detalhar a camada Planejador,
 é necessário definir alguns termos específicos para melhor entendimento desta
 dissertação:
 
@@ -189,84 +191,82 @@ O controle de missão é a combinação de três responsabilidades interligadas: a
 interface com o usuário, o acompanhamento e feedback das missões ao usuário e a
 tradução das missões ao robô. Portanto, o controle de missão é a parte da
 arquitetura robótica que faz a interface Homem-Robô: traduz a linguagem do
-homeme à linguagem do robô e vice-versa.
+homem à linguagem do robô e vice-versa.
 
 A interface de usuário da DORIS possui o conjunto de missões e seus parâmetros
 disponíveis para o operador. O usuário pode adicionar missões sequencialmente,
 salvar um plano de missão, agendá-lo e/ou executá-lo (botão \textit{Play}). Além
 disso, a interface disponibiliza os logs das missões.
+%TODO figura da interface
 
 A camada Planejador enviará missões à camada Executivo, quando estas estiverem
-agendadas ou quando o usuário requisitar. Na subseção~\ref{hibrida}, em
-\ref{murphy}, foi exemplificada a responsabilidade de \textbf{Tradutor} da
-camada Planejador com um robô assistente que serve cafés. A implementação desta
-responsabilidade no DORIS é realizada por um dicionário codificado no robô.
+agendadas ou quando o usuário requisitar. Na subseção~\ref{hibrida}, foi
+exemplificada a \textbf{tradução} da camada Planejador com um robô assistente
+que serve cafés. A implementação desta responsabilidade na DORIS é realizada por
+um dicionário codificado no robô.
 Este método é normalmente conhecido na literatura como \textit{encoded
 knowledge} (conhecimento codificado), que são dados incorporados ao código
-fonte \textit{hard coded}.
+fonte (\textit{hard coded}).
 
 As missões do robô podem ser classificadas em: \textbf{Missões Simples},
 \textbf{Missões Complexas} e \textbf{Missões Desconhecidas}. Todas as missões
-possuem \textit{argumentos}, entradas mínimas necessárias para a
-execução da missão.
+possuem \textit{argumentos}, entradas (\textit{inputs}) mínimas necessárias para
+a execução da missão.
 
-As missões simples não necessitam de tradução por já estarem em nível
-mínimo de máquinas de estados SMACH. Por exemplo:
+As missões simples não necessitam de tradução por já estarem modeladas em
+tarefas e máquinas de estados SMACH. Por exemplo:
 \begin{itemize}
-  \item \textbf{GOTO}: missão de locomoção do robô até um ponto do trilho. Os
-  \textit{argumentos} para esta missão são: posição desejada no trilho, em valor
+  \item $\textbf{GOTO(x,vel,direction,lap,circular)}$: missão de locomoção do
+  robô até um ponto do trilho.
+  Os \textit{argumentos} para esta missão são: posição desejada no trilho, em valor
   absoluto; velocidade desejada, um valor fuzzy: ``slow'' (devagar), ``normal''
   (normal) ou ``fast'' (rápida); direção de movimento, 1 para sentido de
   locomoção para frente (baterias chegam por último) e -1 para sentido
-  contrário; número de voltas desejado, em caso de trilho fechado, antes de o
+  contrário; número de voltas desejado, em caso de trilho circular, antes de o
   robô atingir a posição requisitada. O único argumento obrigatório é posição
   desejada, de forma que os valores padrão são: velocidade ``fast''; direção de
-  movimento de velocidade mínima; e zero voltas.
-  \item \textbf{RECORD\_TYPE}: gravar dados de sensores no robô. Há um 
- \textit{argumentos} para esta missão que pode ser preenchido como: vídeo, áudio
+  movimento de distância mínima; zero voltas; e trilho circular.
+  \item $\textbf{RECORD(type)}$: gravar dados de sensores no robô. Há um 
+ \textit{argumento} para esta missão que pode ser preenchido como: vídeo, áudio
  e termografia. Cada tipo representa uma missão de gravar dados de um sensor
  específico (câmera, microfone e câmera termográfica, respectivamente).
-  \item \textbf{STOP\_RECORD\_TYPE}: parar gravação de dados de sensores no
-  robô. Assim como a inicialização da missão, há um \textit{argumento} que deve
-  ser preenchido: o tipo de gravação, que irá resultar na utilização do sensor
-  apropriado para a execução da tarefa.
-  \item \textbf{DETECTING\_ANOMALIES\_TYPE}: iniciar algum detector
+  \item $\textbf{STOP\_RECORD()}$: parar gravação de dados de sensores no
+  robô.
+  \item $\textbf{DETECTING\_ANOMALIES(type)}$: iniciar algum detector
   específico de anomalia. Há três tipos de detecção de anomalias
   que podem ser escolhidos: vídeo, áudio e termografia. Para cada um deles, há
   uma máquina de estados específica: iniciar algoritmo detector de anomalias por
   câmera, microfones ou câmera termográfica, respectivamente.
-  \item \textbf{STOP\_DETECTING\_ANOMALIES\_TYPE}: finalizar algum detector
-  específico de anomalia. Assim como iniciar, finalizar apresenta os mesmos três
-  tipos de detecção de anomalias: vídeo, áudio e termografia. E Para cada um
-  deles, há uma máquina de estados específica: iniciar algoritmo detector de
-  anomalias por câmera, microfones ou câmera termográfica, respectivamente.
+  \item $\textbf{STOP\_DETECTING\_ANOMALIES()}$: finalizar algum detector
+  específico de anomalia.
 \end{itemize}
 
 As missões complexas, de mais alto nível, são combinações de
 missões simples. Estas necessitam ser traduzidas pelo Planejador com os
 argumentos corretos. Por exemplo:
 \begin{itemize}
-  \item \textbf{GOTO\_BASE}: missão de locomoção do robô à base.
+  \item $\textbf{GOTO\_BASE()}$: missão de locomoção do robô à base.
   Não há \textit{argumentos} para esta missão. Tradução necessária para camada
-  Executivo: \textbf{GOTO}: posição zero, velocidade ``fast''.
-  \item \textbf{INSPECTION}: missão para inspecionar planta em um trecho.
-  Necessita que o usuário escolha até onde inspecionar (posição final absoluta
-  no trilho) e o tipo de inspeção: vídeo, áudio e termográfico. Tradução: para cada tipo selecionado realizar
-  \textbf{DETECTING\_ANOMALIES\_TYPE}; \textbf{GOTO}:
-  velocidade ``slow'' (observe que inspeção requer velocidade mínima); para cada
-  tipo realizar \textbf{STOP\_DETECTING\_ANOMALIES\_TYPE}.
-  \item \textbf{PATROL}: realizar uma ronda completa, isto é, inspecionar toda a
-  planta. Não há \textit{argumentos} para esta missão. Tradução:
-  \textbf{INSPECTION} (todos os sensores, posição final do trilho).
-  \item \textbf{MANIPULATOR\_INSPECTION}: inspecionar um equipamento com
-  manipulador. O \textit{argumento} desta missão é o equipamento a
-  ser inspecionado. O robô deve ir à posição que se encontra o equipamento, tocar o
+  Executivo: $\textbf{GOTO(0,'fast')}$.
+  \item $\textbf{INSPECTION(x,type)}$: missão para inspecionar um trecho do
+  ambientem.
+  \textit{Argumentos}: até onde o robô deve inspecionar ($x$ -posição final
+  absoluta no trilho); e o tipo de inspeção: vídeo, áudio ou termográfico.
+  Tradução: $\textbf{DETECTING\_ANOMALIES(type)}$; $\textbf{GOTO(x,'slow')}$:
+  velocidade ``slow'' já que inspeção requer velocidade mínima;
+  $\textbf{STOP\_DETECTING\_ANOMALIES}$.
+  \item $\textbf{PATROL()}$: realizar uma ronda completa, isto é, inspecionar
+  todo o ambiente. Tradução: $\textbf{INSPECTION(lap=1,types)}$ (todos os
+  sensores, posição final do trilho).
+  \item $\textbf{MANIPULATOR\_INSPECTION(equipment)}$: inspecionar um
+  equipamento com manipulador. O \textit{argumento} desta missão é o equipamento a
+  ser inspecionado. O robô deve ir à posição do equipamento, tocar o
   equipamento com o sensor de vibração através do manipulador, e executar uma
   detecção de anomalias por vibração. Em linguagem da camada Executivo, seria
-  \textbf{GOTO}: posição do equipamento (requer verificar mapa de equipamentos),
-  velocidade ``fast''; \textbf{MANIPULATOR\_POSITION\_CONTROL}: posição
-  referente ao equipamento; \textbf{MANIPULATOR\_FORCE\_CONTROL};
-  \textbf{START\_DETECTING\_ANOMALIES\_VIBRATION}.
+  $\textbf{GOTO(x,'fast')}$: posição do equipamento (requer verificar mapa de
+  equipamentos); $\textbf{MANIPULATOR\_POSITION\_CONTROL([x,y,z])}$: posição
+  referente ao equipamento; $\textbf{MANIPULATOR\_FORCE\_CONTROL}$;
+  $\textbf{STOP\_DETECTING\_ANOMALIES()}$.
 \end{itemize}  
 
 As missões desconhecidas são missões que não estão
@@ -302,24 +302,24 @@ missões desconhecidas são essenciais:
 Na interface, o usuário pode escolher sequencialmente um conjunto de missões e
 executar, por exemplo, o plano: 
 $$\textbf{GOTO(30)}$$
-$$\textbf{RECORD\_TYPE('VIDEO')}$$
+$$\textbf{RECORD('VIDEO')}$$
 $$\textbf{INSPECTION('AUDIO',50)}$$
-$$\textbf{STOP\_RECORD\_TYPE()}$$ 
-$$\textbf{RECORD\_TYPE('AUDIO')}$$
+$$\textbf{STOP\_RECORD()}$$ 
+$$\textbf{RECORD('AUDIO')}$$
 $$\textbf{GOTO\_BASE()}$$
-$$\textbf{STOP\_RECORD\_TYPE()}$$ 
+$$\textbf{STOP\_RECORD()}$$ 
 
 O controle de missão da camada Planejador traduz sequencialmente o plano nas
 missões simples:
 
 $$\textbf{GOTO(30)}$$
-$$\textbf{RECORD\_TYPE('VIDEO')}$$
-$$\textbf{DETECTING\_ANOMALIES\_TYPE('AUDIO')}$$
+$$\textbf{RECORD('VIDEO')}$$
+$$\textbf{DETECTING\_ANOMALIES('AUDIO')}$$
 $$\textbf{GOTO(50)}$$
-$$\textbf{STOP\_DETECTING\_ANOMALIES\_TYPE('AUDIO')}$$
-$$\textbf{STOP\_RECORD\_TYPE()}$$ 
+$$\textbf{STOP\_DETECTING\_ANOMALIES()}$$
+$$\textbf{STOP\_RECORD()}$$ 
 $$\textbf{GOTO(0)}$$
-$$\textbf{STOP\_RECORD\_TYPE()}$$ 
+$$\textbf{STOP\_RECORD()}$$ 
 
 Os status, motivo de interrupções, e possíveis erros ocorridos de cada missão
 são fornecidos pela camada Executivo. O controle de missão tem acesso fácil a
@@ -337,17 +337,16 @@ simulando a interface por mensagens de ROS.
 O usuário pode armazenar o plano de missões no robô com data e hora. A
 responsabilidade Agendador é verificar a hora agendada para a execução da
 missão, executar a missão na hora correta, e, caso esta não seja bem sucedida e
-o motivo do insucesso for contornável em tempo estimável, reagendar a missão
-para depois. Com o Agendador, o robô ganha uma rotina, o que é importante a
-DORIS, um robô de inspeção. A responsabilidade Agendador, porém, ainda não foi
+o motivo do insucesso for contornável em tempo estimável, reagendar a missão.
+Com o Agendador, o robô ganha uma rotina, o que é importante a DORIS, um robô de inspeção. A responsabilidade Agendador, porém, ainda não foi
 implementada.
 
 \subsubsection{Cartógrafo}
 
 Há diversas formas de armazenar mapas do mundo dentro do robô, como mapas
-geométricos, nuvens de pontos, simbólicos, analíticos e outros. Cada forma
+geométricos, núvens de pontos, simbólicos, analíticos e outros. Cada forma
 apresenta vantagens e desvantagens, de forma que muitas vezes é necessário
-armazenar várias formas para otimizar seus usos nas diversas funções do
+armazenar vários mapas para otimizar seus usos nas diversas funções do
 robô. No caso da DORIS, por exemplo, durante o planejamento de velocidades do
 robô, o mapa geométrico 3D do ambiente não é a melhor opção, já que a DORIS se
 movimenta em um espaço unidimensional (o trilho), e carregar e processar um
@@ -359,12 +358,12 @@ atualizados.
 Por ser um robô de inspeção, DORIS possui diversos mapas do mundo:
 \begin{enumerate}
   \item Frames de câmera de vídeo (matriz);
-  \item Frames de câmera de termográfica (matriz);
+  \item Frames de câmera termográfica (matriz);
   \item Sonoro (analítico);
   \item Seções do trilho (matriz);
-  \item Postes (ou outras características marcantes) do ambiente (nuvem
+  \item Postes (ou outras características marcantes) do ambiente (núvem
   de pontos);
-  \item Scans de laser (nuvens de pontos);
+  \item Scans de laser (núvens de pontos);
   \item Equipamentos (matriz);
   \item Distâncias do trilho ao solo (analítico);
   \item Arquivo CAD do trilho (CAD);
@@ -379,15 +378,14 @@ mapa 6 e são necessários para a localização do robô. O mapa 7 é inserido
 manualmente pelo programador, sendo uma matriz que relaciona o equipamento às
 suas coordenadas cartesianas.
 
-A camada Planejador ainda não integra, nem faz a manutenção e atualização dos
-dos mapas, já que isso requer integração de todos os algoritmos de SLAM do robô,
+A camada Planejador ainda não integra, nem faz a manutenção e atualização dos mapas, já que isso requer integração de todos os algoritmos de SLAM do robô,
 o que foge do escopo desta dissertação. Entretanto, quando os algoritmos
 SLAM forem implementados e testados, é importante que esta responsabilidade seja
 finalizada na camada Planejador do robô.
 
 \subsection{Implementação da camada Funcional}
 
-A camada funcional é a primeira implementada e exaustivamente testada no
+A camada funcional foi a primeira implementada e exaustivamente testada no
 robô DORIS. Como nas outras arquiteturas de três camadas previamente
 apresentadas, a camada Funcional é o nível mais baixo, conecta sensores a
 atuadores, implementa controladores PID, e diversos outros algoritmos, por
@@ -411,20 +409,19 @@ Funcional da arquitetura CLARAty.
 \label{claratyfunc}
 \end{figure}
 
-Foi proposto o \textit{Robot Package Software}. Neste sistema,
+Na DORIS, foi proposto o \textit{Robot Package Software}. Neste sistema,
 \emph{Tools} (janelas gráficas) e \emph{Componentes} (unidades de comunicação e
 processamento) são agrupados em \textit{Robot Package} (bibliotecas dinâmicas).
 Os componentes que lidam com hardware rodam no computador embarcado do robô,
 já os componentes que interagem com as \textit{tools} rodam no computador base.
 Os diversos componentes, tanto do computador embarcado quanto da base, se
 comunicam através de mensagens ROS, permitindo que a base controle o robô, na
-função de teleoperação \cite{freitas2015embedded}. Os componentes do robô são
-o foco de estudos desta dissertação, já que os componentes da base não estão
-diretamente ligados à autonomia do robô, mas apenas a uma fração do controle de
-missão, que diz respeito à interface com o usuário e \textit{feedback} dos
+função de teleoperação \cite{freitas2015embedded}. Os componentes da base não
+fazem parte do escopo desta dissertação, já que não estão ligados à
+autonomia do robô, mas apenas a uma fração do controle de missão, que diz respeito à interface com o usuário e \textit{feedback} dos
 planos ao usuário.
 
-Dois \textit{Robot Packages} fazem parte no desenvolvimento do robô DORIS:
+Dois \textit{Robot Packages} fazem parte da DORIS:
 \textit{General Package} e \textit{DORIS Package}, derivado do primeiro. Outros
 robôs desenvolvidos por GSCAR, como o ROV LUMA, possuem seus pacotes
 específicos, derivados do \textit{General Package}. 
@@ -437,7 +434,7 @@ robôs
 O \textit{DORIS Package} é um pacote mais específico ao robô DORIS e lida com
 seus elementos de hardware e suas funcionalidades. Do ponto de vista de uma
 arquitetura robótica, neste pacote foram implementados os \emph{comportamentos}
-específicos do robô DORIS.  Os diversos componentes implementados para o DORIS
+específicos da DORIS.  Os diversos componentes implementados para a DORIS
 foram divididos em funcionalidades, neste trabalho, a fim de proporcionar melhor
 entendimento.
 
@@ -447,7 +444,7 @@ transferência confiável dos dados \cite{corrigan2008introduction}. Esta
 comunicação extra, exigiu a implementação do componente \emph{CANOpen}, que utiliza a biblioteca
 SocketCAN disponivel em Linux. Um componente \emph{EPOS} é classe derivada de
 \emph{CANOpen} e especifica este tipo de comunicação com o hardware EPOS
-(driver) utilizado no DORIS, além de implementar outras caracterísiticas do
+(driver) utilizado na DORIS, além de implementar outras caracterísiticas do
 driver, como os dados dos encoders dos motores: posição (odometria), velocidade
 e corrente.
 Além disso, há a \emph{EPOSNodelet}, classe derivada de \emph{EPOS}, que implementa a comunicação ROS. A implementação dos
@@ -461,8 +458,7 @@ Os componentes que executam o controle de locomoção do robô são:
 \emph{MotionControllerNodelet} (derivada de \emph{MotionController}),
 \emph{PositionController} (derivada de \emph{Controller}) e
 \emph{PositionControllerNodelet} (derivada de \emph{PositionController}). Os
-componentes \emph{Controller} e \emph{ControllerNodelet} (componente
-\emph{Controller} com os recursos de ROS) são classes genéricas de controle,
+componentes \emph{Controller} e \emph{ControllerNodelet} são classes genéricas de controle,
 sendo necessária a implementação do controle para o robô específico,
 componentes \emph{MotionController} e \emph{PositionController}.
 
@@ -474,7 +470,7 @@ se comunica por serviço de ROS (\textit{service}) com o componente
 \emph{EPOSNodelet}, enviando os valores de velocidade desejados para cada motor.
 Por exemplo, observe que, em uma curva, devido à distância entre os dois gimbals
 do robô e à distância entre as rodas dos gimbals, os motores devem possuir
-velocidades diferentes. O \emph{MotionController} envia set-points de
+velocidades diferentes. O \emph{MotionController} envia \textit{set-points} de
 velocidade às EPOS e pode alterar os parâmetros de aceleração e
 desaceleração. Além disso, este componente é responsável por receber entradas do
 componente \emph{Joystick} e \emph{Interface}, que podem controlar o robô pela
@@ -486,13 +482,14 @@ controlar será o primeiro que pedir o controle.
 O componente \emph{PositionController} será futuramente integrado ao
 \emph{MotionController}. Sua funcionalidade é realizar um controle de posição,
 logo possui uma malha interna de controle, não disponível no hardware da EPOS, e
-se comunica com o componente \emph{MotionController}, enviando set-points de
-velocidades. É um controle proporcional de posição com saturação de velocidade.
+se comunica com o componente \emph{MotionController}, enviando
+\textit{set-points} de velocidades. É um controle proporcional de posição com
+saturação de velocidade.
 
 O manipulador da DORIS utiliza mais quatro EPOS (quatro motores) e exigirá ainda
 a implementação de um controle de força para sensoriamento de equipamentos ao
 toque, a partir de um sensor de vibração. Componentes como \emph{ForceControl} e
-\emph{InspectionVibration} ainda estão em desenvolvimento em.
+\emph{InspectionVibration} ainda estão em desenvolvimento.
 %TODO referencia marco
 
 Ainda em fase de aperfeiçoamento, os componentes de localização
@@ -504,7 +501,7 @@ sistema inteligente de localização com os dados dos sensores IMU e LaserScan. A
 fusão de sensores permitirá estimar de maneira precisa a posição do robô. O
 \emph{LocalizationNodelet} ainda envia mensagens (\emph{Publish}) para o
 \emph{PositionController}, \emph{MotionController} e \emph{RVIZ}, um componente
-de vizualização para o usuário.
+de visualização para o usuário.
 
 Os diversos componentes de sensores, no robô, são: \emph{AudioSender},
 \emph{AudioSenderNodelet} (derivada de \emph{AudioSender}),
@@ -555,6 +552,7 @@ tópico.
 
 A FIGURA represente o esquema de comunicação entre os diversos componentes e
 suas hierarquias.
+%TODO figura
 
 \subsubsection{Planejamento de velocidades}
 
@@ -580,7 +578,7 @@ velocidade máxima; a terceira é o \textit{set-point} de posição.
 A matriz de saída será utilizada pela tarefa
 \textit{Motion\_Planning\_Position} da camada Executivo, a qual se comunica com
 o processo da camada Funcional \textit{PositionController}. Portanto, no modo
-autônomo, DORIS será controlada por posição, havendo a necessodade de
+autônomo, DORIS será controlada por posição, havendo a necessidade de
 especificar velocidades máximas para cada trecho do trilho. O mapa do
 trilho é uma matriz de duas colunas: a primeira coluna representa o tipo de
 trecho do trilho (reta, transição reta-subida, transição reta-descida, subida,
@@ -678,8 +676,7 @@ A camada Executivo elaborada para a DORIS usa SMACH (subseção~\ref{smach}) como
 (subseção~\ref{reativa}), a arquitetura de subsunção, onde o módulo básico de
 comportamento reativo é uma máquina de estados aumentada (\textit{AFSM}), como a
 figura~\ref{afsm} sem \textit{Reset}. A camada Executivo é essencial para a
-autonomia do robô, portanto também é o escopo da implementação do autor e, junto
-com a camada Planejador.
+autonomia do robô, portanto também é o escopo da implementação do autor.
 
 As subseções a seguir detalham a implementação da camada Executivo,
 identificando como é realizada cada responsabilidade: Sequenciador,
@@ -689,9 +686,9 @@ ambiente de desenvolvimento da camada Funcional é ROS, optou-se pela utilização
 da camada Executivo SMACH \cite{bohren2010smach} por demonstrar resultados
 positivos em diversas aplicações, e já ser integrada ao sistema ROS. Foram
 adicionadas algumas funcionalidades à camada a fim de garantir todas as
-responsabilidades de uma camada Executivo. Como a camda Executiva não executa
-algoritmos de alto processamento, como a camada Funcional, foi escolhida a
-linguagem Python.
+responsabilidades de uma camada Executivo. A camada Executiva não executa
+algoritmos de alto processamento, como a camada Funcional, logo pode ser
+escolhida a linguagem Python para programação.
 
 
 \subsubsection{Sequenciador e Selecionador}
@@ -724,8 +721,8 @@ processos ``falar'', ``escrever'' e ``desviar de pessoas e objetos'' são
 automáticos e executados somente durante a realização das missões. 
 
 \textbf{Definição}: \textbf{Processo reativo específico} é um processo
-executado paralelamente às tarefas da missão, quando esta começa a ser
-realizada. São processos específicos de uma determinada missão, e
+iniciado paralelamente às tarefas da missão, logo quando esta começa a ser
+executada. São processos específicos de uma determinada missão, e
 inicializados automaticamente. Podem garantir
 robustez, proteção, sobrevivência do sistema, ou melhorar a execução da missão.
 
@@ -735,7 +732,7 @@ definitivamente. Por exemplo, uma falha no bombeamento do coração cancela
 imediatamente qualquer missão em execução. Esta característica de supressão dos
 \textbf{processos reativos} foi modelada pela função de coordenação competitiva,
 subsunção. Desta forma, foi implementada uma classe, derivada de SMACH, para a
-AFSM padrão de todas as tarefas da DORIS. A classe também depende de ROS, e
+AFSM padrão de todas as tarefas. A classe também depende de ROS, e
 foi idealizada para absorver a vantagem do estilo de comunicação
 \textit{publish/subscriber}, tornando a modelagem das tarefas bastante modular.
 
@@ -758,24 +755,28 @@ figura~\ref{supression}).
 
 Desta forma, um \textbf{processo reativo vital} pode abortar uma missão,
 enviando uma mensagem ROS \textit{'Abort'} ao tópico
-\textit{'DORIS\_MCS\_MISSION'}. O módulo básico implementado torna a estrutura
+\textit{'DORIS/MCS/MISSION'}. O módulo básico implementado torna a estrutura
 da camada Executivo muito mais flexível, modular e estimula o paralelismo, sem
 a preocupação de tarefas conflitantes, já que os conflitos são resolvidos pela
-subsunção, mais flexível que um esquema de prioridades. Além disso, a
-modelagem do robô fica mais intuitiva e correspondente à natureza.
+subsunção. A subsunção é mais flexível que um esquema de prioridades por IDs, já
+que o acréscimo de um novo processo exije a alteração de toda uma tabela de
+prioridades. Além disso, a modelagem do robô fica mais intuitiva e
+correspondente à natureza.
 
-O problema de \textit{situatedness} (subseção~\ref{brooks}) é resolvida pela
+O problema de \textit{situatedness} (subseção~\ref{brooks}) é resolvido pela
 decomposição em \textit{processos reativos vitais},
 \textit{processos reativos específicos} e pelas tarefas que compõem
 sequencialmente a missão. Não são todos os comportamentos que estão
 sempre em execução, mas apenas os essenciais (``vitais'') para o robô e aqueles
 que possuem alguma relação com a missão. Essa responsabilidade de classificar
-os processos e escolher qual entrará em ação é chamada de \textbf{Selecionado},
+os processos e escolher qual entrará em ação é chamada de \textbf{Selecionador},
 foi implementada na camada Executivo e resolve um grande problema de
-arquiteturas de subsunção.
+arquiteturas de subsunção. A nível de implementação, as missões, quando são
+inicializadas, executam os seus \textit{processos reativos específicos} e
+cancela-os quando são abortas ou finalizadas.
 
-A responsabilidade Sequenciador é quebrar as missões do Planejador em tarefas,
-que, no caso do SMACH, são sequências de máquinas de estados SMACH. O
+A responsabilidade \textbf{Sequenciador} é quebrar as missões do Planejador em
+tarefas, que, no caso do SMACH, são sequências de máquinas de estados SMACH. O
 programador deve, por tanto, modelar a quebra de uma missão em tarefas
 utilizando o \textit{framework} SMACH e adicionar a decomposição à base de
 conhecimento da camada Executivo.
@@ -789,19 +790,19 @@ Os \textbf{processos reativos vitais} criados para a DORIS são:
   comunicando com o \textit{VSS} da camada Funcional. Caso a carga das
   baterias esteja inferior a $5\%$, o robô deve parar todos as missões e
   processos reativos. O processo envia mensagem 'Abort' aos tópicos de todas as
-  missões: \textit{'DORIS/MCS/INSPECTION'}, \textit{'DORIS/MCS/PATROL'}, \textit{'DORIS/MCS/RECORD\_TYPE'},\textit{'DORIS/MCS/GOTO'}; e a alguns
+  missões: \textit{'DORIS/MCS/INSPECTION'}, \textit{'DORIS/MCS/PATROL'}, \textit{'DORIS/MCS/RECORD'},\textit{'DORIS/MCS/GOTO'}; e a alguns
   processos reativos: \textit{'DORIS/MCS/StateOfTempAndHum'}.
   \item \textbf{STATE\_OF\_TEMPERATURE\_AND\_HUMIDITY}: obtém as condições de
   temperatura e umidade externas se comunicando com o \textit{VSS}. Quando
   as condições estão fora do nível de operação do robô, este suspende as
   missões. O processo envia mensagem 'Abort' aos tópicos de todas as missões:
   \textit{'DORIS/MCS/INSPECTION'}, \textit{'DORIS/MCS/PATROL'},
-  \textit{'DORIS/MCS/RECORD\_TYPE'}, \textit{'DORIS/MCS/GOTO'}, e outras.
+  \textit{'DORIS/MCS/RECORD'}, \textit{'DORIS/MCS/GOTO'}, e outras.
 \end{itemize}
 
 \paragraph{Processos reativos específicos na DORIS}
 
-No DORIS, um \textbf{processo reativo específico} foi implementado para
+Na DORIS, um \textbf{processo reativo específico} foi implementado para
 a missão simples \textbf{GOTO}: 
 \begin{itemize}
   \item \textbf{OBSTACLE\_DETECTION}: detecta a presença de obstáculos. Foram
@@ -872,15 +873,15 @@ missão simples:
   plano de velocidade, conforme a mudança de localização.
   Figura~\ref{maincontrol}.
 \end{itemize}
-  \item \textbf{RECORD\_TYPE}: comunica-se com os a
+  \item \textbf{RECORD}: comunica-se com os a
   camada Funcional para gravação dos dados no SSD
   embarcado. Espera o comando de 'Abort', que será enviado pela
-  missão \textbf{STOP\_RECORD\_TYPE}. Figura~\ref{mainrecord}.
-  \item \textbf{STOP\_RECORD\_TYPE}: envia mensagem 'Abort' ao tópico
+  missão \textbf{STOP\_RECORD}. Figura~\ref{mainrecord}.
+  \item \textbf{STOP\_RECORD}: envia mensagem 'Abort' ao tópico
   \textit{'/DORIS/MCS/RECORD'}.
-  \item \textbf{DETECT\_TYPE}: comunica-se com os algoritmos de inspeção da
+  \item \textbf{DETECT}: comunica-se com os algoritmos de inspeção da
   camada Funcional. Espera o comando de 'Abort', que será enviado pela
-  missão \textbf{STOP\_DETECT\_TYPE}.
+  missão \textbf{STOP\_DETECT}.
 \end{itemize}
 
 \begin{figure}[!ht]
@@ -928,9 +929,9 @@ três bebidas simultaneamente; um robô submarino com apenas uma câmera sob um
 sistema \textit{Pan \& Tilt} (atuador) não pode compartilhar a câmera para navegação e
 observação da cauda simultaneamente. 
 
-ROS soluciona o problema de compartilhamento de sensores, e o Sequenciador,
-junto com a subsunção, resolve o problema de prioridades. As missões são
-sequenciais, não paralelas, logo não há perigo de compartilhamento de atuadores
+ROS soluciona o problema de compartilhamento de sensores, e o
+\textbf{Sequenciador}, junto com a subsunção, resolve o problema de prioridades.
+As missões são sequenciais, não paralelas, logo não há perigo de compartilhamento de atuadores
 entre missões. O conflito ocorre quando processos reativos, paralelos às
 missões, necessitam do mesmo recurso da missão. O esquema de função de
 coordenação competitiva é a solução para os conflitos.
@@ -943,12 +944,16 @@ recursos disponíveis} são individuais para cada recurso e verificam se o sensor
 está disponível. Caso o recurso não esteja disponível, a missão que o utiliza é
 automaticamente abortada (subsunção).
 
-\textbf{Definição}: \textit{Processos de recursos disponíveis} são processos
+\textbf{Definição}: \textbf{Processos de recursos disponíveis} são processos
 reativos que monitoram os status dos recursos do robô (sensores e atuadores).
-Estes processos podem abortar missões específicas, por exemplo, o
-uma falha no \textbf{processo de recurso disponível} \textit{EPOS\_RESOURCE}
-aborta a missão simples \textbf{GOTO} caso esta esteja no plano de missão do
-robô.
+Estes processos podem abortar missões, por exemplo, uma falha no
+\textbf{processo de recurso disponível} \textit{EPOS\_RESOURCE} aborta a missão
+\textbf{GOTO} caso esta esteja no plano de missão do robô, pois não há como o
+robô se locomover sem o driver da EPOS.
+
+Os \textbf{processos de recursos disponíveis} são como os \textbf{processos
+reativos vitais}, ou seja, estão sempre em execução, desde a inicialização do
+modo autônomo do robô. 
 
 \subsubsection{Monitoramento de tarefas e recuperação de
 erros}\label{monitoamento}
