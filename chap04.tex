@@ -70,7 +70,76 @@ robô, pacotes específicos da DORIS e pacotes com funcionalidades ROS.
 
 Como a camada Funcional é a camada que faz interface com os hardwares
 do robô (sensores e atuadores), simulações não bastam para a avaliação dos
-critérios de Arkin. São necessários testes exaustivos, em campo, com robôs.
+critérios de Arkin. São necessários testes exaustivos, em campo, com o robô.
+
+Com o auxílio das \textit{tools} (subseção~\ref{camadafuncional}, componentes
+gráficos para o operador enviar comandos ao robô, o usuário pode teleoperar o
+robô e observar as saídas dos sensores. A figura~\ref{teleop} mostra a
+teleoperação do SAM (\textit{Single Autonomous System}), predecessor da DORIS,
+em uma interface web. Na figura, pode-se observar a imagem enviada pela câmera
+interna do robô e o ambiente 3D em que o robô está inserido, em RVIZ. Na
+figura~\ref{robotgui}, mostram-se a interface de controle da DORIS com dados de
+corrente e velocidade dos motores, a saída de vídeo da câmera interna ao robô,
+e a saída de vídeo de uma câmera externa ao robô.
+
+A camada Funcional desenvolvida no \textit{framework} ROS mostrou
+\textbf{\textit{Hardware targetability}}. Além de ROS possuir um grande
+repositório de drivers (interface hardware-software), os componentes específicos
+desenvolvidos apresentaram ótimo desempenho. 
+
+O \textit{framework} ROS é uma ferramenta que, usada de maneira correta, faz com
+que a camada Funcional passe por quase todos os critérios de Arkin. Podemos
+avaliar a camada Funcional com os critérios estabelecidos:
+\begin{itemize}
+  \item \textbf{Suporte a paralelismo}: é inerente a sistemas
+  \textit{multi-thread} (computadores embarcados que permitem o paralelismo), e
+  aos estilos de comunicação \textit{publish-subscriber} e \textit{service}, que
+  permitem que os componentes obtenham, ao mesmo tempo, acesso aos diversos dados de sensores do robô.
+\item \textbf{\textit{Hardware targetability}}: os diversos robôs que utilizam
+ROS já mostram por si só o \textbf{\textit{Hardware targetability}} desta
+ferramenta.
+\item \textbf{\textit{Niche targetability}}: ROS também já foi utilizado por uma
+variedade de aplicações robóticas. Além disso, os resultados em DORIS mostram
+que o código implementado pode ser estendido robôs com desafios semelhantes.
+\item \textbf{Suporte a modularidade}: os componentes e pacotes desenvolvidos
+são modulares e seu nível de abstração permite a utilização em outros robôs. O
+esquema de classes e herança é essencial para alcançar este objetivo.
+\item \textbf{Robustez}: em caso de falha, a camada não entra em colapso e
+mensagens de falha são enviadas a camadas superiores (Executivo e Planejador).
+Mas a camada Funcional não é projetada para recuperação de falhas.
+\item \textbf{Tempo de desenvolvimento}: o grande repositório disponível para o
+\textit{framework} ROS reduz muito o tempo de desenvolvimento. Além disso, uma
+metodologia de programação, e a separação em módulos facilita o desenvolvimento
+de sistemas robóticos.
+\item \textbf{Flexibilidade em tempo de execução}: os resultados de DORIS com a
+teleoperação mostrou que DORIS pode ser controlado com alteração dos parâmetros
+de controle em tempo real. O sistema de comunicação de ROS permite e a
+implementação das \textit{tools} que se comunicam com os componentes do robô (
+interação base-robô) cria esta flexiblidade em tempo de execução.
+\item \textbf{Desempenho em executar tarefas}: os resultados bem
+sucedidos mostraram o alto desempenho da DORIS. 
+\end{itemize}
+ 
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.5\columnwidth]{figs/DORIS/teleop.png}
+\caption{Teleoperação da DORIS.}
+\label{teleop}
+\end{figure}  
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.5\columnwidth]{figs/DORIS/robotgui2.png}
+\caption{Interface de controle da DORIS.}
+\label{robotgui}
+\end{figure}
+
+A camada Funcional permite, por si só, a teleoperação do robô e testes com o
+sistema. Apesar de passar com excelência por quase todos os critérios
+de Arkin, a camada não transforma DORIS em um sistema autônomo. As outras
+camadas, além de garantirem esta nova funcionalidade, devem também cumprir os
+critérios de Arkin.
 
 \section{Testes da implementação da camada Executivo}\label{avaexecutivo}
 
