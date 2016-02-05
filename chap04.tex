@@ -17,11 +17,60 @@ camadas e as seções seguintes, \ref{avafuncional}, \ref{avaexecutivo},
 \ref{avaplanejador}, resumem os testes de cada camada.
 
 \section{Metodologia para avaliação das camadas}\label{avametodologia}
-%TODO verificar os parâmetros de avaliação da arquitetura
-Há diversos critérios de avaliação de uma arquitetura robótica. As arquiteturas
-podem ser avaliadas em \textit{robustez}, \textit{modularidade}, 
+
+Há diversos critérios de avaliação de uma arquitetura robótica. De acordo com
+Arkin \cite{arkin1998behavior}, podemos avaliar arquiteturas quanto a:
+\begin{itemize}
+  \item \textbf{Suporte a paralelismo}.
+  \item \textbf{\textit{Hardware targetability}}: este conceito se refere a
+  quão bem uma arquitetura pode ser mapeada em sistemas robóticos reais, isto é,
+  sensores e atuadores físicos; e o desempenho computacional.
+  \item \textbf{\textit{Niche targetability}}: quão bem uma arquitetura é capaz
+  de fazer o robô se adaptar ao seu ambiente de operação.
+  \item \textbf{Suporte a modularidade}: desde a facilidade de encapsulamento de
+  comportamentos abstratos e componentes (baixo nível) à possibilidade de
+  reutilização da arquitetura para outros robôs (alto nível).
+  \item \textbf{Robustez}: em caso de falha de hardwares (sensores, atuadores e
+  etc), a arquitetura deve ser capaz de se recuperar. Quais os mecanismos que a
+  arquitetura possui para contornar falhas?
+  \item \textbf{Tempo de desenvolvimento}: quais as ferramentas e
+  \textit{frameworks} disponíveis na arquitetura. 
+  \item \textbf{Flexibilidade em tempo de execução}: como o sistema de controle
+  pode ser ajustado ou reconfigurado em tempo de execução.
+  \item \textbf{Desempenho em executar tarefas}.
+\end{itemize}
+
+A arquitetura híbrida de três camadas foi idealizada para passar com ótima
+avaliação em todos os critérios de Arkin. Entretanto, como já explicitado na
+subseção~\ref{3t}, há diversas formas de implementar esta arquitetura e esta
+liberdade de programação acaba por não garantir boa avaliação nos critérios
+estabelecidos. É importante que as camadas sejam projetadas a cumprirem os
+critérios de forma satisfatória.
+
+As camadas desenvolvidas para a DORIS foram projetadas para passar
+satisfatoriamente nos critérios de Arkin e de outros roboticistas. Dessa forma,
+a metodologia de avaliação e testes é verificar o desempenho nos critérios e
+destacar as responsabilidades implementadas em cada camada que os cumprem os
+requisitos.
 
 \section{Testes da implementação da camada Funcional}\label{avafuncional}
+
+A camada funcional é a primeira a ser implementada na camada da arquitetura
+híbrida de três camadas. Somente com a camada funcional é possível
+enviar comandos aos atuadores, ou seja, controlar o robô por \textit{joystick}
+ou com uma interface simples de usuário. É possível observar os dados dos
+sensores, processar os dados e testar funcionalidades básicas do robô. 
+
+A camada Funcional desenvolvida para DORIS é detalhada na
+subseção~\ref{camadafuncional} e, como já foi analisada, segue o modelo
+``ideal'' de implementação de uma camada Funcional descrita por Quigley
+\cite{quigley2009ros}, desenvolvedor do ROS, e Volpe \cite{volpe2001claraty},
+desenvolvedor do CLARAty. Há pacotes genéricos a serem atribuidos a qualquer
+robô, pacotes específicos da DORIS e pacotes com funcionalidades ROS.
+
+Como a camada Funcional é a camada que faz interface com os hardwares
+do robô (sensores e atuadores), simulações não bastam para a avaliação dos
+critérios de Arkin. São necessários testes exaustivos, em campo, com robôs.
 
 \section{Testes da implementação da camada Executivo}\label{avaexecutivo}
 
