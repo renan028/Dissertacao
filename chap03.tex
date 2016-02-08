@@ -185,7 +185,7 @@ envolver um par estímulo-reação/sensor-atuador. Um conjunto de estados com um
 fim compõe uma tarefa.
 
 
-\subsubsection{Controle de missão} 
+\subsubsection{Controle de missão}\label{missioncontrol} 
 
 O controle de missão é a combinação de três responsabilidades interligadas: a
 interface com o usuário, o acompanhamento e feedback das missões ao usuário e a
@@ -554,7 +554,7 @@ A FIGURA represente o esquema de comunicação entre os diversos componentes e
 suas hierarquias.
 %TODO figura
 
-\subsubsection{Planejamento de velocidades}
+\subsubsection{Planejamento de velocidades}\label{masterplanning}
 
 A DORIS se locomove em um trilho (mapa unidimensional), logo não há a
 necessidade de computação de um \textit{Motion Planning} complexo. Quando uma
@@ -605,71 +605,10 @@ em determinado trecho respeitando a velocidade máxima deste, o
 \textit{MasterPlanning} calcula a posição de troca de velocidade máxima pela
 equação de Torricelli: $v_{f}^2 = v_{0}^2+2a\Delta S$. $\Delta S$
 representa a distância percorrida, ou seja, a posição de troca de velocidades
-e $a$ é a aceleração/desaceleração máxima da EPOS ($a=0.11 m/s^2$).
+e $a$ é a aceleração/desaceleração máxima da EPOS ($a=0.11 m/s^2$). 
 
-\textbf{Exemplo}
 
-Suponha que o robô está na posição 0 do trilho e começa a execução da tarefa
-\textit{Motion\_Planning\_Position} da missão \textit{GOTO(10,'fast')}. A função
-$master\_planning(0,'fast',10)$ retorna a matriz~\ref{matrizvmax}, que pode ser
-interpretada graficamente em ~\ref{plvl}. 
-
-\begin{table}[!ht]
-\centering
-\caption{Matriz de velocidades máximas em cada trecho do trilho do ponto 0 ao
-10.}
-\label{matrizvmax}
-\begin{tabular}{ccc}
-\hline
-\multicolumn{1}{l}{Ponto de troca (m)} & \multicolumn{1}{l}{$V_{max}$ (m/s)} &
-\multicolumn{1}{l}{Set-point (m)} \\ \hline 0                                  &
-0.6                           & 10                            \\
-1.907                              & 0.42                          & 10                            \\
-3.355                              & 0.3                           & 10                            \\
-4.495                              & 0.42                          & 10                            \\
-5.506                              & 0.6                           & 10                            \\
-5.847                              & 0.51                          & 10                            \\
-7.308                              & 0.6                           & 10                            \\
-8.334                              & 0.42                          & 10                            \\
-9.282                              & 0.3                           & 10                           
-\end{tabular}
-\end{table}
-
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=.8\columnwidth]{figs/masterplot.png}
-\caption{representação gráfica do plano de velocidades do robô para uma missão
-de GOTO(10,'fast').}
-\label{plvl}
-\end{figure}
-
-O mapa das seções do trilho até a posição 10, disponível pelo Cartógrafo, está
-representado na tabela~\ref{mapatrilho}. Observe que o trecho inicial ``Reto"
-possui comprimento 2.733 m e velocidade máxima 0.6 m/s, mas antes de o robô
-chegar no final do trecho, ele começa o processo de desaceleração em 1.907 m de
-forma a ser possível fazer a troca de trecho na velocidade máxima permitida para
-a ``Transição reto-subida'' (0.42 m/s).
-
-\begin{table}[!ht]
-\centering
-\caption{Mapa das seções do trilho}
-\label{mapatrilho}
-\begin{tabular}{ccc}
-\hline
-Tipo de trecho         & Comprimento (m) & Soma (m)  \\ \hline
-Reto                   & 2.733       & 2.733 \\
-Transição reto-subida  & 1.011       & 3.744 \\
-Subida                 & 0.750       & 4.495 \\
-Transição subida-reto  & 1.011       & 5.506 \\
-Reto                   & 0.790       & 6.297 \\
-Curva à esquerda       & 1.011       & 7.308 \\
-Reto                   & 1.852       & 9.160 \\
-Transição reto-descida & 0.510       & 9.670 \\
-Descida                & 0.790       & 10.46
-\end{tabular}
-\end{table}
-
-\subsection{Implementação da camada Executivo}
+\subsection{Implementação da camada Executivo}\label{impexecutivo}
 
 A camada Executivo elaborada para a DORIS usa SMACH (subseção~\ref{smach}) como
 \textit{framework}, e implementa a técnica de função de coordenação competitiva
@@ -736,15 +675,40 @@ AFSM padrão de todas as tarefas. A classe também depende de ROS, e
 foi idealizada para absorver a vantagem do estilo de comunicação
 \textit{publish/subscriber}, tornando a modelagem das tarefas bastante modular.
 
-O módulo básico, chamado \textbf{SUPPRESSION\_STATE}, é um \textit{container}
-SMACH do tipo \textit{concurrence} (concorrente), isto
-é, um \textit{container} composto por dois \textit{containers} que são executados simultaneamente.
-Um dos \textit{containers} concorrentes é o \textit{MAIN}, composto por tarefas
+O módulo básico que busca modelar a subsunção com novas funcionalidades,
+chamado \textbf{SUPPRESSION\_STATE}, é um \textit{container} SMACH do tipo
+\textit{concurrence} (concorrente), isto é, um \textit{container} composto por
+dois \textit{containers} que são executados simultaneamente. Um dos
+\textit{containers} concorrentes é o \textit{MAIN}, composto por tarefas
 sequenciais que executam a missão. O outro \textit{container} concorrente é o
-\textit{SUPPRESSION\_MAIN}, responsável por abortar a missão
-(\textit{container} \textit{MAIN}) caso receba uma mensagem ROS
-'Abort' (em tópico específico) de outro módulo (exemplo na
-figura~\ref{supression}).
+\textit{SUPPRESSION\_MAIN}, o qual aborta a missão (\textit{container}
+\textit{MAIN}) caso receba uma mensagem ROS 'Abort' em tópico específico e, na
+sequência, aborta processos dependentes, por exemplo, os \textit{processos reativos específicos} de uma
+determinada missão. 
+
+\textbf{Exemplo do módulo básico}
+
+\textbf{GOTO} é uma missão implementada como um \textit{container}
+\textbf{SUPPRESSION\_STATE}, composto pelo \textit{container}
+\textbf{MAIN\_GOTO}, o qual é uma sequência de tarefas; e pelo
+\textit{container} \textbf{SUPPRESSION\_GOTO}, que aborta \textbf{MAIN\_GOTO}
+quando uma mensagem ROS ``Abort" é enviado ao tópico \textit{DORIS/MCS/Goto} e,
+na sequência, aborta seu \textit{processo reativo específico}
+\textbf{OBSTACLE\_DETECTION}, enviando mensagem ROS ``Abort'' ao tópico
+\textit{DORIS/MCS/ObstacleDetection} (figura~\ref{supression}).
+
+Como \textbf{SUPPRESSION\_STATE} é o módulo básico da
+camada Executivo, todas as missões, tarefas e \textit{processos reativos} são
+inicializados como \textit{containers} SMACH do tipo
+$\textbf{SUPPRESSION\_STATE(name, sup\_msg, output\_keys, input\_keys,
+to\_sup)}$. $name$ é o nome (ou \textit{tag}) da missão ou
+tarefa e, consequentemente, seu tópico de supressão (tópico que subscreve
+esperando mensagem para cancelamento) é \textit{DORIS/MCS/name}. $sup\_msg$ é a
+mensagem que a tarefa espera para ser cancelada, onde o padrão é ``Abort''.
+$output\_keys$ e $input\_keys$ são os \textit{user data} SMACH. E $to\_sup$ são
+as missões simples que devem ser cancelados caso uma missão complexa seja
+abortada, por exemplo, caso a missão complexa \textbf{INSPECTION} seja abortada,
+ela deve cancelar as missões \textbf{GOTO} e \textbf{Detect}.
 
 \begin{figure}[!ht]
 \centering
@@ -753,8 +717,8 @@ figura~\ref{supression}).
 \label{supression}
 \end{figure}
 
-Desta forma, um \textbf{processo reativo vital} pode abortar uma missão,
-enviando uma mensagem ROS \textit{'Abort'} ao tópico
+Desta forma, um \textbf{processo reativo vital ou específico} pode abortar uma
+missão, enviando uma mensagem ROS \textit{'Abort'} ao tópico
 \textit{'DORIS/MCS/MISSION'}. O módulo básico implementado torna a estrutura
 da camada Executivo muito mais flexível, modular e estimula o paralelismo, sem
 a preocupação de tarefas conflitantes, já que os conflitos são resolvidos pela
@@ -944,15 +908,17 @@ recursos disponíveis} são individuais para cada recurso e verificam se o sensor
 está disponível. Caso o recurso não esteja disponível, a missão que o utiliza é
 automaticamente abortada (subsunção).
 
-\textbf{Definição}: \textbf{Processos de recursos disponíveis} são processos
-reativos que monitoram os status dos recursos do robô (sensores e atuadores).
-Estes processos podem abortar missões, por exemplo, uma falha no
-\textbf{processo de recurso disponível} \textit{EPOS\_RESOURCE} aborta a missão
-\textbf{GOTO} caso esta esteja no plano de missão do robô, pois não há como o
-robô se locomover sem o driver da EPOS.
+\textbf{Definição}: \textbf{Processo reativo de recurso disponível} é  um
+processo reativo que monitora o status de um recurso do robô (sensores e atuadores).
+Este processo pode abortar missões. 
 
-Os \textbf{processos de recursos disponíveis} são como os \textbf{processos
-reativos vitais}, ou seja, estão sempre em execução, desde a inicialização do
+Um exemplo de \textbf{processo reativo de recurso disponível}, na DORIS, é o
+\textit{EPOS\_RESOURCE}, o qual aborta a missão \textbf{GOTO} caso esta esteja
+no plano de missão do robô, pois não há como o robô se locomover sem o
+driver da EPOS.
+
+Os \textbf{processos reativos de recursos disponíveis} são como os
+\textbf{processos reativos vitais}, ou seja, estão sempre em execução, desde a inicialização do
 modo autônomo do robô. 
 
 \subsubsection{Monitoramento de tarefas e recuperação de

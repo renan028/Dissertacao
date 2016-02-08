@@ -24,7 +24,8 @@ Arkin \cite{arkin1998behavior}, podemos avaliar arquiteturas quanto a:
   \item \textbf{Suporte a paralelismo}.
   \item \textbf{\textit{Hardware targetability}}: este conceito se refere a
   quão bem uma arquitetura pode ser mapeada em sistemas robóticos reais, isto é,
-  sensores e atuadores físicos; e o desempenho computacional.
+  sensores e atuadores físicos; e o desempenho computacional. Este é exclusivo
+  da camada Funcional.
   \item \textbf{\textit{Niche targetability}}: quão bem uma arquitetura é capaz
   de fazer o robô se adaptar ao seu ambiente de operação.
   \item \textbf{Suporte a modularidade}: desde a facilidade de encapsulamento de
@@ -53,6 +54,15 @@ a metodologia de avaliação e testes é verificar o desempenho nos critérios e
 destacar as responsabilidades implementadas em cada camada que os cumprem os
 requisitos.
 
+As camadas Executivo e Planejador compõem o sistema autônomo do robô. Por
+mais robusto que o sistema seja, e mesmo que haja possibilidade de suspender
+ações em tempo real, as camadas de nível superior devem ser exaustivamente
+simuladas em ambientes de programação e em computador semelhante ao embarcado
+no robô. Como a camada Funcional é a camada que faz interface com os hardwares
+do robô (sensores e atuadores), simulações não bastam para a avaliação dos
+critérios de Arkin, logo são necessários testes exaustivos, em campo, com o
+robô.
+
 \section{Testes da implementação da camada Funcional}\label{avafuncional}
 
 A camada funcional é a primeira a ser implementada na camada da arquitetura
@@ -67,10 +77,6 @@ subseção~\ref{camadafuncional} e, como já foi analisada, segue o modelo
 \cite{quigley2009ros}, desenvolvedor do ROS, e Volpe \cite{volpe2001claraty},
 desenvolvedor do CLARAty. Há pacotes genéricos a serem atribuidos a qualquer
 robô, pacotes específicos da DORIS e pacotes com funcionalidades ROS.
-
-Como a camada Funcional é a camada que faz interface com os hardwares
-do robô (sensores e atuadores), simulações não bastam para a avaliação dos
-critérios de Arkin. São necessários testes exaustivos, em campo, com o robô.
 
 Com o auxílio das \textit{tools} (subseção~\ref{camadafuncional}, componentes
 gráficos para o operador enviar comandos ao robô, o usuário pode teleoperar o
@@ -123,14 +129,14 @@ sucedidos mostraram o alto desempenho da DORIS.
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=.5\columnwidth]{figs/DORIS/teleop.png}
+\includegraphics[width=1\columnwidth]{figs/DORIS/teleop.png}
 \caption{Teleoperação da DORIS.}
 \label{teleop}
 \end{figure}  
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=.5\columnwidth]{figs/DORIS/robotgui2.png}
+\includegraphics[width=1\columnwidth]{figs/DORIS/robotgui2.png}
 \caption{Interface de controle da DORIS.}
 \label{robotgui}
 \end{figure}
@@ -138,10 +144,293 @@ sucedidos mostraram o alto desempenho da DORIS.
 A camada Funcional permite, por si só, a teleoperação do robô e testes com o
 sistema. Apesar de passar com excelência por quase todos os critérios
 de Arkin, a camada não transforma DORIS em um sistema autônomo. As outras
-camadas, além de garantirem esta nova funcionalidade, devem também cumprir os
-critérios de Arkin.
+camadas, além de garantirem esta nova configuração do sistema, devem também
+cumprir os critérios de Arkin. 
 
-\section{Testes da implementação da camada Executivo}\label{avaexecutivo}
+%TODO Futuro algoritmos do cartografo na camada funcional
+
+\subsection{Testes de planejamento de velocidades}
+
+Apesar de pertencer à camada Funcional da arquitetura proposta, o planejamento
+de velocidades é um \textit{thread} que pertence ao desenvolvimento de um
+sistema autônomo. O planejamento de velocidades é apenas um algoritmo cuja saída
+são as velocidades para cada trecho do trilho, ele não se comunica com outros
+elementos da camada Funcional, não é interface ou driver, mas comunica-se com
+componentes das camadas Executivo e Planejador. Dessa forma, como as camadas de
+nível superior, o algoritmo é simulado, em vez de ser testado exaustivamente no
+robô.
+
+
+Como já documentado na subseção~\ref{masterplanning}, a função
+\textbf{MasterPlanning} possui os argumentos: localização
+atual do robô; localização objetivo; direção de movimento (1 ou -1 - sentido
+natural ou sentido contrário); número de voltas desejado antes de chegar à
+localização objetivo; e se o trilho é circular (verdadeiro ou falso). A saída do
+algoritmo é uma matriz com $n$ linhas e três colunas: a primeira coluna
+representa a posição do trilho onde ocorre troca de velocidade máxima; a segunda coluna é a
+velocidade máxima; a terceira é o \textit{set-point} de posição.
+
+Nesta dissertação, é documentado um exemplo do planejamento de velocidades.
+
+\textbf{Exemplo}
+
+Suponha que o robô está na posição 0 do trilho e começa a execução da tarefa
+\textit{Motion\_Planning\_Position} da missão \textit{GOTO(10,'fast')} (ver
+subseção~\ref{missioncontrol}).
+A função $master\_planning(0,'fast',10)$ retorna a matriz~\ref{matrizvmax}, que pode ser
+interpretada graficamente em ~\ref{plvl}. 
+
+\begin{table}[!ht]
+\centering
+\caption{Matriz de velocidades máximas em cada trecho do trilho do ponto 0 ao
+10.}
+\label{matrizvmax}
+\begin{tabular}{ccc}
+\hline
+\multicolumn{1}{l}{Ponto de troca (m)} & \multicolumn{1}{l}{$V_{max}$ (m/s)} &
+\multicolumn{1}{l}{Set-point (m)} \\ \hline 0                                  &
+0.6                           & 10                            \\
+1.907                              & 0.42                          & 10                            \\
+3.355                              & 0.3                           & 10                            \\
+4.495                              & 0.42                          & 10                            \\
+5.506                              & 0.6                           & 10                            \\
+5.847                              & 0.51                          & 10                            \\
+7.308                              & 0.6                           & 10                            \\
+8.334                              & 0.42                          & 10                            \\
+9.282                              & 0.3                           & 10                           
+\end{tabular}
+\end{table}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.8\columnwidth]{figs/masterplot.png}
+\caption{representação gráfica do plano de velocidades do robô para uma missão
+de GOTO(10,'fast').}
+\label{plvl}
+\end{figure}
+
+O mapa das seções do trilho até a posição 10, disponível pelo Cartógrafo, está
+representado na tabela~\ref{mapatrilho}. Observe que o trecho inicial ``Reto"
+possui comprimento 2.733 m e velocidade máxima 0.6 m/s, mas antes de o robô
+chegar no final do trecho, ele começa o processo de desaceleração em 1.907 m de
+forma a ser possível fazer a troca de trecho na velocidade máxima permitida para
+a ``Transição reto-subida'' (0.42 m/s).
+
+\begin{table}[!ht]
+\centering
+\caption{Mapa das seções do trilho}
+\label{mapatrilho}
+\begin{tabular}{ccc}
+\hline
+Tipo de trecho         & Comprimento (m) & Soma (m)  \\ \hline
+Reto                   & 2.733       & 2.733 \\
+Transição reto-subida  & 1.011       & 3.744 \\
+Subida                 & 0.750       & 4.495 \\
+Transição subida-reto  & 1.011       & 5.506 \\
+Reto                   & 0.790       & 6.297 \\
+Curva à esquerda       & 1.011       & 7.308 \\
+Reto                   & 1.852       & 9.160 \\
+Transição reto-descida & 0.510       & 9.670 \\
+Descida                & 0.790       & 10.46
+\end{tabular}
+\end{table}
+
+Caso seja inserida uma posição alvo maior que o comprimento do trilho, e o
+trilho for circular, considera-se uma volta e tira-se a diferença, por exemplo
+se o trilho posui comprimento 140 e é inserido posição alvo 200, considera-se
+uma volta e posição alvo 60.
+
+\section{Testes da implementação da camada Executivo e
+Planejador}\label{avaexecutivo}
+
+A avaliação da camada Executivo é a análise e testes por simulação das
+responsabilidades dentro dos critérios de Arkin. Isto é, como o modo de
+implementação de cada responsabilidade da camada se comporta em face dos
+critérios estabelecidos. 
+
+A criação de diversos conceitos de processos que são executados simultaneamente,
+como \textbf{processos reativos vitais, específicos e de recursos disponíveis},
+a decomposição de missões em tarefas, e a possibilidade de tarefas concorrentes
+(\textit{concurrence}), são métodos para criação de uma camada com
+\textbf{Suporte a paralelismo} e \textbf{Suporte a modularidade}. Além disso,
+os conceitos criam um método intuitivo para a implementação da camada, seguindo
+o modelo da naturaza do homem e outros animais, levando a um menor \textbf{Tempo de desenvolvimento}. No entando, paralelismo e modularidade
+podem gerar conflitos, os quais devem ser resolvidos por uma função de coordenação. A
+arquitetura híbrida proposta utiliza a subsunção como função de coordenação, e
+são necessárias avaliações e testes para verificar sua eficiência.
+
+A simulação consiste na implementação dos \textbf{processos reativos}, tarefas
+e missões simples da DORIS, utilizando a classe implementada
+\textbf{SUPPRESSION\_STATE}, apresentada na subseção~\ref{impexecutivo}, e no
+envio de mensagens ROS aos componentes da camada, simulando mensagens do nível
+Funcional (saídas de sensores e atuadores do robô).
+Como já foi discutido, a classe, derivada de SMACH, é o módulo comportamental da
+camada Executivo e faz o papel da função de coordenação por subsunção. Os
+\textbf{processos reativos} e as missões da DORIS já foram documentados na
+subseção~\ref{impexecutivo} e ~\ref{missioncontrol}, respectivamente.
+
+
+A metodologia de simulação é composta por três estágios: 1) Para cada tarefa de
+missão simples, simular as possibilidades de \textit{outcomes} (resultados das
+tarefas), isto é, as ramificações de cada tarefa; 2) Simular as interações com
+os três tipos de \textbf{processos reativos}; e 3) Verificar a finalização da
+missão, quando todos as tarefas são completadas. Abaixo, é demonstrada a
+simulação de uma missão simples. O visualizador \textit{smach\_viewer} é
+utilizado durante as etapas de simulação, por disponibilizar os dados dos
+estados SMACH em tempo real.
+
+\textbf{Exemplo - simulação missão simples GOTO(80,'fast')}
+
+Ao inicializar o sistema autônomo com a missão simples \textbf{GOTO(80,'fast')}
+(robô deve se locomover até a posição 80 do trilho, em modo
+de velocidade rápido e pelo menor caminho possível), os \textbf{processos
+reativos} são executados em paralelo automaticamente. A figura~\ref{proc}
+é uma imagem do visualizador \textit{smach\_viewer} que ilustra os processos em
+execução: em vermelho está destacada a missão simples \textbf{GOTO}; em azul, o
+\textbf{processo reativo de recurso disponível}: \textbf{EPOS}, o qual verifica
+o status dos motores e drivers EPOS (hardwares); em verde, os \textbf{processos
+reativos vitais}: \textbf{Charge}, que verifica o status da bateria, e
+\textbf{StateOfTemp}, que verifica a temperatura e umidade do robô; e em
+amarelo, o \textbf{processo reativo específico}: \textbf{OA}
+(\textit{ObstacleAvoidance}), que detecta objetos no trilho.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.8\columnwidth]{figs/processos.png}
+\caption{Processos em execução durante missão \textbf{GOTO}.}
+\label{proc}
+\end{figure}
+
+A tarefa inicial da missão simples \textbf{GOTO} é \textbf{Localization}, na
+qual permanece até receber o valor da posição do robô e sua probabilidade.
+Caso esta probabilidade esteja dentro do esperado (entre 0.6 e 1), o robô segue
+para a tarefa \textbf{PathPlanning}. A
+tarefa \textbf{PathPlanning} requisita o plano ao algoritmo
+\textbf{MasterPlanning} da camada Funcional, e após recebido a missão
+\textbf{GOTO} segue para sua última tarefa \textbf{Motion\_Control\_Position}.
+Esta é um loop que recebe a posição do robô, compara com a tabela recebida do
+\textbf{PathPlanning} e envia comando de controle de posição ao componente
+\textbf{PositionController} da camada Funcional (figura~\ref{maingoto}). 
+ 
+Como a primeira tarefa \textbf{Localization} espera mensagem de ROS da camada
+Funcional, uma mensagem ROS com posição e probabilidade é enviada pelo terminal
+(Ubuntu) ao tópico \textit{DORIS/Vehicle/Localization}, simulando a camada de
+baixo nível. Ao receber a mensagem [30,1] (posição 30 e probabilidade 1), a tarefa é
+completada, e a tarefa seguinte, \textbf{PathPlanning}, recebe o dado de posição
+por \textit{user data} SMACH. Esta envia por mensagem de ROS comandos ao
+\textbf{MasterPlanning}, recebe o plano deste e o envia a
+\textbf{Motion\_Control\_Position} também por \textit{user data} SMACH. A
+figura~\ref{transgoto} mostra as transições das tarefas descritas pelo terminal
+do Ubuntu onde: em azul está o recebimento da localização e dados da missão (30
+é posição atual, 80 é posição objetivo, 'fast' é o modo de velocidade rápida);
+em verde é a matriz de velocidades e pontos de troca gerada pelo
+\textbf{MasterPlanning} da camada Funcional e recebida pela tarefa \textbf{PathPlanning} da missão \textbf{GOTO} (camada Executivo); e, em
+vermelho, é o loop da tarefa \textbf{Motion\_Control\_Position}, a qual recebe
+uma localização e controla o robô por posição. Na figura~\ref{transgoto2}, a
+mesma transição pode ser vista no smach\_viewer, no qual, em verde, são as
+tarefas em execução (no caso, apenas o \textbf{Motion\_Control\_Position}, e o
+estado de supressão).
+
+ De acordo com a metodologia de simulação, para cada tarefa, devem ser testadas
+ os possíveis \textit{outcomes}. As tarefas \textbf{Localization} e
+ \textbf{Motion\_Control\_Position} possuem ramificação dependentes de dados da
+ camada Funcional: quando \textit{Localization} recebe dados de posição
+ do robô com certeza inferior a 60\%, seu \textit{outcome} é o estado
+ \textbf{WANDER}, o qual controla o robô com velocidade 0.1 m/s até a certeza de
+ posição aumentar para 60\%; quando \textbf{Motion\_Control\_Position} recebe dados de posição com certeza inferior
+ a 60\%, seu \textit{outcome} é \textbf{Localization}. Ambas as ramificações são
+ testadas por mensagens de ROS via terminal, por exemplo enviando a mensagem
+ [30,0.4] (probabilidade 0.4) ao tópico \textit{DORIS/Vehicle/Localization}, e
+ suas transições são acompanhadas pelo smach\_viewer.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.8\columnwidth]{figs/transitions_goto.png}
+\caption{Transições da missão simples \textbf{GOTO} no terminal.}
+\label{transgoto}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.8\columnwidth]{figs/transition_goto2.png}
+\caption{Transições da missão simples \textbf{GOTO} no smach\_viewer.}
+\label{transgoto2}
+\end{figure}
+
+A segunda etapa da simulação são as três possíveis interações entre os
+tipos de processos reativos. Devem ser observadas as características de
+subsunção: cancelamento de missão por processo reativo vital; cancelamento de
+missão por processo reativo de recurso disponível; e interrupção de missão por
+processo reativo específico. 
+
+Exemplo com processo reativo vital: o processo \textbf{Charge} recebe a mensagem
+``5'' no tópico \textit{'DORIS/MCS/StateOfCharge/Status'} (5\% de nível de bateria)
+e aborta a missão \textbf{GOTO} por segurança, figura~\ref{abortcharge}
+(terminal) e figura~ref\ref{abortgoto} (smach\_viewer, tarefa em cinza
+significa que não está em execução).
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.8\columnwidth]{figs/abortcharge.png}
+\caption{Ao receber uma informação de nível de bateria inferior a 5\%,
+\textbf{Charge} aborta a missão \textbf{GOTO} (terminal).}
+\label{abortcharge}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.8\columnwidth]{figs/gotoabort.png}
+\caption{Ao receber uma informação de nível de bateria inferior a 5\%,
+\textbf{Charge} aborta a missão \textbf{GOTO} (smach\_viewer).}
+\label{abortgoto}
+\end{figure}
+
+Exemplo com processo reativo de recurso disponível: o processo \textbf{Epos}
+recebe a mensagem ``False'' no tópico \textit{'DORIS/MCS/StateOfCharge/Status'}
+(recurso não disponível) e aborta a missão \textbf{GOTO},
+figura~\ref{eposabort} (terminal).
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.8\columnwidth]{figs/EPOSabort.png}
+\caption{Ao receber uma informação de recurso indisponível, \textbf{Epos} aborta
+a missão \textbf{GOTO} (terminal).}
+\label{eposabort}
+\end{figure}
+
+Exemplo com processo reativo específico: o processo \textbf{OA}
+(\textbf{ObstacleAvoidance}) recebe a mensagem ``8'' no tópico
+\textit{'DORIS/Vehicle/EPOS/Current'} (corrente consumida do motor maior que 8
+ampères) e aborta a tarefa \textbf{Motion\_Control\_Position} da missão, para um
+estado de recuperação. A missão volta à tarefa \textbf{Localização}, o
+cartógrafo deve atualizar o mapa do trilho com o obstáculo para recálculo da
+trajetório (sentido contrário).
+
+Dessa forma, as responsabilidades \textbf{Sequenciador} e \textbf{Selecionador}
+da camada Executivo atendem aoss critérios \textbf{Suporte a paralelismo},
+\textbf{Suporte a modularidade} e \textbf{Tempo de desenvolvimento}, utilizando
+a metodologia de simulação adotada. Além disso, o \textbf{Desempenho em executar
+tarefas} é aumentado com o paralelismo e a modelagem seguindo a metodologia e
+conceitos de processos estabelecidos. A \textbf{Robustez} é alcançada pelas
+ramificações das tarefas, pelos processos reativos, e está contida
+na responsabilidade de recuperação de falhas. A modelagem das tarefas não pode
+ser realizada em tempo de execução, o que não é desvantagem, pois a metodologia
+de simulação deve ser seguida e sistemas autônomos não devem ser executados
+sem testes prévios. A \textbf{Flexibilidade em tempo de execução} deve estar
+disponível na camada Funcional, mas não na camada autônoma.
+
+Por fim, o \textbf{\textit{Niche targetability}} é muito abrangente, já que
+a camada comporta robôs modelados por tarefas sequenciais e processos reativos
+paralelos, o mecanismo mais comum encontrado na natureza. Portanto, a camada
+Executivo passa por todos os critérios de Arkin.
 
 \section{Testes da implementação da camada Planejador}\label{avaplanejador}
 
+\textbf{Suporte a paralelismo}
+\textbf{\textit{Hardware targetability}}
+\textbf{\textit{Niche targetability}}
+\textbf{Suporte a modularidade}
+\textbf{Robustez}
+\textbf{Tempo de desenvolvimento}
+\textbf{Flexibilidade em tempo de execução}
+\textbf{Desempenho em executar tarefas}
