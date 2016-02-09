@@ -107,7 +107,7 @@ ferramenta.
 \item \textbf{\textit{Niche targetability}}: ROS também já foi utilizado por uma
 variedade de aplicações robóticas. Além disso, os resultados em DORIS mostram
 que o código implementado pode ser estendido robôs com desafios semelhantes.
-\item \textbf{Suporte a modularidade}: os componentes e pacotes desenvolvidos
+\item \textbf{Suporte à modularidade}: os componentes e pacotes desenvolvidos
 são modulares e seu nível de abstração permite a utilização em outros robôs. O
 esquema de classes e herança é essencial para alcançar este objetivo.
 \item \textbf{Robustez}: em caso de falha, a camada não entra em colapso e
@@ -240,8 +240,7 @@ trilho for circular, considera-se uma volta e tira-se a diferença, por exemplo
 se o trilho posui comprimento 140 e é inserido posição alvo 200, considera-se
 uma volta e posição alvo 60.
 
-\section{Testes da implementação da camada Executivo e
-Planejador}\label{avaexecutivo}
+\section{Testes da implementação da camada Executivo}\label{avaexecutivo}
 
 A avaliação da camada Executivo é a análise e testes por simulação das
 responsabilidades dentro dos critérios de Arkin. Isto é, como o modo de
@@ -252,7 +251,7 @@ A criação de diversos conceitos de processos que são executados simultaneamente,
 como \textbf{processos reativos vitais, específicos e de recursos disponíveis},
 a decomposição de missões em tarefas, e a possibilidade de tarefas concorrentes
 (\textit{concurrence}), são métodos para criação de uma camada com
-\textbf{Suporte a paralelismo} e \textbf{Suporte a modularidade}. Além disso,
+\textbf{Suporte a paralelismo} e \textbf{Suporte à modularidade}. Além disso,
 os conceitos criam um método intuitivo para a implementação da camada, seguindo
 o modelo da naturaza do homem e outros animais, levando a um menor \textbf{Tempo de desenvolvimento}. No entando, paralelismo e modularidade
 podem gerar conflitos, os quais devem ser resolvidos por uma função de coordenação. A
@@ -408,7 +407,7 @@ trajetório (sentido contrário).
 
 Dessa forma, as responsabilidades \textbf{Sequenciador} e \textbf{Selecionador}
 da camada Executivo atendem aoss critérios \textbf{Suporte a paralelismo},
-\textbf{Suporte a modularidade} e \textbf{Tempo de desenvolvimento}, utilizando
+\textbf{Suporte à modularidade} e \textbf{Tempo de desenvolvimento}, utilizando
 a metodologia de simulação adotada. Além disso, o \textbf{Desempenho em executar
 tarefas} é aumentado com o paralelismo e a modelagem seguindo a metodologia e
 conceitos de processos estabelecidos. A \textbf{Robustez} é alcançada pelas
@@ -426,11 +425,134 @@ Executivo passa por todos os critérios de Arkin.
 
 \section{Testes da implementação da camada Planejador}\label{avaplanejador}
 
-\textbf{Suporte a paralelismo}
-\textbf{\textit{Hardware targetability}}
-\textbf{\textit{Niche targetability}}
-\textbf{Suporte a modularidade}
-\textbf{Robustez}
-\textbf{Tempo de desenvolvimento}
-\textbf{Flexibilidade em tempo de execução}
-\textbf{Desempenho em executar tarefas}
+Assim como a camada Executivo, os testes da camada Planejador é a avaliação das
+responsabilidades desenvolvidas para a camada no contexto dos critérios de
+Arkin, ou seja, é a análise dos \textbf{controle de missão}, \textbf{agendador}
+e \textbf{cartógrafo} em face aos critérios.
+
+As definições de tipos de missões, simples, complexas e desconhecidas,
+introduzidas na subseção~\ref{missioncontrol}, mostram a decomposição
+estabelecida, e estimulam uma implementação em módulos na camada Planejador.
+Portanto, o \textbf{controle de missão} traduz as missões complexas, isto é,
+decompõe as missões complexas em missões simples, de maneira sequencial ou paralela,
+provendo o \textbf{Suporte à modularidade} e \textbf{Suporte ao paralelismo}
+dos critérios de Arkin.
+
+Na classe missão, três métodos devem ser implementados: $mission(arguments)$,
+onde as tarefas da missão são implementadas sequencialmente, pertencente à
+camada Executivo; $reactives(arguments)$, onde são definidos os
+\textit{processos reativos específicos} da missão, também pertencente à camada
+Executivo; e $execute(arguments)$, onde o método $mission(arguments)$ é
+executado, junto com as missões simples que compõe as missão, de maneira
+paralela ou sequencial. A organização cria uma ferramenta para implementação de
+missões, agilizando o \textbf{Tempo de desenvolvimento}. Além disso, a
+flexibilidade na modelagem das missões complexas e o paralelismo permitem a
+otimização do \textbf{Desempenho em executar tarefas}, sem comprometer a camada Executivo.
+
+A \textbf{Robustez} da arquitetura pertence à camada Executivo, nas ramificações
+dos \textit{outcomes}, e aos \textbf{Agendador} e \textbf{controle de missão},
+na camada Planejador. Erros nas missões programadas são agendadas para nova
+execução, no futuro, porém esta responsabilidade ainda não foi implementada na
+camada Planejador, logo não será analisada nos resultados. O feedback
+ao usuário disponível pelo \textbf{controle de missão}, que se comunica à camada
+Executivo, também é uma forma de \textbf{Robustez}, pois é uma informção que
+pode ser interpretada e utilizada para algumas tomadas de decisão. 
+
+
+O \textbf{\textit{Niche targetability}} é garantido pela flexibilidade na
+implementação das missões complexas do \textbf{controle de missão}, e a
+diversidade do \textbf{cartógrafo}, o qual pode gerar diversos modelos de mundo,
+dependendo da aplicação, comunicando-se com os algoritmos da camada Executivo.
+
+Como a camada Executivo, a \textbf{Flexibilidade em tempo de execução} é
+comprometida propositalmente para simulações serem exaustivamente avaliadas
+antes da execução do sistema autônomo no robô.
+
+\textbf{Exemplo - simulação missão complexa INSPECTION(['VIDEO'],[80,'fast'])}
+
+Na simulação da camada Planejador, é avaliado apenas o \textbf{controle de
+missão}, pois, apesar de as outras responsabilidades terem sido discutidas
+previamento e seu funcionamento interno detalhado, elas não foram totalmente
+implementadas e integradas à arquitetura.
+
+As etapas da simulação são: requisição de missão complexa pelo usuário; tradução
+da missão complexa; execução da missão; feedback ao usuário. Como a interface de
+usuário ainda não está finalizada, as mensagend de usuário podem ser
+perfeitamente simuladas via terminal.
+
+Na camada Planejador, há três \textit{threads} esperando mensagens de ROS da
+interface de usuário: 1) \textit{thread} que aguarda a mensagem da missão; 2)
+\textit{thread} que espera o comando ``Play'', o qual dá início a execução; e
+3) \textit{thread} $\textbf{STOP}$, que finaliza a execução, isto é, aborta o
+sistema autônomo (todas as suas missões e processos). Para o exemplo de missão
+complexa $\textbf{INSPECTION}$, são enviadas as mensagens: 1)
+[[1,[0],['slow',80,1,0,True]]] ao tópico \textit{'DORIS/MCS/Mission'}
+(mensagem de missão complexa, onde 1 representa a missão $\textbf{INSPECTION}$,
+[0] representa inspeção por vídeo, e ['slow',80,1,0,True] são os parâmetros
+da missão simples $\textbf{GOTO}$); 2) ``Play'' ao tópico
+\textit{'DORIS/MCS'}, inicializando a execução do sistema autônomo.
+
+O  \textbf{controle de missão} chama o método $execute(arguments)$ da missão
+complexa \textbf{INSPECTION}, o qual a decompõe, como pode ser visto na
+figura~\ref{executeinspection}. Na figura, temos: 
+\begin{itemize}
+  \item Em verde, primeiramente, é executada a missão principal
+  \textbf{INSPECTION\_INIT}, composta por uma tarefa (módulo
+  \textbf{SUPPRESSION}), cujo \textbf{SUPPRESSION\_MAIN} aguarda a finalização
+  da missão, isto é, fim da missão \textbf{INSPECTION}. Esta missão principal é
+  necessária, pois ela que ``segura'' a execução de toda a missão complexa,
+  podendo cancelá-la por completo, se requisitada;
+  \item Em azul, logo em seguida, é executada a missão simples \textbf{DETECT},
+  que inicializa o algoritmo de detecção de anomalias. É uma missão em paralelo,
+  pois ela é executada até o fim da missão complexa;
+  \item Em vermelho, estão representadas as missões simples sequenciais.
+  ``join()'' em um \textit{thread} significa que uma missão simples está sendo
+  executada em uma nova \textit{thread}, mas a \textit{thread} principal
+  (missão complexa) só prossegue após a finalização da missão simples em
+  ``join()'', o que mostra o caráter sequencial. As missões simples sequenciais
+  são: $\textbf{GOTO(80,'slow')}$, $\textbf{StopDETECT}$ e
+  $\textbf{StopINSPECTION}$. A missão simples $\textbf{StopINSPECTION}$ deve
+  existir, pois finaliza a missão simples principal \textbf{INSPECTION\_INIT}.
+\end{itemize}
+ 
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.8\columnwidth]{figs/executeinspection.png}
+\caption{Método $execute$ da missão \textbf{INSPECTION}.}
+\label{executeinspection}
+\end{figure}
+
+Essa metodologia deve ser seguida em todas as implementações de missões
+complexas e, futuramente, em missões desconhecidas. A análise da simulação
+(execução da missão complexa) se torna, então, equivalente à análise da execução
+das missões simples que a compõe, e pode ser realizada pelo smach\_viewer. A
+figura~\ref{inspectionfull} mostra as missões simples e processos reativos em
+execução, quando a missão complexa \textbf{INSPECTION} é inicializada. Segue a
+legenda de cores:
+\begin{itemize}
+  \item Em vermelho, estão destacadas as missões simples: \textbf{GOTO}
+  (sequencial) e \textbf{DETECT} (paralela);
+  \item Em azul, o \textbf{processo reativo de recurso disponível}:
+  \textbf{EPOS}, o qual verifica o status dos motores e drivers EPOS
+  (hardwares). Observe que há a necessidade de implementação de outro
+  \textbf{processo reativo de recurso específico}: \textbf{CAMERA}, que verificá
+  o status da câmera e pode abortar a missão \textbf{DETECT} e
+  \textbf{INSPECTION} caso o recurso não seja detectado;
+  \item Em verde, os \textbf{processos reativos vitais}: \textbf{Charge}, que
+  verifica o status da bateria, e \textbf{StateOfTemp}, que verifica a temperatura e umidade do robô;
+   \item Em amarelo, o \textbf{processo reativo específico} da missão simples
+   \textbf{GOTO}: \textbf{OA} (\textit{ObstacleAvoidance}), que detecta
+   objetos no trilho. Neste exemplo, as outras missões simples não possuem
+   \textbf{processos reativos específicos}, caso tivessem, estes seriam
+   executados sequencialmente, juntos às missões.
+\end{itemize}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.8\columnwidth]{figs/inspectionfull.png}
+\caption{Missões e processos na execução da missão complexa \textbf{INSPECTION}.}
+\label{inspectionfull}
+\end{figure}
+
+%TODO Falar de metodo que da feedback da porcentagem da missao
