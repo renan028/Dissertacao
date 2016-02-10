@@ -1,1 +1,132 @@
-\chapter{Conclusões}
+\chapter{Conclusões e trabalhos futuros}
+
+A dissertação ``Arquitetura híbrida e controle de missão de um robô móvel guiado
+por trilhos'' foi dividia em três partes principais: revisão bibliográfica,
+arquitetura proposta, e resultados.
+
+A revisão bibliográfica, capítulo~\ref{bibliografia}, apresentou os conceitos
+básicos (seção~\ref{conceitos}) para o entendimento da dissertação, de acordo
+com os principais roboticistas, e o entendimento do autor em relação aos
+conceitos. Os conceitos de arquitetura robótica e controle de missão foram bem
+explorados, citando diversos pensadores da literatura. Entretanto, algumas ideias conflitantes exigiram
+maior conhecimento do tema e a criação de novas definições pelo autor, algumas
+mais gerais. 
+
+O capítulo~\ref{bibliografia} faz uma revisão detalhada e cronológica dos
+paradigmas da robótica e suas principais arquiteturas: deliberativa, reativa, e híbrida, comentando
+vantagens, desvantagens e mostrando aplicações em robôs pioneiros, de transição
+e atuais. A análise das arquiteturas conclui que a arquitetura híbrida de três
+camadas é aquela com o maior número de aplicações complexas e bem sucedidas e
+que deve ser explorada para o robô de estudo, DORIS.
+
+Por fim, a revisão bibliográfica explora os diferentes ambientes de
+desenvolvimento de software em robótica (RDEs), apresentando vantagens e
+desvantagens dos principais e mais utilizados na literatura. Uma avaliação
+competitiva mostrou que ROS e SMACH são ferramentas excelentes para as camadas
+Funcional e Executivo, respectivamente, e foram explorados no desenvolvimento na
+arquitetura proposta pelo autor.
+
+A arquitetura proposta, capítulo~\ref{arquipro}, é a aplicação do conhecimento
+adquirido pelo autor, durante a revisão bibliográfica, no desenvolvimento de uma
+arquitetura robótica, tentando aproveitar as vantagens da fusão de arquiteturas
+deliberativas e reativas, e contornando suas desvantagens. Na arquitetura
+híbrida de três camadas, há variadas formas de implementação das camadas e suas
+responsabilidades também variam na literatura. Dessa forma, o autor divide o
+capítulo pela implementação das três camadas, destacando e compilando as
+responsabilidades das camadas apontadas na literatura, mas na visão do autor de
+como deve ser a subdivisão. Além disso, novos conceitos são definidos para
+garantir modularidade e flexibilidade da solução, como plano de missão, missão
+simples, missão complexa, tarefas, e processos reativos.
+
+A camada Planejador é implementada com as responsabilidades controle de missão,
+agendador e cartógrafo. O primeiro é uma interface usuário-robô,
+traduzindo os comando e missões do nível superior ao nível Executivo, e
+exibindo o feedback das missões ao operador. O agendador memoriza o plano
+de missão dentro do robô e marca um horário para execução, e possui um
+algoritmo de recuperação de falhas para reagendar o plano. O cartógrafo é
+uma compilação de mapas, gerencia os modelos, cria novos modelos do mundo para
+otimizar as tarefas e os mantém atualizados com a ajuda da camada Funcional.
+Apesar de toda a lógica de cada responsabilidade ser comentada, apenas o
+controle de missão foi finalizado e simulado. 
+
+A camada Executivo usa SMACH como ferramenta para modelagem de tarefas do robô,
+mas organiza a implementação nas responsabilidades sequenciador, selecionador,
+monitoramento e recuperação de erros, e gerenciamento de recursos, de forma a
+garantir modularidade, flexibilidade, facilidade de implementação e desempenho
+de execução. Além disso, é desenvolvida uma arquitetura de subsunção, na camada, 
+com a ferramenta SMACH e ROS, obtendo assim as vantagens da função de coordenação competitiva
+para tarefas conflitantes. As desvantagens da subsunção, como
+\textit{situatedness} e escalabilidade, são contornadas com uma deliberação na
+camada.
+
+A camada Funcional utiliza ROS como \textit{framework} e comunicação entre
+componentes. Os componentes foram desenvolvidos em módulos e na forma
+recomendada pelos desenvolvedores de ROS e CLARAty, estado da arte na
+implementação Funcional. É um software orientado a objeto, obtendo assim modularidade de
+hardware, e estruturação apropriada de software para usar as propriedades de
+herança. Nesta camada ainda é desenvolvido o algoritmo de planejamento de
+trajetória e velocidades (\textit{Motion Planning}). Como DORIS possui um
+planejamento de trajetória muito simplificado, o foco está no planejamento de
+velocidades no trilho.
+
+Ao fim do detalhamento da implementação, o documento segue para os resultados da
+arquitetura, onde DORIS é o estudo de caso da arquitetura proposta. Novamente,
+dada a modularidade da solução, os testes das camadas podem ser realizados
+independentemente e, portanto, o capítulo~\ref{result} foi dividido em camada
+Funcional, Executivo e Planejador. Uma metodologia de testes foi proposta e as
+camadas são avaliadas pelos critérios sugeridos por Arkin.
+
+A avaliação de resultados da camada Funcional são testes exaustivos de
+componentes com os hardwares do robô. Drivers de sensores e atuadores, e
+algoritmos são testados, e o robô pode ser teleoperado com joystick ou por
+interface web. O repositório ROS e a organização de um software orientado
+a objeto aumentam a facilidade de implementação e passam por todos os
+critérios de Arkin com excelência.
+
+A avaliação da camada Executivo é a simulação das missões simples e tarefas
+modeladas, a arquitetura de subsunção implementada, e as desvantagens
+contornadas. Todas as responsabilidades da camada foram avaliadas e inseridas
+nos critérios de Arkin. Uma missão simples foi decomposta, detalhada e
+completamente analisada nesta etapa. Além disso, a ferramenta SMACH e o
+visualizador smach\_viewer foram excepcionalmente importantes para a
+solução, garantindo o paralelismo e a modularidade.
+
+Por fim, a camada Planejador foi avaliada perante os critérios de Arkin. A
+metodologia imposta na implementação da camada e a organização,
+criação e definição de novos conceitos de missões garantiram a modularidade,
+paralelismo e flexibilidade da solução. Os testes mostraram o sistema autônomo
+integrado e em funcionamento.
+
+Diante de tudo que foi exposto, a dissertação ``Arquitetura híbrida e controle de missão de um robô móvel guiado
+por trilhos''  é um estudo profundo no tema de arquiteturas robóticas e a
+tentativa de compilar ideias, criar novos conceitos e propor uma arquitetura
+híbrida mais geral para robôs autônomos na aplicação de inspeção, e que possuem
+desafios semelhantes ao DORIS, isto é, AUVs e UGVs. A arquitetura se inspira na
+natureza, no funcionamento do corpo humano e de outros animais, para criar uma
+metodologia intuitiva de implementação.
+
+\section{Trabalhos futuros}
+
+Os trabalhos futuros se referem às responsabilidades não finalizadas para cada
+camada da arquitetura híbrida de três camadas proposta, e à integração das
+camadas no robô, isto é, incluir o sistema autônomo no robô, sair do ambiente
+de simulação.
+
+Na camada Funcional, são necessárias implementações de algoritos SLAM para o
+cartógrafo da camada Planejador, a integração dos diversos algoritmos de
+detecção de anomalias, o algoritmo de localização, e controle do manipulador.
+
+
+Na camada Executivo, é necessária a modelagem de missões e tarefas em relação ao
+manipulador do robô e outras funcionalidades simples. A camada Executivo já
+possui todas as responsabilidades finalizadas e simuladas, de forma que apenas
+alguns ajustes e modelagem de novas funcionalidades são necessárias.
+
+Na camada Planejador, é necessário desenvolver a interface de usuário, e as
+responsabilidades de agendador e cartógrafo. O cartógrafo depende da camada
+Funcional e deve ser implementada concomitantemente. O agendador não é
+essencial para o sistema autônomo, mas importante para um robô de inspeção e
+outras aplicações, logo é necessária para uma arquitetura mais geral.
+
+Por fim, são necessários testes da arquitetura em outros robôs, a fim de testar
+o critério \textit{niche targetability} de Arkin.
