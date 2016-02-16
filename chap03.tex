@@ -154,9 +154,8 @@ responsabilidades:
 \end{itemize}
 
 Muitas arquiteturas especializadas em planejamento de trajetórias colocam
-esta responsabilidade também para a camada Planejador, outras separam
-esta responsabilidade em duas camadas, como um planejamento global e um
-planejamento local. Na DORIS, não há um planejamento de trajetória, já que o
+esta responsabilidade também para a camada Planejador, outras a separam em duas
+camadas, como planejamento global e planejamento local. Na DORIS, não há um planejamento de trajetória, já que o
 trilho é um mapa unidimensional, porém há um planejamento de velocidades
 (parte do planejamento de movimento - \textit{Motion Planning}) atribuído à
 camada Funcional.
@@ -184,6 +183,17 @@ como uma AFSM, porém é uma definição mais geral por não necessariamente
 envolver um par estímulo-reação/sensor-atuador. Um conjunto de estados com um
 fim compõe uma tarefa.
 
+A figura~\ref{planejadorfig} mostra a arquitetura da camada Planejador,
+destacando suas responsabilidades e suas interligação com outras camadas e
+internamente.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=1\columnwidth]{figs/arqprop/planejador.pdf}
+\caption{Arquitetura da camada Planejador.}
+\label{planejadorfig}
+\end{figure}
+
 
 \subsubsection{Controle de missão}\label{missioncontrol} 
 
@@ -197,7 +207,6 @@ A interface de usuário da DORIS possui o conjunto de missões e seus parâmetros
 disponíveis para o operador. O usuário pode adicionar missões sequencialmente,
 salvar um plano de missão, agendá-lo e/ou executá-lo (botão \textit{Play}). Além
 disso, a interface disponibiliza os logs das missões.
-%TODO figura da interface
 
 A camada Planejador enviará missões à camada Executivo, quando estas estiverem
 agendadas ou quando o usuário requisitar. Na subseção~\ref{hibrida}, foi
@@ -628,6 +637,17 @@ adicionadas algumas funcionalidades à camada a fim de garantir todas as
 responsabilidades de uma camada Executivo. A camada Executiva não executa
 algoritmos de alto processamento, como a camada Funcional, logo pode ser
 escolhida a linguagem Python para programação.
+
+A figura~\ref{executivofig} mostra a arquitetura da camada Planejador,
+destacando suas responsabilidades e suas interligação com outras camadas e
+internamente.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=1\columnwidth]{figs/arqprop/executivo.pdf}
+\caption{Arquitetura da camada Executivo.}
+\label{executivofig}
+\end{figure}
 
 
 \subsubsection{Sequenciador e Selecionador}
