@@ -2,44 +2,87 @@
 
 É certo afirmar que a robótica e sistemas autônomos são cada vez mais explorados
 no meio acadêmico e industrial, por ser um desafio em várias disciplinas,
-prover retorno financeiro, e melhores condições de vida e trabalho aos seres
-humanos. Este trabalho é um estudo de arquiteturas robóticas de sistemas
-inteligentes, isto é, sistemas mecânicos autônomos \cite{murphy2000introduction}. Ser ``inteligente'' implica
-que o robô não executa ações simples e repetitivas, ou seja, é o oposto de
-robôs em linhas de produção. ``Sistema mecânico'' implica que o robô não é um
-simples computador, mas possui partes mecânicas e pode interagir fisicamente
-com o mundo em que está inserido, como mover-se, e modificá-lo.  Por último,
-``autônomo'' indica que o robô pode operar independentemente, sem a necessidade
-de um operador, pode se adaptar a mudanças do mundo em que está inserido ou de
-si mesmo, e continuar a alcançar seus objetivos.
+prover retorno financeiro, e melhores condições de vida e trabalho. Este
+trabalho é um estudo de arquiteturas robóticas de sistemas inteligentes, isto
+é, sistemas mecânicos autônomos \cite{murphy2000introduction}. 
+
+Ser ``inteligente'' implica que o robô não executa ações simples e repetitivas,
+ou seja, é o oposto de robôs em linhas de produção, como manipuladores industriais.
+``Sistema mecânico'' implica que o robô não é um simples computador, mas possui partes mecânicas e pode
+interagir fisicamente com o mundo em que está inserido, como mover-se, e
+modificá-lo.  Por último, ``autônomo'' indica que o robô pode operar
+independentemente, sem a necessidade de um operador, pode se adaptar a mudanças
+do mundo em que está inserido ou de si mesmo, e continuar a alcançar seus objetivos.
 
 Há diversas obras da ficção que são ótimos exemplos de sistemas mecânicos
 autônomos inteligentes, como o ``Exterminador do Futuro'', ``Ava'' de
 Ex-Machina, e ``Wall-E''. Sistemas desta complexidade ainda não são uma
 realidade, mas há esforços na literatura de sistemas complexos humanóides, como
-o robô Asimo \cite{sakagami2002intelligent}, e robôs móveis autônomos
-espaciais, como o Opportunity da NASA. Os sistemas autônomos requerem integração
-multidisciplinar, como a integração de sistema mecânico, potência, eletrônica, controle, ciência da computação, \textit{Machine learning}, e
-outros. A literatura para cada sistema é ampla e o estado da arte de cada
-sistema individual não pertence ao escopo deste trabalho, mas sim o sistema de
-integração e o software que transforma o sistema mecânico em um robô inteligente
-e autônomo, a arquitetura robótica.
+o robô Asimo \cite{sakagami2002intelligent}, e robôs móveis autônomos e
+teleoperados espaciais, como o Opportunity da NASA. Os sistemas autônomos
+requerem integração multidisciplinar, como a integração de sistema mecânico,
+potência, eletrônica, controle, ciência da computação, \textit{Machine learning}, e outros. A
+literatura para cada sistema é ampla e o estado da arte de cada sistema
+individual não pertence ao escopo deste trabalho, mas sim o sistema de
+integração e o software que transforma o sistema mecânico em um robô
+inteligente e autônomo, a arquitetura robótica.
 
-As arquiteturas robóticas começaram a ser idealizadas desde 1960, junto com os
-estudos emergentes de inteligência artificial, e percorreram, durante anos, paradigmas
+As arquiteturas robóticas, escopo deste trabalho, começaram a ser idealizadas
+desde 1960, junto com os estudos emergentes de inteligência artificial, e percorreram, durante anos, paradigmas
 em sua construção. Paradigma é uma filosofia ou conjunto de premissas ou
 técnicas que caracteriza uma abordagem a uma classe de problemas. Não há
-paradigma correto ou errado, mas alguns problemas são melhor resolvidos em um
-paradigma em relação a outro. Por exemplo, em problemas de cálculo, alguns são
-melhor resolvidos em uma abordagem de coordenadas cartesianas, outros em uma
-abordagem de coordenadas polares. Aplicar o paradigma correto a um determinado
-problema pode facilitar sua solução, logo o estudo dos paradigmas da
-inteligência artificial robótica é chave para o desenvolvimento de arquiteturas
-robóticas, sua compreensão, vantagens e desvantagens essenciais para este
-trabalho.
+paradigma correto ou errado, e o mesmo pode se afirmar para as arquiteturas
+robóticas, mas alguns problemas são melhor resolvidos em um paradigma em
+relação a outro. Por exemplo, em problemas de cálculo, alguns são resolvidos
+facilmente em uma abordagem de coordenadas cartesianas, outros em uma abordagem
+de coordenadas polares. Aplicar o paradigma correto a um determinado problema
+pode facilitar sua solução, logo o estudo dos paradigmas da inteligência
+artificial robótica é chave para o desenvolvimento de arquiteturas adequadas aos
+diversos problemas na construção de sistemas autônomos. Dessa forma, os
+paradigmas da robótica são explicitados e um estudo da arte de arquiteturas
+robóticas é realizado para o desenvolvimento de uma proposta de arquitetura para
+robôs móveis, utilizando algumas ferramentas já disponíveis e de código aberto.
 
+A classe de robôs que mais demanda sistemas inteligentes são robôs móveis. Esta
+classe apresenta diversos desafios, como a locomoção (atuadores) e mecânica,
+percepção (sensores) e processamento, teoria de controle, localização,
+planejamento de trajetória e navegação, entre outros. Os desafios podem ser
+explorados individualmente, e a literatura possui diversos estudos individuais
+em relação à localização ou sistemas de locomoção, por exemplo. Entretanto, é a
+integração de todas as soluções individuais de uma determinada maneira que
+compõe o sistema. O estudo de sistemas autônomos é a investigação de
+como integrar todos os sistemas e soluções para os diversos desafios,
+e ainda fornecer um software de adaptação às possíveis modificações do meio e do
+próprio sistema. Neste trabalho, após o estudo dos paradigmas da robótica, é
+analisado o estado da arte de arquiteturas robóticas de robôs autônomos
+subaquáticos (AUV), veículos autônomos não tripulados (UGV), e outros sistemas.
+
+A compreensão e entendimento das diversas arquiteturas robóticas e a avaliação
+de casos bem sucedidos, suas vantagens e desvantagens permitem a análise crítica
+dos sistemas e a proposta de modificações e melhoramentos às
+arquiteturas das subclasses de robôs. O autor busca, então, propor uma
+implementação de arquitetura robótica para uma subclasse de sistemas, generaliza
+para outras subclasses e utiliza como estudo de caso o robô DORIS, um veículo de inspeção guiado por trilhos. É
+desenvolvida uma metodologia geral para a avaliação de arquiteturas de mesma
+complexidade e são realizadas simulações para a análise dos critérios.
 
 \section{Motivaç{\~ a}o}
+%TODO pq robos? pq arquitetura?
+Hostile environments such as Mars trigger even more unusual locomotion mechanisms
+(figure 1.2). In dangerous and inhospitable environments, even on Earth, such teleoperated
+systems have gained popularity (figures 1.3, 1.4, 1.5, 1.6). In these cases, the low-level
+complexities of the robot often make it impossible for a human operator to directly control
+its motions. The human performs localization and cognition activities, but relies on the
+robot's control scheme to provide motion control.
+For example, Plustech's walking robot provides automatic leg coordination while the
+human operator chooses an overall direction of travel (figure 1.3). Figure 1.6 depicts an
+underwater vehicle that controls six propellers to autonomously stabilize the robot submarine
+in spite of underwater turbulence and water currents while the operator chooses position
+goals for the submarine to achieve.
+Other commercial robots operate not where humans cannot go but rather share space
+with humans in human environments (figure 1.7). These robots are compelling not for reasons
+of mobility but because of their autonomy, and so their ability to maintain a sense of
+position and to navigate without human intervention is paramount.
 
 To see the importance of an architecture, consider building a house or a
 car. There is no right design for a house, although most houses share the
@@ -62,6 +105,28 @@ with a paradigm can be used to build an artificially intelligent robot.
 
 \section{Objetivo}
 
+O objetivo deste trabalho é o estudo da arquitetura robótica de sistemas
+mecânicos inteligentes, a proposta de implementação de uma arquitetura
+intuitiva, eficiente, robusta e flexível, e a criação de uma metodologia
+mais objetiva para avaliação do sistema.
+
 \section{Metodologia}
 
-\section{Organizaç{\~ a}o da tese}
+\section{Organização da tese}
+
+O capítulo~\ref{bibliografia} faz uma revisção bibliográfica, apresentando
+conceitos básicos da literatura necessários para o entendimento da dissertação,
+desenvolvendo novos conceitos pela visão do autor, estudando os paradigmas da
+robótica, a evolução das arquiteturas robóticas, e casos de robôs com análise
+crítica. 
+
+O capítulo~\ref{arquipro} faz uma proposta de implementação de arquitetura
+robótica, apresenta o robô DORIS, estudo de caso deste trabalho, e detalha a
+implementação da arquitetura para o robô.
+
+O capítulo~\ref{result} propõe uma metodologia de avaliação, realiza simulações
+e testes, e analisa a implementação realizada para a arquitetura robótica do
+capítulo antetior pelos critérios estabelecidos.
+
+Por fim, o capítulo~\ref{conclusao} conclui o estudo, faz uma análise crítica do
+desenvolvimento e propõe trabalhos futuros no tópico.
