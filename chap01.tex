@@ -66,23 +66,71 @@ para outras subclasses e utiliza como estudo de caso o robô DORIS, um veículo de
 desenvolvida uma metodologia geral para a avaliação de arquiteturas de mesma
 complexidade e são realizadas simulações para a análise dos critérios.
 
-\section{Motivaç{\~ a}o}
-%TODO pq robos? pq arquitetura?
-Hostile environments such as Mars trigger even more unusual locomotion mechanisms
-(figure 1.2). In dangerous and inhospitable environments, even on Earth, such teleoperated
-systems have gained popularity (figures 1.3, 1.4, 1.5, 1.6). In these cases, the low-level
-complexities of the robot often make it impossible for a human operator to directly control
-its motions. The human performs localization and cognition activities, but relies on the
-robot's control scheme to provide motion control.
-For example, Plustech's walking robot provides automatic leg coordination while the
-human operator chooses an overall direction of travel (figure 1.3). Figure 1.6 depicts an
-underwater vehicle that controls six propellers to autonomously stabilize the robot submarine
-in spite of underwater turbulence and water currents while the operator chooses position
-goals for the submarine to achieve.
-Other commercial robots operate not where humans cannot go but rather share space
-with humans in human environments (figure 1.7). These robots are compelling not for reasons
-of mobility but because of their autonomy, and so their ability to maintain a sense of
-position and to navigate without human intervention is paramount.
+\section{Motivação}
+
+A motivação deste trabalho é baseada em duas perguntas principais: por quê
+utilizar sistemas autônomos? por quê desenvolver uma arquitetura robótica para
+sistemas autônomos? As subseções a seguir tentam motivar esses aspectos.
+
+\subsection{Sistemas autônomos}
+
+A utilização de robôs na indústria é uma realidade desde 1962, quando o primeiro
+robô industrial executa soldagem na fábrica da General Motors. Desde então,
+robôs assumiram diferentes aplicações na indústria e suas principais razões para
+uso são:
+
+\begin{itemize}
+  \item Redução de custo em operação;
+  \item Quando o ser humano não é capaz de executar a tarefa, como manipulação
+  de semicondutores;
+  \item Quando o manuseio do produto por um ser humano não é higiênico, como
+  manipulação de medicamentos e alimentos;
+  \item Quando o produto faz mal à saúde do ser humano, como o manuseio de
+  substâncias químicas ou radioativas;
+  \item Quando o maquinário pode colocar a vida do operador em risco, como
+  prensas;
+  \item Quando a tarefa pode prejudicar a saúde do ser humano por repetição;
+  \item Quando é requerida extrema qualidade e eficiência, impossíveis a um ser
+  humano;
+  \item Quando o ambiente é impróprio para o ser humano, como ambientes
+  explosivos, e outros.
+\end{itemize} 
+
+Os robôs, aos poucos, começaram a sair das fábricas e serem usados em
+aplicações que exigiram o desenvolvimento de uma nova classe de robôs, os
+robôs móveis, o que acelerou linhas de pesquisa na área da telerobótica. A
+teleoperação indica a operação de uma máquina à distância, e requer o conjunto:
+operador, robô e controle remoto. 
+
+As aplicações de robôs móveis teleoperados
+são diversas, como os veículos operados remotamente (ROVs) para exploração do
+fundo do mar, robôs para desarmamento de bombas, e robôs espaciais, como o
+Curiosity da NASA. Estes sistemas teleoperados são também chamados de sistemas
+semi-autônomos, já que o nível de complexidade da programação de baixo nível do
+robô é impossível de ser controlada diretamente por um operador. O ser humano
+pode realizar a localização e as atividades cognitivas, mas o esquema de
+controle embarcado ao robô é o que provê o controle de movimento. Por
+exemplo, o veículo subaquático descrito em \cite{bellingham2008observation} controla os
+seis propulsores (atuadores) de maneira autônoma e estabiliza o robô em águas
+turbulentas e com correnteza, enquanto o operador escolhe posições objetivo para
+o robô.
+
+Os níveis de autonomia podem ser extrapolados até veículos completamente
+autônomos como os AUVs, o carro autônomo da Google, e robôs já comerciais, como
+o Roomba da iRobot para limpeza doméstica. O desenvolvimento de sistemas
+autônomos absorve as motivações já citadas, mas os fatores que mais estimulam a
+adoção destes sistemas, como exposto em \cite{campbell2010intelligent}, são a
+confiabilidade do sistema, a confiança do ser humano no sistema, treinamento e o
+conhecimento dos modos de falha. O sistema de piloto automático de aviões, por
+exemplo, levou tempo até ser aceito, porém o número de variáveis e o risco
+motivaram o desenvolvimento de sistemas robustos, confiáveis e autônomos.
+
+O robô DORIS, caso de estudo deste trabalho, é um robô de inspeção para
+plataformas de petróleo, um ambiente de grande perigo, risco de
+explosão, condições climáticas desfavoráveis, e que, portanto, exige grande grau
+de autonomia por estar diretamente ligado com risco de vidas humanas.
+
+\subsection{Arquiteturas}
 
 To see the importance of an architecture, consider building a house or a
 car. There is no right design for a house, although most houses share the
