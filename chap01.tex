@@ -1,4 +1,4 @@
-\chapter{Introdução}
+\chapter{Introdução}\label{intro}
 
 É certo afirmar que a robótica e sistemas autônomos são cada vez mais explorados
 no meio acadêmico e industrial, por ser um desafio em várias disciplinas,
@@ -39,8 +39,8 @@ de coordenadas polares. Aplicar o paradigma correto a um determinado problema
 pode facilitar sua solução, logo o estudo dos paradigmas da inteligência
 artificial robótica é chave para o desenvolvimento de arquiteturas adequadas aos
 diversos problemas na construção de sistemas autônomos. Dessa forma, os
-paradigmas da robótica são explicitados e um estudo da arte de arquiteturas
-robóticas é realizado para o desenvolvimento de uma proposta de arquitetura para
+paradigmas da robótica são explicitados e um estudo do estado da arte de
+arquiteturas robóticas é realizado para o desenvolvimento de uma proposta de arquitetura para
 robôs móveis, utilizando algumas ferramentas já disponíveis e de código aberto.
 
 A classe de robôs que mais demanda sistemas inteligentes são robôs móveis. Esta
@@ -129,39 +129,54 @@ exemplo, levou tempo até ser aceito, porém o número de variáveis e o risco
 motivaram o desenvolvimento de sistemas robustos, confiáveis e autônomos.
 
 O robô DORIS, caso de estudo deste trabalho, é um robô de inspeção para
-plataformas de petróleo, um ambiente de grande perigo, risco de
-explosão, condições climáticas desfavoráveis, e que, portanto, exige grande grau
-de autonomia por estar diretamente ligado com risco de vidas humanas.
+plataformas de petróleo, um ambiente de grande perigo com risco de
+explosão, condições climáticas desfavoráveis, portanto, exige um grande
+grau de autonomia para proteção do robô e das pessoas que circulam no mesmo
+ambiente de trabalho.
 
 \subsection{Arquiteturas}
 
-To see the importance of an architecture, consider building a house or a
-car. There is no right design for a house, although most houses share the
-same components (kitchens, bathrooms, walls, floors, doors, etc.). Likewise
-with designing robots, there can be multiple ways of organizing the compo-
-nents, even if all the designs follow the same paradigm. This is similar to cars
-designed by different manufacturers. All internal combustion engine types
-of cars have the same basic components, but the cars look different (BMWs
-and Jaguars look quite different than Hondas and Fords). The internal com-
-bustion (IC) engine car is a paradigm (as contrasted to the paradigm of an
-electric car). Within the IC engine car community, the car manufacturers each
-have their own architecture. The car manufacturers may make slight mod-
-ifications to the architecture for sedans, convertibles, sport-utility vehicles,
-etc., to throw out unnecessary options, but each style of car is a particular
-instance of the architecture. The point is: by studying representative robot
-architectures and the instances where they were used for a robot application,
-we can learn the different ways that the components and tools associated
-with a paradigm can be used to build an artificially intelligent robot.
+Para entendermos a importância de uma arquitetura, considere construir uma casa
+ou um carro. Não há um projeto certo para uma casa, porém a maioria das casas
+possuem os mesmos componentes: cozinha, banheiro, paredes, chão, portas e
+outros. Isto é similar ao exemplo de carros, produzidos por diferentes
+fabricantes, todos os tipos de motores de combustão interna possuem os mesmos
+componentes básicos, porém os carros parecem diferentes. 
 
+Voltando ao conceito de paradigma (seção~\ref{intro}), a combustão interna dos
+e carros elétricos são dois paradigmas, e dentro da comunidade dos veículos à
+combustão cada fabricante possui a sua própria arquitetura. Os fabricantes podem
+realizar algumas pequenas modificações para carros do tipo sedan, conversível,
+sport e etc, para suprimir algumas opções desnecessárias, mas cada estilo de
+carro é uma instância particular da arquitetura do fabricante.
+
+Os exemplos acima são analogias semelhantes à construção de robôs. Há
+diversas maneiras de organizar seus componentes, mesmo que o
+projeto siga o mesmo paradigma. Dessa forma, o ponto principal é: ao estudarmos
+arquiteturas robóticas e como suas instâncias são usadas para uma determinada
+aplicação, podemos aprender as diferentes formas que os componentes e ferramentas
+associadas a um paradigma podem ser usados para a construção de uma
+inteligência artificial robótica. O estudo de sistemas inteligentes requer,
+portanto, o estudo das arquiteturas robóticas.
 
 \section{Objetivo}
 
-O objetivo deste trabalho é o estudo da arquitetura robótica de sistemas
-mecânicos inteligentes, a proposta de implementação de uma arquitetura
-intuitiva, eficiente, robusta e flexível, e a criação de uma metodologia
-mais objetiva para avaliação do sistema.
+O objetivo deste trabalho é a implementação de uma arquitetura robótica para uma
+classe de robôs móveis com aplicação de inspeção. O estudo de caso
+para esta dissertação é a DORIS, robô \textit{offshore} para inspeção em
+plataformas de petróleo. Portanto, será desenvolvido um sistema autônomo
+inteligente para a DORIS, seguindo uma metodologia e critérios de
+avaliação conforme o estado da arte. 
 
 \section{Metodologia}
+
+A metodologia para alcançar o objetivo proposto passa pelas seguintes etapas:
+estudo dos paradigmas da robótica; estudo de arquiteturas robóticas e suas
+aplicações; pesquisa do estado da arte de ambientes de desenvolvimento robótico;
+análise crítica e solução proposta; desenvolvimento da metodologia de avaliação
+da solução proposta; testes e resultados.
+
+
 
 \section{Organização da tese}
 
