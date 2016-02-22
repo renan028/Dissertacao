@@ -80,24 +80,40 @@ policloreto de polivinila (PVC) e possui seções retas, curvas ortogonais de
 subida, descida, para a direita e para a esquerda. Os segmentos curvos são tubos
 de 1 m dobrados $90^o$, resultando em curvaturas de aproximadamente 630 mm. Um
 trilho para testes foi construído no Centro de Pesquisas e
-Desenvolvimento da Petrobras (CENPES) e sua extensão é cerca de 140 m.
+Desenvolvimento da Petrobras (CENPES) e sua extensão é cerca de 140 m. As
+figuras~\ref{doris} e \ref{cenpes} ilustram o robô, o trilho e o ambiente em que
+trabalha.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.8\columnwidth]{figs/DORIS/2_1.png}
+\caption{A DORIS e o trilho.}
+\label{doris}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.8\columnwidth]{figs/DORIS/doris.JPG}
+\caption{A DORIS no CENPES.}
+\label{cenpes}
+\end{figure}
+
 
 \section{A arquitetura robótica implementada}
 
-Na seção~\ref{doris}, foi apresentado o robô DORIS e suas funcionalidades. Como
+Na seção~\ref{doris}, foi apresentada a DORIS e suas funcionalidades. Como
 foi definido na seção~\ref{conceitos}, pela visão do autor, o conceito de
 \emph{arquitetura robótica} não é equivalente a uma arquitetura de
 software, é necessária a avaliação do robô como um todo, isto é, seus
 elementos de hardware e sua aplicação. O desenvolvedor de ROS
 \cite{quigley2009ros} já afirmava que não há melhor RDE, já que
 todos apresentam vantagens e desvantagens, e o mesmo pode ser afirmado no
-contexto mais amplo de arquitetura robótica. A arquitetura ideal para um robô
-pode ser ineficiente para outro. A arquitetura robótica desenvolvida tenta
+contexto mais amplo de arquitetura robótica e em paradigmas. A arquitetura ideal
+para um robô pode ser ineficiente para outro. A arquitetura robótica desenvolvida tenta
 ser geral para robôs com características e desafios semelhantes ao DORIS, como
 AUVs e UGVs.
 
-DORIS é um robô móvel com a funcionalidade de inspeção em um ambiente não muito
-dinâmico, usando técnicas que exigem grande processamento de imagem (câmeras) e
+DORIS exigem grande processamento de imagem (câmeras) e de
 outros sensores. O usuário final poderá, com o auxílio de uma interface,
 programar as missões: inspeção até uma posição do trilho, inspeção de
 equipamento, ir até uma posição do trilho, e ronda (inspeção global). Além
@@ -121,13 +137,13 @@ desafio DARPA (Stanley) até a aplicação de exploração do robô da NASA no
 planeta Marte. 
 
 Escolhida a arquitetura híbrida de três camadas como arquitetura robótica da
-DORIS, faz-se ainda necessário explicitar a implementação de cada camada, isto
+DORIS, ainda é necessário desenvolver a implementação de cada camada, isto
 é, como e qual executará as funções descritas por Murphy: sequenciador,
-gerenciador de recurso, cartógrafo, planejador de missão, e monitor de
+gerenciador de recurso, cartógrafo, controle de missão, e monitor de
 desempenho. A arquitetura de três camadas é formada por: camada Funcional,
-camada Executiva e camada Planejador, e como cada arquitetura de três camadas
-apresenta suas peculiaridades, as camadas desenvolvidas para o robô DORIS são descritas nas
-subseções adiante.
+camada Executivo e camada Planejador, e como cada arquitetura de três camadas
+apresenta suas peculiaridades, as camadas da DORIS são detalhadas
+adiante.
 
 \subsection{Implementação da camada Planejador}\label{planejador}
 
@@ -144,8 +160,7 @@ responsabilidades:
   \item Controle de missão: como definido na subeção \ref{conceitos}, é a
   interface com o usuário, permitindo que o operador defina as
   missões. Além disso, o controle de missão traduz os comandos de missão do
-  usuário ao robô, provê feedback ao operador (\textit{execution monitoring}), 
- e contém as diretivas do robô.
+  usuário ao robô e provê feedback ao operador (\textit{execution monitoring}).
   \item Agendador: é a responsabilidade de agendar as missões, e reorganizá-las
   quando não há um recurso disponível ou em caso de falha.
   \item Cartógrafo: é a responsabilidade de criar, e realizar a manutenção dos
@@ -162,7 +177,7 @@ camada Funcional.
 
 Antes de detalhar a camada Planejador,
 é necessário definir alguns termos específicos para melhor entendimento desta
-dissertação:
+dissertação.
 
 \textbf{Definição}: \textbf{Plano de Missão} ou \textbf{plano} é o conjunto de
 \textbf{missões} definidas ou escolhidas pelo usuário, em uma interface, a serem
@@ -180,12 +195,11 @@ missão. Uma tarefa pode ser cancelada por outras tarefas (subsunção).
 camada Executivo SMACH. Em linguagem de arquitetura robótica, esta definição se
 confunde com \textbf{comportamentos} por ser um processo básico e ser modelado
 como uma AFSM, porém é uma definição mais geral por não necessariamente
-envolver um par estímulo-reação/sensor-atuador. Um conjunto de estados com um
+envolver um par estímulo-ação/sensor-atuador. Um conjunto de estados com um
 fim compõe uma tarefa.
 
 A figura~\ref{planejadorfig} mostra a arquitetura da camada Planejador,
-destacando suas responsabilidades e suas interligação com outras camadas e
-internamente.
+destacando suas responsabilidades e suas interconexões entre camadas.
 
 \begin{figure}[!ht]
 \centering
@@ -258,12 +272,12 @@ argumentos corretos. Por exemplo:
   Não há \textit{argumentos} para esta missão. Tradução necessária para camada
   Executivo: $\textbf{GOTO(0,'fast')}$.
   \item $\textbf{INSPECTION(x,type)}$: missão para inspecionar um trecho do
-  ambientem.
+  ambiente.
   \textit{Argumentos}: até onde o robô deve inspecionar ($x$ -posição final
   absoluta no trilho); e o tipo de inspeção: vídeo, áudio ou termográfico.
   Tradução: $\textbf{DETECTING\_ANOMALIES(type)}$; $\textbf{GOTO(x,'slow')}$:
   velocidade ``slow'' já que inspeção requer velocidade mínima;
-  $\textbf{STOP\_DETECTING\_ANOMALIES}$.
+  $\textbf{STOP\_DETECTING\_ANOMALIES()}$.
   \item $\textbf{PATROL()}$: realizar uma ronda completa, isto é, inspecionar
   todo o ambiente. Tradução: $\textbf{INSPECTION(lap=1,types)}$ (todos os
   sensores, posição final do trilho).
@@ -273,8 +287,9 @@ argumentos corretos. Por exemplo:
   equipamento com o sensor de vibração através do manipulador, e executar uma
   detecção de anomalias por vibração. Em linguagem da camada Executivo, seria
   $\textbf{GOTO(x,'fast')}$: posição do equipamento (requer verificar mapa de
-  equipamentos); $\textbf{MANIPULATOR\_POSITION\_CONTROL([x,y,z])}$: posição
-  referente ao equipamento; $\textbf{MANIPULATOR\_FORCE\_CONTROL}$;
+  equipamentos, busca no cartógrafo);
+  $\textbf{MANIPULATOR\_POSITION\_CONTROL([x,y,z])}$:
+  posição referente ao equipamento; $\textbf{MANIPULATOR\_FORCE\_CONTROL()}$;
   $\textbf{STOP\_DETECTING\_ANOMALIES()}$.
 \end{itemize}  
 
@@ -283,8 +298,8 @@ descritas no robô, isto é, missões que, até o momento, não pertencem ao
 dicionário do robô. Até esta fase da implementação, DORIS não permite que o
 usuário use missões desconhecidas. O motivo principal disso é que o robô não
 interage com o ser humano de maneira direta, mas apenas através de uma
-interface. Vale, porém, explicitar situações de aplicações robóticas em que
-missões desconhecidas são essenciais:
+interface gráfica. Vale, porém, explicitar situações de aplicações robóticas em
+que missões desconhecidas são essenciais:
 
 \begin{enumerate}
   \item Robô que serve bebidas: uma missão desconhecida é o usuário pedir
@@ -299,12 +314,12 @@ missões desconhecidas são essenciais:
   ``Robô, preciso de uma tesoura'', ``Robô, dê-me uma tesoura'', ``Robô,
   traga-me uma tesoura'' são planos equivalentes, ditos de maneira diferentes.
   Todas estas diferentes formas devem estar disponíveis em alguma base de
-  conhecimento, dentro ou fora do robô, como na nuvem (\textit{cloud}), a qual
+  conhecimento, dentro ou fora do robô, como na núvem (\textit{cloud}), a qual
   deveria ser compartilhada com todos os robôs que exercem a mesma função.
   RoboEarth \cite{hunziker2013rapyuta} é uma ideia visionária que está buscando
   criar uma \textit{internet dos robôs} (como a \textit{internet das coisas}),
   já está sendo integrada ao ambiente ROS, e sua contribuição é criar um
-  repositório na nuvem com missões compartilhadas para todos os robôs que a
+  repositório na núvem com missões compartilhadas para todos os robôs que a
   utilizam.
 \end{enumerate}
 
@@ -338,8 +353,8 @@ subscreve o tópico de \textit{Warnings}, interpreta as mensagens, quando
 necessário, e disponibiliza esta informação no espaço de logs da interface. 
 
 O controle de missão está implementado, mas ainda não embarcado no robô. A
-interface de usuário ainda não foi finalizada, mas testes podem ser realizados
-simulando a interface por mensagens de ROS.
+interface gráfica de usuário ainda não foi finalizada, mas esta pode ser
+simulado por mensagens de ROS, durante os testes.
 
 \subsubsection{Agendador}
 
@@ -347,8 +362,7 @@ O usuário pode armazenar o plano de missões no robô com data e hora. A
 responsabilidade Agendador é verificar a hora agendada para a execução da
 missão, executar a missão na hora correta, e, caso esta não seja bem sucedida e
 o motivo do insucesso for contornável em tempo estimável, reagendar a missão.
-Com o Agendador, o robô ganha uma rotina, o que é importante a DORIS, um robô de inspeção. A responsabilidade Agendador, porém, ainda não foi
-implementada.
+Com o Agendador, o robô ganha uma rotina, o que é importante a DORIS, um robô de inspeção. 
 
 \subsubsection{Cartógrafo}
 
@@ -394,9 +408,8 @@ finalizada na camada Planejador do robô.
 
 \subsection{Implementação da camada Funcional}\label{camadafuncional}
 
-A camada funcional foi a primeira implementada e exaustivamente testada no
-robô DORIS. Como nas outras arquiteturas de três camadas previamente
-apresentadas, a camada Funcional é o nível mais baixo, conecta sensores a
+A camada funcional foi a primeira implementada e exaustivamente testada na
+DORIS. Como nas outras arquiteturas de três camadas previamente apresentadas, a camada Funcional é o nível mais baixo, conecta sensores a
 atuadores, implementa controladores PID, e diversos outros algoritmos, por
 exemplo para a localização do robô. Utiliza-se Ubuntu/Linux como sistema
 operacional e ROS como RDE para a implementação do nível funcional, já que este
@@ -404,7 +417,7 @@ apresenta todas as vantagens descritas na subseção~\ref{ros}, e linguagem de
 programação C++, a fim de se garantir maior eficiência computacional.
 
 A camada funcional seguiu a recomendação dos desenvolvedores do ROS, sendo
-estruturado de maneira semelhante à camada funcional do sistema CLARAty. Neste,
+estruturada de maneira semelhante à camada funcional do sistema CLARAty. Neste,
 a camada funcional é uma interface com todo o sistema de hardware e suas
 capacidades. É um software orientado a objeto, obtendo assim modularidade de
 hardware, e uma estruturação apropriada para usar as propriedades de
@@ -427,8 +440,8 @@ Os diversos componentes, tanto do computador embarcado quanto da base, se
 comunicam através de mensagens ROS, permitindo que a base controle o robô, na
 função de teleoperação \cite{freitas2015embedded}. Os componentes da base não
 fazem parte do escopo desta dissertação, já que não estão ligados à
-autonomia do robô, mas apenas a uma fração do controle de missão, que diz respeito à interface com o usuário e \textit{feedback} dos
-planos ao usuário.
+autonomia do robô, mas apenas a uma fração do controle de missão, que diz
+respeito à interface gráfica.
 
 Dois \textit{Robot Packages} fazem parte da DORIS:
 \textit{General Package} e \textit{DORIS Package}, derivado do primeiro. Outros
@@ -440,7 +453,7 @@ relacionados a vídeo, áudio, tabela de dados, \textit{gamepad} (para controle
 remoto de robôs), e configurações de dispositivos que podem ser usados em outros
 robôs
 
-O \textit{DORIS Package} é um pacote mais específico ao robô DORIS e lida com
+O \textit{DORIS Package} é um pacote mais específico à DORIS e lida com
 seus elementos de hardware e suas funcionalidades. Do ponto de vista de uma
 arquitetura robótica, neste pacote foram implementados os \emph{comportamentos}
 específicos da DORIS.  Os diversos componentes implementados para a DORIS
@@ -448,7 +461,7 @@ foram divididos em funcionalidades, neste trabalho, a fim de proporcionar melhor
 entendimento.
 
 Como já descrito na seção~\ref{doris}, os atuadores para locomoção e para o
-manipulador do DORIS se comunicam via CAN-Bus, que provê velocidade e
+manipulador da DORIS se comunicam via CAN-Bus, que provê velocidade e
 transferência confiável dos dados \cite{corrigan2008introduction}. Esta
 comunicação extra, exigiu a implementação do componente \emph{CANOpen}, que utiliza a biblioteca
 SocketCAN disponivel em Linux. Um componente \emph{EPOS} é classe derivada de
@@ -474,13 +487,14 @@ componentes \emph{MotionController} e \emph{PositionController}.
 Os quatro hardwares EPOS possuem uma malha de controle PD ou
 PID para realizar o controle do robô por velocidade ou corrente, porém de
 maneira independente para cada motor. A sincronia e ajustes dessas malhas de
-controle são realizados no componente \emph{MotionController}. Este componente
-se comunica por serviço de ROS (\textit{service}) com o componente
-\emph{EPOSNodelet}, enviando os valores de velocidade desejados para cada motor.
+controle são realizados no componente \emph{MotionController}. O
+\textit{MotionControllerNodelet} se comunica por serviço de ROS
+(\textit{service}) com o componente \emph{EPOSNodelet}, enviando os valores de
+velocidade desejados para cada motor de maneira síncrona.
 Por exemplo, observe que, em uma curva, devido à distância entre os dois gimbals
 do robô e à distância entre as rodas dos gimbals, os motores devem possuir
-velocidades diferentes. O \emph{MotionController} envia \textit{set-points} de
-velocidade às EPOS e pode alterar os parâmetros de aceleração e
+velocidades diferentes. O \emph{MotionControllerNodelet} envia
+\textit{set-points} de velocidade às EPOS e pode alterar os parâmetros de aceleração e
 desaceleração. Além disso, este componente é responsável por receber entradas do
 componente \emph{Joystick} e \emph{Interface}, que podem controlar o robô pela
 base, ou \emph{MissionController}, o componente de missão autônoma. Há apenas
@@ -557,11 +571,18 @@ da AXIS. Comunica-se (\textit{publisher}) com o componente
 da base de mesmo nome para disponibilizar os dados ao usuário. Futuramente, o
 algoritmo de detecção de anomalias por vídeo será integrado ao sistema ROS,
 logo um componente \textit{InspectionVideo} será \textit{subscriber} do mesmo
-tópico.
+tópico. 
 
-A FIGURA represente o esquema de comunicação entre os diversos componentes e
-suas hierarquias.
-%TODO figura
+A figura~\ref{funcdoris} represente o esquema de comunicação entre os diversos
+componentes e suas hierarquias.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=1\columnwidth]{figs/arqprop/funcional.pdf}
+\caption{Camada Funcional da DORIS}
+\label{funcdoris}
+\end{figure}
+
 
 \subsubsection{Planejamento de velocidades}\label{masterplanning}
 
@@ -623,7 +644,7 @@ A camada Executivo elaborada para a DORIS usa SMACH (subseção~\ref{smach}) como
 \textit{framework}, e implementa a técnica de função de coordenação competitiva
 (subseção~\ref{reativa}), a arquitetura de subsunção, onde o módulo básico de
 comportamento reativo é uma máquina de estados aumentada (\textit{AFSM}), como a
-figura~\ref{afsm} sem \textit{Reset}. A camada Executivo é essencial para a
+figura~\ref{afsm}. A camada Executivo é essencial para a
 autonomia do robô, portanto também é o escopo da implementação do autor.
 
 As subseções a seguir detalham a implementação da camada Executivo,
@@ -634,13 +655,12 @@ ambiente de desenvolvimento da camada Funcional é ROS, optou-se pela utilização
 da camada Executivo SMACH \cite{bohren2010smach} por demonstrar resultados
 positivos em diversas aplicações, e já ser integrada ao sistema ROS. Foram
 adicionadas algumas funcionalidades à camada a fim de garantir todas as
-responsabilidades de uma camada Executivo. A camada Executiva não executa
-algoritmos de alto processamento, como a camada Funcional, logo pode ser
-escolhida a linguagem Python para programação.
+responsabilidades de uma camada Executivo. A camada não executa
+algoritmos de alto processamento, como a camada Funcional, logo foi escolhida a
+linguagem Python para programação.
 
 A figura~\ref{executivofig} mostra a arquitetura da camada Planejador,
-destacando suas responsabilidades e suas interligação com outras camadas e
-internamente.
+destacando suas responsabilidades e suas interconexões entre camadas.
 
 \begin{figure}[!ht]
 \centering
@@ -668,7 +688,7 @@ do coração''.
 
 \textbf{Definição}: \textbf{Processo reativo vital} é um processo que deve ser
 executado sempre que o robô estiver em modo autônomo. É o tipo de processo vital
-ao robô, garante robustez, proteção ou a sobrevivência do sistema e aos seus
+ao robô, garante robustez, proteção ou a sobrevivência ao sistema e aos seus
 dispositivos.
 
 Dependendo da missão a ser realizada, além das tarefas que a especificam, um
@@ -703,8 +723,7 @@ dois \textit{containers} que são executados simultaneamente. Um dos
 sequenciais que executam a missão. O outro \textit{container} concorrente é o
 \textit{SUPPRESSION\_MAIN}, o qual aborta a missão (\textit{container}
 \textit{MAIN}) caso receba uma mensagem ROS 'Abort' em tópico específico e, na
-sequência, aborta processos dependentes, por exemplo, os \textit{processos reativos específicos} de uma
-determinada missão. 
+sequência, aborta processos dependentes, por exemplo, missões dependentes. 
 
 \textbf{Exemplo do módulo básico}
 
@@ -712,10 +731,8 @@ determinada missão.
 \textbf{SUPPRESSION\_STATE}, composto pelo \textit{container}
 \textbf{MAIN\_GOTO}, o qual é uma sequência de tarefas; e pelo
 \textit{container} \textbf{SUPPRESSION\_GOTO}, que aborta \textbf{MAIN\_GOTO}
-quando uma mensagem ROS ``Abort" é enviado ao tópico \textit{DORIS/MCS/Goto} e,
-na sequência, aborta seu \textit{processo reativo específico}
-\textbf{OBSTACLE\_DETECTION}, enviando mensagem ROS ``Abort'' ao tópico
-\textit{DORIS/MCS/ObstacleDetection} (figura~\ref{supression}).
+quando uma mensagem ROS 'Abort' é enviada ao tópico \textit{DORIS/MCS/Goto}
+(figura~\ref{supression}).
 
 Como \textbf{SUPPRESSION\_STATE} é o módulo básico da
 camada Executivo, todas as missões, tarefas e \textit{processos reativos} são
@@ -752,16 +769,16 @@ decomposição em \textit{processos reativos vitais},
 \textit{processos reativos específicos} e pelas tarefas que compõem
 sequencialmente a missão. Não são todos os comportamentos que estão
 sempre em execução, mas apenas os essenciais (``vitais'') para o robô e aqueles
-que possuem alguma relação com a missão. Essa responsabilidade de classificar
-os processos e escolher qual entrará em ação é chamada de \textbf{Selecionador},
+que possuem alguma relação com a missão (``específicos''). Essa responsabilidade
+de classificar os processos e escolher qual entrará em ação é chamada de \textbf{Selecionador},
 foi implementada na camada Executivo e resolve um grande problema de
 arquiteturas de subsunção. A nível de implementação, as missões, quando são
 inicializadas, executam os seus \textit{processos reativos específicos} e
-cancela-os quando são abortas ou finalizadas.
+cancela-os quando são abortadas ou finalizadas.
 
 A responsabilidade \textbf{Sequenciador} é quebrar as missões do Planejador em
 tarefas, que, no caso do SMACH, são sequências de máquinas de estados SMACH. O
-programador deve, por tanto, modelar a quebra de uma missão em tarefas
+programador deve, portanto, modelar a quebra de uma missão em tarefas
 utilizando o \textit{framework} SMACH e adicionar a decomposição à base de
 conhecimento da camada Executivo.
 
@@ -842,11 +859,11 @@ missão simples:
   a localização e a probabilidade. Caso esta probabilidade seja menor que 50\%,
   o estado \textbf{Wander} é ativado. Figura~\ref{mainlocalization}
 \begin{itemize}
-  \item \textbf{Wander}: estado um loop que recebe a localização do robô e a
-  probabilidade. Caso a probabilidade seja menor que 50\%, o estado se comunica
-  com o \textit{MotionControllerNodelet} e realiza controle de velocidade
+  \item \textbf{Wander}: estado loop que recebe a localização do robô, posição e
+  probabilidade. Caso a probabilidade seja menor que 50\%, o
+  estado se comunica com o \textit{MotionControllerNodelet} e realiza controle de velocidade
   do robô a $0.1 m/s$, até que o robô consiga se localizar com maior precisão.
-  Quando a probabilidade mínima é alcançada, o estado retorna ``sucesso''.
+  Quando a probabilidade mínima é alcançada, o estado sai com ``sucesso''.
 \end{itemize}  
   \item \textbf{PathPlanning}: comnunica-se com o \textit{MasterPlanning} da
   camada funcional para obter o plano de velocidades do robô, no trilho. Seu \textit{user data} é o plano de

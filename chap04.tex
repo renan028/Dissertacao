@@ -24,8 +24,8 @@ Arkin \cite{arkin1998behavior}, podemos avaliar arquiteturas quanto a:
   \item \textbf{Suporte a paralelismo}.
   \item \textbf{\textit{Hardware targetability}}: este conceito se refere a
   quão bem uma arquitetura pode ser mapeada em sistemas robóticos reais, isto é,
-  sensores e atuadores físicos; e o desempenho computacional. Este é exclusivo
-  da camada Funcional.
+  sensores e atuadores físicos; e o desempenho computacional. Este critério é
+  exclusivo da camada Funcional.
   \item \textbf{\textit{Niche targetability}}: quão bem uma arquitetura é capaz
   de fazer o robô se adaptar ao seu ambiente de operação.
   \item \textbf{Suporte a modularidade}: desde a facilidade de encapsulamento de
@@ -51,8 +51,7 @@ critérios de forma satisfatória.
 As camadas desenvolvidas para a DORIS foram projetadas para passar
 satisfatoriamente nos critérios de Arkin e de outros roboticistas. Dessa forma,
 a metodologia de avaliação e testes é verificar o desempenho nos critérios e
-destacar as responsabilidades implementadas em cada camada que os cumprem os
-requisitos.
+destacar as responsabilidades implementadas em cada camada e como elas cumprem os requisitos.
 
 As camadas Executivo e Planejador compõem o sistema autônomo do robô. Por
 mais robusto que o sistema seja, e mesmo que haja possibilidade de suspender
@@ -78,7 +77,7 @@ subseção~\ref{camadafuncional} e, como já foi analisada, segue o modelo
 desenvolvedor do CLARAty. Há pacotes genéricos a serem atribuidos a qualquer
 robô, pacotes específicos da DORIS e pacotes com funcionalidades ROS.
 
-Com o auxílio das \textit{tools} (subseção~\ref{camadafuncional}, componentes
+Com o auxílio das \textit{tools} (subseção~\ref{camadafuncional}), componentes
 gráficos para o operador enviar comandos ao robô, o usuário pode teleoperar o
 robô e observar as saídas dos sensores. A figura~\ref{teleop} mostra a
 teleoperação do SAM (\textit{Single Autonomous System}), predecessor da DORIS,
@@ -98,30 +97,31 @@ que a camada Funcional passe por quase todos os critérios de Arkin. Podemos
 avaliar a camada Funcional com os critérios estabelecidos:
 \begin{itemize}
   \item \textbf{Suporte a paralelismo}: é inerente a sistemas
-  \textit{multi-thread} (computadores embarcados que permitem o paralelismo), e
-  aos estilos de comunicação \textit{publish-subscriber} e \textit{service}, que
+  \textit{multi-thread} (computadores embarcados com sistemas operacionais que
+  permitem o paralelismo), e aos estilos de comunicação \textit{publish-subscriber} e \textit{service}, que
   permitem que os componentes obtenham, ao mesmo tempo, acesso aos diversos dados de sensores do robô.
 \item \textbf{\textit{Hardware targetability}}: os diversos robôs que utilizam
 ROS já mostram por si só o \textbf{\textit{Hardware targetability}} desta
 ferramenta.
 \item \textbf{\textit{Niche targetability}}: ROS também já foi utilizado por uma
 variedade de aplicações robóticas. Além disso, os resultados em DORIS mostram
-que o código implementado pode ser estendido robôs com desafios semelhantes.
+que o código implementado pode ser estendido a robôs com desafios semelhantes.
 \item \textbf{Suporte à modularidade}: os componentes e pacotes desenvolvidos
 são modulares e seu nível de abstração permite a utilização em outros robôs. O
 esquema de classes e herança é essencial para alcançar este objetivo.
 \item \textbf{Robustez}: em caso de falha, a camada não entra em colapso e
 mensagens de falha são enviadas a camadas superiores (Executivo e Planejador).
-Mas a camada Funcional não é projetada para recuperação de falhas.
+Mas a camada Funcional não é projetada para recuperação de falhas,
+responsabilidade de camadas superiores.
 \item \textbf{Tempo de desenvolvimento}: o grande repositório disponível para o
 \textit{framework} ROS reduz muito o tempo de desenvolvimento. Além disso, uma
 metodologia de programação, e a separação em módulos facilita o desenvolvimento
 de sistemas robóticos.
 \item \textbf{Flexibilidade em tempo de execução}: os resultados de DORIS com a
-teleoperação mostrou que DORIS pode ser controlado com alteração dos parâmetros
-de controle em tempo real. O sistema de comunicação de ROS permite e a
-implementação das \textit{tools} que se comunicam com os componentes do robô (
-interação base-robô) cria esta flexiblidade em tempo de execução.
+teleoperação mostrou que pode ser controlada com alteração dos parâmetros
+de controle em tempo real. O sistema de comunicação de ROS permite a
+implementação de \textit{tools} que se comunicam com os componentes do robô (
+interação base-robô) e cria esta flexiblidade em tempo de execução.
 \item \textbf{Desempenho em executar tarefas}: os resultados bem
 sucedidos mostraram o alto desempenho da DORIS. 
 \end{itemize}
@@ -142,7 +142,7 @@ sucedidos mostraram o alto desempenho da DORIS.
 \end{figure}
 
 A camada Funcional permite, por si só, a teleoperação do robô e testes com o
-sistema. Apesar de passar com excelência por quase todos os critérios
+sistema. Apesar de passar com excelência pelos critérios
 de Arkin, a camada não transforma DORIS em um sistema autônomo. As outras
 camadas, além de garantirem esta nova configuração do sistema, devem também
 cumprir os critérios de Arkin. 
@@ -153,13 +153,12 @@ cumprir os critérios de Arkin.
 
 Apesar de pertencer à camada Funcional da arquitetura proposta, o planejamento
 de velocidades é um \textit{thread} que pertence ao desenvolvimento de um
-sistema autônomo. O planejamento de velocidades é apenas um algoritmo cuja saída
+sistema autônomo. O planejamento de velocidades é um algoritmo cuja saída
 são as velocidades para cada trecho do trilho, ele não se comunica com outros
 elementos da camada Funcional, não é interface ou driver, mas comunica-se com
 componentes das camadas Executivo e Planejador. Dessa forma, como as camadas de
 nível superior, o algoritmo é simulado, em vez de ser testado exaustivamente no
 robô.
-
 
 Como já documentado na subseção~\ref{masterplanning}, a função
 \textbf{MasterPlanning} possui os argumentos: localização
@@ -169,8 +168,6 @@ localização objetivo; e se o trilho é circular (verdadeiro ou falso). A saída do
 algoritmo é uma matriz com $n$ linhas e três colunas: a primeira coluna
 representa a posição do trilho onde ocorre troca de velocidade máxima; a segunda coluna é a
 velocidade máxima; a terceira é o \textit{set-point} de posição.
-
-Nesta dissertação, é documentado um exemplo do planejamento de velocidades.
 
 \textbf{Exemplo}
 

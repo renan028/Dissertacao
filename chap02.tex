@@ -61,8 +61,8 @@ De acordo com \cite{siegwart2004autonomous}, os componentes básicos de uma
 arquitetura para robôs são classificados em três grupos: \textit{Percepção}, que
 envolve as atividades de interpretação e integração dos sensores;
 \textit{Planejamento} de tarefas, sincronização,
-e o monitoramento da execução de todas as atividades do robô; \textit{Atuação},
-que envolve as atividades de execução dos movimentos, ações do robô e controle
+e o monitoramento da execução de todas as atividades do robô; e
+\textit{Atuação}, que envolve as atividades de execução dos movimentos, ações do robô e controle
 dos atuadores.
 
 As três primeiras seções desta pesquisa bibliográfica abordam os paradigmas da
@@ -97,14 +97,13 @@ O controle de missão faz parte da arquitetura robótica, portanto
 as seções que seguem buscam, em cada arquitetura, destacar de forma
 exemplificada alguns controles de missão.
 
-A robô DORIS é um robô móvel com aplicação de inspeção em um ambiente não
-muito dinâmico. Apresenta missões semelhantes a um AUV, apesar de sua dinâmica
-ser mais simplificada, já que este se move ao longo de um trilho.
+A DORIS é um robô móvel com aplicação de inspeção em um ambiente dinâmico.
+Apresenta missões semelhantes a um AUV, apesar de sua dinâmica ser mais simplificada, já que este se move ao longo de um trilho.
 Entretanto, como a aplicação (inspeção) é igual, os hardwares são equivalentes
 por ser um robô móvel com vários sensores, e alguns desafios são comuns. É de
 se esperar que a arquitetura robótica possa apresentar muitas semelhanças. Desta
 forma, durante a apresentação das arquiteturas, será sempre destacada uma
-arquitetura em AUV.
+arquitetura de AUV ou UGV de aplicação semelhante.
 
 \section{Paradigma hierárquico/deliberativo}
 Em meados do século XX, são realizados os primeiros estudos de robôs autônomos,
@@ -112,34 +111,33 @@ juntamente com o aparecimento da Inteligência Artificial (IA). Em um sistema
 robótico, a IA clássica consiste em um modelo centralizado que coleta
 informações usando sensores, cria um modelo do ambiente, planeja o próximo
 movimento e executa a ação. São sistemas do tipo \emph{Sense, Plan and
-act} (SPA). Essa arquitetura de controle é clássica e tem abordagem
-\emph{top-down} (hierárquica), como na decomposição tradicional,
+act} (SPA) ou \emph{top-down} (hierárquico), como na decomposição tradicional,
 figura~\ref{hierarquica}.
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=.5\columnwidth]{figs/Hierarchical.png}
-\caption{Arquitetura hierárquica tradicional.}
+\caption{Paradigma hierárquico tradicional.}
 \label{hierarquica}
 \end{figure}
 
 De acordo com Marvin Minsky, uma máquina (robô) deveria tender a criar, por si
 só, um modelo abstrato do ambiente em que está inserido (define-se
 \emph{mundo}).
-Caso fosse dado uma tarefa, ela primeiro poderia explorar soluções dentro de seu modelo abstrato e, então,
-experimentá-las externamente. Seria como realizar uma simulação interna
-e, caso funcionasse, realizá-la no mundo real.
+Caso fosse dada uma tarefa, o robô poderia, primeiramente, explorar soluções
+dentro de seu modelo abstrato e, então, experimentá-las externamente. Seria como realizar uma simulação interna
+e, caso funcionasse, executá-la.
 
 \subsection{Robôs deliberativos}
 Entre 1966 e 1972, Charles Rosen e Nils Nisson da Universidade de Stanford
 criaram o Shakey, primeiro robô móvel autônomo (figura~\ref{SHAKEY_1}). Foi
-desenvolvida uma inteligência artificial, \textit{problem solver}, chamada
-STRIPS. Este sistema é um planejador de trajetórias que armazena as imformações
-do ambiente (mapas e obstáculos) de maneira simbólica, e se dada uma tarefa de
-deslocamento (\textit{goto}), é realizada uma busca lógica pelo sistema. 
+desenvolvida uma inteligência artificial chamada
+STRIPS (\textit{problem solver}). Este sistema é um planejador de trajetórias
+que armazena as imformações do ambiente (mapas e obstáculos) de maneira
+simbólica, e, se dada uma tarefa de deslocamento (\textit{goto}), é realizada uma busca lógica pelo sistema. 
 
 Em 1977, começou a ser desenvolvido o projeto HILARE (figura~\ref{hilare}), no
-Laboratoire d'Automatique et d'Analyse des Systèmes (LAAS), Toulouse, France.
+Laboratoire d'Automatique et d'Analyse des Systèmes (LAAS), Toulouse, França.
 O robô possuía sensores como câmera, ultrassons e laser para medir
 distância, sendo possível atualizar o seu mundo com acurácia. Seu mundo era
 representado por modelos geométricos e um modelo relacional que expressava a
@@ -148,7 +146,7 @@ conectividade dos quartos e corredores (simbólico) \cite{norelis1989control}.
 Também em 1977, o Stanford Cart foi criado por Moravec para navegação e desvio
 de obstáculos \cite{moravec1977towards}. Os obstáculos eram identificados pelo
 robô durante a operação e representados em seu mundo interno como
-esferas. O robô possuía uma segunda representação do mundo, simbólica por
+esferas. O robô possuía uma segunda representação do mundo simbólica por
 grafos.
 
 Em 1969, Victor Scheinman, Universidade de Stanford
@@ -188,7 +186,7 @@ As arquiteturas deliberativas são sistemas hierárquicos com a lógica
 \textit{SPA}. São utilizados em sistemas robóticos até hoje, quando a aplicação
 favorece seu uso e o poder computacional não é uma restrição.
 Destacam-se os modelos de Albus, NASREM, o \emph{Intelligent Mobile
-Robot System}, MARIUS (AUV).
+Robot System}, e o MARIUS (AUV).
 
 \subsubsection{Modelo de Albus}
 
@@ -196,18 +194,17 @@ Albus foi o pioneiro e mais influente autor de teorias em arquiteturas
 deliberativas, \cite{albus1991outline}. Sua grande contribuição foi a
 formalização e definição de diversos termos amplamente utilizados em automação e controle. Dentre outros, destaca-se o
 teorema de que há quatro sistemas que compõem a inteligência: processamento de
-sensores, modelo do mundo, geração de comportamentos e julgamento de valor. As
-entradas desses elementos são os sensores e suas saídas são os atuadores:
+sensores, modelo do mundo, geração de comportamentos, e julgamento de valor. 
 
 \begin{itemize}
-  \item Atuadores: as saídas de um sistema inteligente pe produzida por
-  atuadores, como mover, posicionar braços, pernas, mãos, olhos e etc. Os
-  atuadores naturais são os músculos e as glândulas, já os atuadores de máquinas
-  são motores, pistões e válvulas.
+  \item Atuadores: as saídas de um sistema inteligente são produzidas por
+  atuadores, como mover, posicionar braços, pernas, mãos, olhos e etc.
+  Analogamente, os ``atuadores'' da natureza naturais são os músculos e as
+  glândulas, já os atuadores de máquinas são motores, pistões e válvulas.
   \item Sensores: são as entradas de um sistema inteligente, como sensores de
   força, torque, posição, velocidade, vibração, acústico, gases, temperatura e
-  muitos outros. Monitoram o mundo e o estado interno do sistema, e provê dados
-  ao sistema de processamento sensorial.
+  muitos outros. Monitoram o mundo e o estado interno do sistema, e provêem
+  dados ao sistema de processamento sensorial.
   \item Processamento sensorial: sistema que compara novas observações com a
   expectativa interna do modelo do mundo. Integra e armazena as diferenças e
   semelhanças encontradas, a fim de reconhecer padrões, objetos e relações no
@@ -215,7 +212,7 @@ entradas desses elementos são os sensores e suas saídas são os atuadores:
   \item Modelo do mundo: é a melhor estimativa que o sistema inteligente possui
   do mundo, e atualizado pelo processamento sensorial. É um banco de dados com
   todo o conhecimento do mundo e contém uma capacidade de simulação que gera expectativas e predições. O modelo do mundo
-  pode prover informações do passado, presente e prevê estados futuros.
+  pode prover informações do passado, presente e prever estados futuros.
   Os dados são importantes para: o gerador de comportamentos escolher o plano
   adequado para execução das ações; o processamento sensorial fazer correlações,
   comparação de modelos, e reconhecimento de objetos, estados e eventos; e o
@@ -258,7 +255,7 @@ funcionalidade (figura~\ref{nasrem}):
   etc).
   \item Primitiva: determina as primitivas de movimento para gerar trajetórias
   suaves.
-  \item Movimento elementar: define e planeja trajetórias livre de colisões.
+  \item Movimento elementar: define e planeja trajetórias livres de colisões.
   \item Tarefa: converte ações desejadas de um objeto em sequências de
   movimentos elementares.
   \item Compartimento de serviços: converte ações de grupos de objetos em
@@ -303,29 +300,29 @@ O IMRS possui a seguinte arquitetura (figura~\ref{Saridis_1}):
   coordenação e reporta seus resultados a ele.
 \end{itemize}
 
-O nível de coordenação do IMRS é composto por um remetente
-(\emph{Dispatcher}) e três coordenadores: sistema de visão (VS), desvio de
-obstáculo e controle de rastreamento (OATC), e planejamento de trajetórias (PP).
-Com o modelo de redes de Petri não é possível implementar o esquema de linguagem de
-decisão para descrever a tradução de tarefas entre remetente e coordenadores.
-Portanto, os \emph{Petri Net Transducers} (PNTs) foram introduzidos como
-tradutores de linguagem (protocolo): $PNT = (N,\Sigma,
-\Delta, \sigma, \mu, F)$. Onde:
-\begin{itemize}
-	\item A rede de Petri $N=(P,T,I,O)$, $P$ lugares, $T$
-transições, função de entrada $I$, função de saída $O$, é o controle da
-tradução;
-	\item $\mu$ é o estado inicial de $N$;
-	\item $\Sigma$ é o alfabeto de entrada, representa tarefas de entradas;
-	\item $\Delta$ é o alfabeto de saída, representa tarefas de saída; 
-	\item $\sigma$ especifica, para uma dada tarefa de entrada, as transições em
-$N$ e as subtarefas de saída que podem ser usadas na tarefa;
-	\item $F$ é o estado final. Indica o fim da tradução da tarefa;
-\end{itemize}    
-
-Os quatro PNT's são combinados para realizarem a tradução de tarefas no Nível
-de Coordenação: remetente, sistema de visão, desvio de obstáculo
-e controle de rastreamento, e planejamento de trajetórias. 
+% O nível de coordenação do IMRS é composto por um remetente
+% (\emph{Dispatcher}) e três coordenadores: sistema de visão (VS), desvio de
+% obstáculo e controle de rastreamento (OATC), e planejamento de trajetórias (PP).
+% Com o modelo de redes de Petri não é possível implementar o esquema de linguagem de
+% decisão para descrever a tradução de tarefas entre remetente e coordenadores.
+% Portanto, os \emph{Petri Net Transducers} (PNTs) foram introduzidos como
+% tradutores de linguagem (protocolo): $PNT = (N,\Sigma,
+% \Delta, \sigma, \mu, F)$. Onde:
+% \begin{itemize}
+% 	\item A rede de Petri $N=(P,T,I,O)$, $P$ lugares, $T$
+% transições, função de entrada $I$, função de saída $O$, é o controle da
+% tradução;
+% 	\item $\mu$ é o estado inicial de $N$;
+% 	\item $\Sigma$ é o alfabeto de entrada, representa tarefas de entradas;
+% 	\item $\Delta$ é o alfabeto de saída, representa tarefas de saída; 
+% 	\item $\sigma$ especifica, para uma dada tarefa de entrada, as transições em
+% $N$ e as subtarefas de saída que podem ser usadas na tarefa;
+% 	\item $F$ é o estado final. Indica o fim da tradução da tarefa;
+% \end{itemize}    
+% 
+% Os quatro PNT's são combinados para realizarem a tradução de tarefas no Nível
+% de Coordenação: remetente, sistema de visão, desvio de obstáculo
+% e controle de rastreamento, e planejamento de trajetórias. 
 
 \begin{figure}[!ht]
 \centering
@@ -334,10 +331,11 @@ e controle de rastreamento, e planejamento de trajetórias.
 \label{Saridis_1}
 \end{figure}
 
-A modelagem do sistema utilizando redes de Petri proporcionaram algumas
-funcionalidades essenciais em uma arquitetura robótica: a capacidade de executar duas tarefas simultaneamente, por
-exemplo, movimentação e planejamento de trajetórias; e o \emph{Input Semaphore},
-que impede um processo de ser executado até outro ser finalizado.
+A modelagem do sistema utilizando redes de Petri proporcionou algumas
+funcionalidades essenciais em uma arquitetura robótica, destacam-se: a
+capacidade de executar duas tarefas simultaneamente (por exemplo, movimentação e planejamento de
+trajetórias); e o \emph{Input Semaphore}, que impede um processo de ser
+executado até outro ser finalizado.
   
 Saridis salienta os benefícios das PNT:
 \begin{itemize}
@@ -353,29 +351,29 @@ organizacional, separando o nível do desenvolvedor de baixo nível e um
 nível de alto nível para um operador (usuário). Além disso, as redes de Petri
 assumem um importante papel como módulo básico de controle para seu sistema
 IMRS. As redes de Petri foram originalmente introduzidas para descrever as
-comunicações de máquinas de estado finito (FSM), possibilitando flexibilidade
-e robustez, e é provado que redes de Petri são uma excelente ferramenta para
+comunicações de máquinas de estados finitos (FSMs), possibilitando flexibilidade
+e robustez. É provado que redes de Petri são uma excelente ferramenta para
 modelagem de sistemas, sobretudo quando envolvem tarefas conflitantes ou
 simultâneas \cite{murata1989petri}.
 
 \subsubsection{MARIUS}
 Em 1996, Silva et al. \cite{oliveira1996design} (Institute for Systems and
 Robotics, Lisboa) projetaram, desenvolveram e testaram um sistema de controle de missão para o
-MARIUS, robô autônomo submarino. O trabalho de Silva introduz novos e
-importantes conceitos chave para o MCS: Tarefa do Sistema (\emph{System Task}), Primitiva do
-Veículo (\emph{Vechicle Primitive}), Procedimento de Missão (\emph{Mission Procedure})
-e Programa de Missão (\emph{Mission Program}). Além disso, a arquitetura do
-veículo, por ser um AUV, possui sistemas e interconexões
-semelhantes ao robô DORIS, estudo desta dissertação.
-
-\textbf{Tarefa do Sistema} (ST): é a especificação paramétrica de uma classe
-de algoritmos ou processos que implementam uma funcionalidade básica em um robô.
-Requer a implementação de dois módulos: \textit{i}) um \emph{módulo Funcional}
-que contém um determinado algoritmo e processo, e transfere dados com outras
-Tarefas do Sistema e dispositivos físicos; \textit{ii}) um \emph{módulo
-Comando}, máquina de estado finito, que recebe comandos externos, produz
-mensagens de saída, e controla a seleção de algoritmos, processos, e caminhos
-dos dados para/de módulos Funcionais.
+MARIUS, robô autônomo submarino. %O trabalho de Silva introduz novos e
+% importantes conceitos chave para o MCS: Tarefa do Sistema (\emph{System Task}), Primitiva do
+% Veículo (\emph{Vechicle Primitive}), Procedimento de Missão (\emph{Mission Procedure})
+% e Programa de Missão (\emph{Mission Program}). Além disso, a arquitetura do
+% veículo, por ser um AUV, possui sistemas e interconexões
+% semelhantes ao robô DORIS, estudo desta dissertação.
+% 
+% \textbf{Tarefa do Sistema} (ST): é a especificação paramétrica de uma classe
+% de algoritmos ou processos que implementam uma funcionalidade básica em um robô.
+% Requer a implementação de dois módulos: \textit{i}) um \emph{módulo Funcional}
+% que contém um determinado algoritmo e processo, e transfere dados com outras
+% Tarefas do Sistema e dispositivos físicos; \textit{ii}) um \emph{módulo
+% Comando}, máquina de estado finito, que recebe comandos externos, produz
+% mensagens de saída, e controla a seleção de algoritmos, processos, e caminhos
+% dos dados para/de módulos Funcionais.
 
 A arquitetura do MARIUS é descrita abaixo, figura~\ref{SILVA_1}:
 \begin{itemize}
@@ -415,9 +413,6 @@ A arquitetura do MARIUS é descrita abaixo, figura~\ref{SILVA_1}:
 \label{SILVA_1}
 \end{figure}
 
-Como pode ser visto, a arquitetura é dividida em um nível organizacional, um
-coordenador e um nível funcional.
-
 Silva desenvolveu os softwares CORAL e ATOL para implementação das VPs e STs em
 redes de Petri de forma que um usuário final, como um operador, pudesse
 facilmente criar seus MPs. A grande contribuição  
@@ -437,16 +432,16 @@ necessários para a realização das tarefas (figura~\ref{brain}).
 É fácil observar que a arquitetura deliberativa é dependente do
 modelo de mundo armazenado e suas atualizações periódicas. Portanto, a
 utilização da abordagem deliberativa em ambientes extremamente dinâmicos pode ser muito
-custosa devido às atualizações e ao replanejamento. Além disso, é fácil observar
-que a arquitetura SPA dificulta a criação de sistemas em tempo real eficientes.
+custosa devido às atualizações e ao replanejamento. Além disso, a arquitetura
+SPA dificulta a criação de sistemas em tempo real eficientes.
 Dessa forma, robôs móveis em ambientes muito dinâmicos, como o carro autônomo da
-google (figura~\ref{googlecar}), não são aplicações favoráveis para esta
+Google (figura~\ref{googlecar}), não são aplicações favoráveis para esta
 arquitetura.
 
 O controle de missão é presente em arquiteturas deliberativas, mas de maneira
 primitiva, normalmente possuindo apenas as funcionalidades de: quebrar as
 missões em tarefas menores que o robô possa executar, gerenciar as tarefas, e
-monitoramento interno. Entretando, peca no desenvolvimento da interface com o
+monitoramento interno. Entretanto, não desenvolve uma interface com o
 usuário, a possibilidade de alteração de tarefas em tempo de
 execução, e feedback ao operador em tempo real.
 
@@ -460,7 +455,8 @@ execução, e feedback ao operador em tempo real.
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=.5\columnwidth]{figs/googlecar.jpg}
-\caption{Projeto da google 2011- para o desenvolvimento de um carro autônomo.}
+\caption{Projeto da empresa Google 2011 - para o desenvolvimento de um carro
+autônomo.}
 \label{googlecar}
 \end{figure}
 
@@ -484,9 +480,9 @@ reativos são:
   sistemas.
 \end{itemize}
 
-Dessa forma, controle reativo é uma técnica que une percepção e ação,
+Controle reativo é uma técnica que une percepção e ação,
 tipicamente no contexto de comportamentos motores, para produzir respostas
-robóticas em tempo real em mundos dinâmicos e não estruturados.
+robóticas, em tempo real, em mundos dinâmicos.
 
 Em 1986, um dos primeiros estudos em sistemas reativos foi desenvolvido por
 Rodney Brooks \cite{brooks1986robust}. Este estudo é a base para diversos
@@ -494,8 +490,7 @@ trabalhos atuais que envolvem robôs reativos móveis. Os desafios de
 robôs autônomos apontados por Brooks e que ainda ilustram os problemas da
 atualidade são: \emph{múltiplos objetivos}, \emph{múltiplos sensores},
 \emph{robustez} e \emph{extensibilidade}. De acordo com Brooks, esses desafios
-não são suportados pela arquitetura tradicional (paradigma hierárquico) de um
-sistema de controle.
+não são suportados pela arquitetura tradicional (paradigma hierárquico).
 
 Os múltiplos objetivos de robôs móveis podem:
 \begin{itemize}
@@ -536,9 +531,9 @@ capacidade não é aumentada.
 Brooks propõe um dos primeiros sistemas baseados em comportamentos, uma
 arquitetura que tem como objetivo descentralizar a tomada de decisão de um
 modelo central, como pode ser visto na figura~\ref{BROOKS_1}. O autor comenta
-que essa decomposição conduz a uma arquitetura radicalmente diferente para
-sistema de controle de robôs móveis em estratégias de implementação a nível de
-hardware e com grandes vantagens em robustez, desenvolvimento e teste.
+que essa decomposição conduz a uma arquitetura radicalmente diferente para robôs
+móveis, em estratégias de implementação a nível de hardware e com grandes
+vantagens em robustez, desenvolvimento e teste.
 
 \begin{figure}[!ht]
 \centering
@@ -555,20 +550,18 @@ desenvolveu uma ``tartaruga'' elétrica capaz de se movimentar pelo ambiente,
 evitando luz intensa (``ameaças'') e atraída por certos objetivos. Vale
 observar a característica de perceber baixo nível de bateria e procurar
 uma estação de recarga, comportamento que se sobrepõe aos outros. Os
-comportamentos são simples e não há representação abstrata do mundo:
-dirigir-se para luz fraca; fugir de luz forte; e evitar obstáculos
-(figura~\ref{turtle}).
+comportamentos são simples: dirigir-se para luz fraca; fugir de luz forte; e
+evitar obstáculos. Não há representação abstrata do mundo (figura~\ref{turtle}).
 
 Em 1984, veículos simples e puramente reativos com os pares clássicos
 sensor-motor foram desenvolvidos pelo psicologista Braitenberg
 \cite{braitenberg1986vehicles}, a fim de simular sentimentos, como covardia,
 agressividade e outros (figura~\ref{Braitenberg}). 
 
-Em 2002 até os dias atuais, o robô iRobot Roomba ganha destaque comercial e
-executa uma simples tarefa doméstica: limpar o chão. Em sua arquitetura, o robô
+Em 2002 até os dias atuais, o robô Roomba da empresa iRobot ganha destaque
+comercial e executa uma simples tarefa doméstica: limpar o chão. Em sua arquitetura, o robô
 Roomba possui apenas algumas funções reativas, como esquivar-se e locomover-se,
-e, em suas versões antigas, foi constatado que não possui o modelo do mundo,
-mapa, dentro de si \cite{tribelhorn2007evaluating} (figura~\ref{roomba}).
+e não possui o modelo do mundo \cite{tribelhorn2007evaluating} (figura~\ref{roomba}).
 
 \begin{figure}[!ht]
 \centering
@@ -602,10 +595,10 @@ vislumbrou como solução o processamento paralelo, evitar o uso de um modelo do
 mundo e criar módulos puramente reativos, pares sensor-motor, que juntos compõem
 o robô. 
 
-O sistema de controle de arquiteturas reativas utilizam informações locais
+Arquiteturas reativas utilizam informações locais
 do meio, obtidas pelos sensores do robô. Estas são simplificadamente tratadas,
 de forma que a ação ao estímulo é tomada rapidamente e, assim, os robôs reativos
-podem responder de forma mais rápida a variações do ambiente. A arquitetura
+podem responder de forma mais rápida às variações do ambiente. A arquitetura
 define como a informação é mapeada em uma ação e como é feita a coordenação dos
 pares estímulo-ação (comportamentos reativos).
 
@@ -617,21 +610,20 @@ tempo e possuem respostas diferentes. Nesse caso, a coordenação de forma
 competitiva entra em ação, escolhendo um dos comportamentos para a ação final do
 robô. A prioridade de um comportamento sobre os demais pode ser definida
 explicitamente em uma hierarquia entre os comportamentos, ou pode haver uma
-votação por uma ação, ou outros métodos. O exemplo de sistema reativo com
-coordenação do tipo competitiva é o desenvolvido por Brooks, arquitetura de
+votação por uma ação, ou outros métodos. Um exemplo de sistema reativo com
+coordenação do tipo competitiva é o desenvolvido por Brooks, a arquitetura de
 subsunção.
 
-Na arquitetura cooperativa, a ação do robô é a fusão da resposta de todos os
+Na função cooperativa, a ação do robô é a fusão das respostas de todos os
 comportamentos ativos. A arquitetura reativa esquema motor de Arkin é um exemplo
 claro deste tipo de coordenação, onde cada comportamento influencia o movimento
 do robô por meio de um vetor de força artificial e a ação resultante é
-determinada pela soma vetoria de todos os vetores de força.
+determinada pela soma vetorial de todos os vetores de força.
 
 
 \subsubsection{Arquitetura de subsunção}\label{brooks}
-A arquitetura de subsunção é, neste trabalho, destacada, exemplificada e
-minuciosamente comentada, já que sua lógica será o cerne da implementação da
-camada reativa da DORIS.
+A arquitetura de subsunção é, neste trabalho, destacada e exemplificada, já que
+sua lógica será essencial para a implementação da arquitetura da DORIS.
 
 Na figura~\ref{BROOKS_1}, Brooks define \emph{Níveis de competência}, que são
 classes de comportamentos desejados para o robô sobre todos os ambientes que ele
@@ -674,9 +666,10 @@ suprimindo seu trânsito de dados, figura~\ref{BROOKS_2}.
 
 A camada de controle nível zero deve garantir que o robô não entre em contato
 com outros objetos, estacionários ou móveis. Portanto, o robô deve desviar de
-objetos que se aproximam ou parar se houver um objeto fixo em sua trajetória. A camada de controle nível 1, combinada a camada de controle nível 0, permite
- que o robô vagueie sem colisões. A figura~\ref{BROOKS_4} mostra o sistema de
- controle aumentado pelo nível da camada 1. 
+objetos que se aproximam ou parar se houver um objeto fixo em sua trajetória. A
+camada de controle nível 1, combinada a camada de controle nível 0, permite que
+o robô vagueie sem colisões. A figura~\ref{BROOKS_4} mostra o sistema de
+controle aumentado pelo nível da camada 1.
 
 \begin{figure}[!ht]
 \centering
@@ -689,9 +682,7 @@ A estrutura das camadas de controle foram construídas por um conjunto de
 pequenos processadores que enviam mensagens uns para os outros. Cada processador
 é uma máquina de estado finito. A nova arquitetura e essa nova estrutura de
 camadas com eventos discretos foram a base de diversos sistemas de controle de
-missão da atualidade. A fim de melhorar o entendimento desse sistema criado
-por Brooks, serão apresentados dois níveis de seu controle em uma aplicação de robô
-móvel.
+missão da atualidade. 
 
 A nova arquitetura de Brooks é robusta, permite interações dinâmicas, é flexível
 para integrar novas funcionalidades, em camadas superiores, e fácil para
@@ -701,8 +692,8 @@ utilizando como módulos básicos máquinas de estados finitos (FSM - \emph{Finite
 State Machine}). Como a conexão de diversas FSM's não é uma FSM, a solução
 encontrada por Brooks foi acrescentar inibidores e supressores em suas
 FSM, chamando-as AFSM (\emph{Augmented Finite State Machine} ou máquina de
-estado aumentada, figura~\ref{afsm}). Porém, o modelo hierárquico dos níveis
-cria uma certa inflexibilidade nos níveis inferiores.
+estado finito aumentada, figura~\ref{afsm}). Porém, o modelo hierárquico dos
+níveis cria uma certa inflexibilidade nos níveis inferiores.
 
 \begin{figure}[!ht]
 \centering
@@ -711,8 +702,7 @@ cria uma certa inflexibilidade nos níveis inferiores.
 \label{afsm}
 \end{figure}
 
-Apesar dos pontos positivos, a arquitetura de controle de um sistema
-baseado em comportamento apresenta problemas com escala e contextualização
+Apesar dos pontos positivos, a arquitetura apresenta problemas com escala e contextualização
 (\textit{situatedness}). 
 
 O problema com escala é resultado das interconexões, que
@@ -730,12 +720,11 @@ interconexões, já que antes as camadas superiores deveriam se conectar às
 inferiores para obter os dados dos sensores. Porém, Bellingham não resolveu o
 problema utilizando uma arquitetura do tipo subsunção: as camadas são associadas
 com um número de prioridade, de forma que saídas conflitantes são resolvidas
-com esse número. Esta solução pode gerar uma certa inflexibilidade, visto que
-que a adição de um novo comportamento pode alterar toda a estrutura de
+com esse número. Esta solução pode gerar uma certa inflexibilidade, visto que a adição de um novo comportamento pode alterar toda a estrutura de
 prioridades previamente estabelecida.
 
-A solução para o problema de contextualidade só foi resolvido em 2000 por Bennet
-\cite{bennett2000behavior}. No \emph{State Configured Layered Control} (SCLC),
+A solução para o problema de contextualização só foi resolvido em 2000 por
+Bennet \cite{bennett2000behavior}. No \emph{State Configured Layered Control} (SCLC),
 múltiplos conjuntos de comportamentos simples são escolhidos de uma biblioteca
 de comportamentos e são executados em cada fase da missão. A vantagem é o
 número reduzido de comportamentos executados ao mesmo tempo. Esta é
@@ -787,7 +776,7 @@ decisão do ser humano, os sistemas de arquitetura reativa simulam outra
 importante função da medula espinhal, pertencente ao nosso sistema nervoso
 central: o circuito reflexivo, ou arco reflexo. O reflexo é uma resposta
 involuntária rápida, consciente ou não, originado de um estímulo externo e
-realizada antes mesmo de o cérebro tomar conhecimento do estímulo periférico.
+realizado antes mesmo de o cérebro tomar conhecimento do estímulo periférico.
 
 Dessa forma, não há planejamento, não há modelo de mundo, apenas uma reação ao
 estímulo. Esse comportamento é extremamente importante e necessário para a
@@ -795,7 +784,7 @@ sobrevivência do ser humano. Por exemplo, quando encostamos a mão em
 uma panela quente, temos a reação imediata de retirar a mão sem intervenção do
 cérebro, sem replanejamento, cujo processamento levaria tempo suficiente para
 causar danos severos. É fácil, portanto, perceber que tais comportamentos são
-necessários a robôs.
+necessários também a robôs.
 
 Robôs simples, como por exemplo um robô para limpar trilhos de trêm, ou robôs
 para limpar o chão, podem ter o custo reduzido e executar extraordinariamente
@@ -807,13 +796,13 @@ limpando o trilho). Os grandes motivadores do aparecimento da
 arquitetura reativa foram as aplicações simples para alguns robôs e a baixa
 capacidade dos processadores da época.
 
-Não é comum na literatura encontrarmos controle de missão em arquiteturas
+Não é comum, na literatura, encontrarmos controle de missão em arquiteturas
 reativas e é comum alguns autores se referirem a esses robôs como
-\textit{non-taskable systems}, isto é, sistemas que não é possível atribuir
+\textit{non-taskable systems}, isto é, sistemas sem atribuição de
 tarefas. Não há interface com o usuário, mas sim com o programador, que deve
 alterar comportamentos a fim de gerar uma nova tarefa ou aplicação.
 
-A tabela~\ref{comparativa} mostra a compração das arquiteturas analisadas até
+A tabela~\ref{comparativa} mostra a comparação das arquiteturas analisadas até
 agora.
 
 \begin{table}[!ht]
@@ -857,15 +846,15 @@ dos sistemas puramente reativos. Arquiteturas híbridas podem permitir a
 reconfiguração de controles reativos baseado no conhecimento do mundo através da
 sua capacidade de raciocinar sobre os componentes comportamentais subjacentes.
 
-O principal problema no paradigma híbrido é em como desenvolver uma
-metodologia unificada de arquiteturas que garantem um sistema capaz de executar
+O principal problema no paradigma híbrido é como desenvolver uma
+metodologia unificada de arquiteturas que garanta um sistema capaz de executar
 planos de uma maneira robusta, como a arquitetura reativa, e, ao mesmo tempo,
 ter um entendimento de alto nível da natureza do mundo e um modelo da intenção
 do usuário.  
 
 \subsection{Robôs híbridos}
 Entre 1986 e 1987 \cite{arkin1989mobile}, Arkin foi o primeiro a criar uma
-arquitetura híbrida e implementar em um robô. O onjetivo do robô era reconhecer
+arquitetura híbrida e implementar em um robô. O objetivo do robô era reconhecer
 o ambiente de trabalho, planejar uma trajetória e navegar até o ponto desejado,
 evitando obstáculos estáteis e móveis (figura~\ref{george}).
 
@@ -874,7 +863,7 @@ Post-graduated School, Monterey, foi testado em Moss Landing
 California \cite{brutzman1996nps}, figura~\ref{phoenix}.  
 
 Desde 2003 com o Spirit até os dias atuais com Opportunity e Curiosity
-(figura~\ref{curiosity}, a NASA vem desenvolvendo robôs de alta tecnologia,
+(figura~\ref{curiosity}), a NASA vem desenvolvendo robôs de alta tecnologia,
 com grande robustez de hardware e software.
 
 \begin{figure}[!ht]
@@ -905,7 +894,7 @@ projeto de arquiteturas híbridas:
 \begin{itemize}
   \item Seleção: a deliberação é vista como um configurador. O planejador
   determina a composição de comportamentos e parâmetros usados durante a
-  execução. O planejador pode reconfigurá-los quando necessário devido a falhas
+  execução. O planejador pode reconfigurá-los quando necessário devido às falhas
   no sistema.
   \item Conselho: a deliberação é vista como um aconselhador. O planejador
   sugere mudanças que o controle reativo pode ou não usar.
@@ -931,17 +920,17 @@ possuindo geralmente os seguintes módulos:
   qual o sensor é mais adequado para cada situação do robô. 
   \item Cartógrafo: agente responsável por criar, armazenar e atualizar o mapa,
   os modelos do mundo.
-  \item Planejador de missão: agente que interage com o usuário, traduz a
-  mensagem do usuário para os termos do robô, e contrói um plano de missão. Por
+  \item Planejador de missão ou controle de missão: agente que interage com o
+  usuário, traduz a mensagem do usuário para os termos do robô, e constrói um plano de missão. Por
   exemplo, um robô ``assistente'' poderia receber o comando ``Robô, traga um
-  xícara com café''. O planejador de missão interpreta o comando de forma que
-  primeiro o robô deve procurar uma xícara, servir café (supondo que este já
-  esteja pronto) e, então, levá-lo até o usuário.
+  xícara com café''. O planejador de missão interpreta o comando e subdivide
+  nas missões: procurar uma xícara, servir café (supondo que este já esteja
+  pronto) e, levá-la ao usuário.
   \item Monitor de desempenho e solucionador de problemas: é o agente que
   permite ao robô perceber se está progredindo no cumprimento de sua tarefa.
 \end{itemize}
 
-Neste trabalho, são destacadas arquitetura híbridas Autonomous Robot
+Neste trabalho, são destacadas as arquitetura híbridas: Autonomous Robot
 Architecture (AuRA), AUV Phoenix, CLARAty e Stanley.
 
 \subsubsection{AuRA}
@@ -957,13 +946,14 @@ comportamentos reativos. De acordo com Arkin, AuRA é um projeto de arquitetura
 com estratégia de Seleção.
 
 AuRA é composto por cinco subsistemas, dos quais dois pertencem à porção
-deliberativa: Planejador e Cartógrafo, o subsistema de sensores, subsistema de
-gerenciador de comportamentos (gerenciador esquema motor) e o subsitema de
-controle homestático.
+deliberativa: Planejador e Cartógrafo, o terceiro é um subsistema de sensores,
+quarto é subsistema de gerenciador de comportamentos (gerenciador esquema motor)
+e o último subsistema de controle homeostático.
 
 O planejador é responsável pela missão e
-o planejamento de tarefas e é subdividido em três componentes: planejador da
-missão, navegador e piloto e seus módulos são executados sequencialmente, tornando-se mais específico e detalhado.
+o planejamento de tarefas. É subdividido em três componentes: planejador da
+missão, navegador e piloto, e seus módulos são executados sequencialmente,
+tornando-se mais específicos e detalhados.
 A lógica é hierárquica: o planejador de missão envia trechos da missão ao
 navegador, o qual envia trechos de trajetória para o piloto, que determina ações
 ao controlador de baixo nível. O planejador de missão também funciona como
@@ -971,27 +961,27 @@ interface ao usuário. A utilização do mapa interno do robô por cada módulo é
 diferente, enquanto o planejador usa o mapa global, o piloto recebe informações
 locais. Vale observar que, quando o modelo do mundo é atualizado, muitas vezes
 não há necessidade de o planejador atualizar toda a missão e recomeçar o ciclo
-de planejamento, o piloto pode recalcular a trajetória local. Por exemplo, o
-navegador recebe as tarefas: ``vá até a montanha até a torre da água, siga o
-caminho até o acampamento'', e o piloto recebe a primeira subtarefa ``vá até a
-montanha ae a torre da água'' e as informações necessárias para gerar os
-comportamentos.
+de planejamento, o piloto pode recalcular a trajetória local. 
+% Por exemplo, o
+% navegador recebe as tarefas: ``vá até a montanha até a torre d'água, siga o
+% caminho até o acampamento'', e o piloto recebe a primeira subtarefa ``vá até a
+% montanha ae a torre d'água'' e as informações necessárias para gerar os
+% comportamentos.
 
 O Cartógrafo encapsula todo o mapa e tem a funcionalidade de receber mapas a
 priori (operador pode fornecer um mapa inicial). Os três componentes do
-planejador interagem com o Cartógrafo para obter a trajetória a seguir, quebrada
-em segmentos.
+planejador interagem com o Cartógrafo para obter a trajetória a ser seguida,
+quebrada em segmentos.
 
 O subsistema do AuRA que gerencia comportamentos utiliza a arquitetura
 reativa esquema motor. O esquema motor, como visto na subseção
 \ref{motorscheme}, representa cada ação em campos potenciais (vetores) e a resposta do sistema é a
 soma dos vetores. 
 
-O controle homeostático, quinto subsistema, está no meio do caminho entre os
-sistemas deliberativos e reativos. Sua função é modificar a relação entre
-comportamentos, modificando os ganhos do vetores (subseção \ref{motorscheme}).
+O controle homeostático, quinto subsistema, assume um papel intermediário entre os sistemas deliberativo e reativo. Sua função é modificar a relação entre
+comportamentos, modificando os ganhos dos vetores (subseção \ref{motorscheme}).
 Considere o seguinte exemplo, para melhor entendimento deste subsistema: um
-veículo (robô) operando, no planeta Marte em um amabiente rochoso, têm como
+veículo (robô), operando no planeta Marte em um amabiente rochoso, têm como
 tarefa remover fisicamente amostras de rochas de várias localidades pelo planeta
 e levá-las a um veículo de retorno, o qual tem uma data fixa de lançamento. O
 robô é provido com ganhos padrões em seus comportamentos, os quais produzem uma
@@ -1000,14 +990,13 @@ sempre 2 metros de distância dos obstáculos em seu caminho. No começo da missão,
 a execução conservadora parece razoável, mas agora considere próximo à data
 limite de decolagem do veículo de retorno: se o robô estiver próximo ao veículo
 de decolagem, ele deveria cortar caminhos, reduzindo sua margem de evitar
-obstáculos para realizar a entrega, sacrificando sua própria existência para a
+obstáculos para realizar a entrega, sacrificando sua própria existência pela
 missão.
 
 AuRA poderia integrar o controle homeostático à parte deliberativa da
-arquitetura, mas foi motivado pela biologia a colocá-lo em outra área, o qual
-chama de subconsciente, o qual em animais modifica sempre a área consciente em
-resposta a necessidades internas. A figura~\ref{aura} mostra os cinco
-subsistemas da arquitetura AuRA. A tabela~\ref{auratable} resume a arquitetura.
+arquitetura, mas foi motivado pela biologia a colocá-lo em outra área, chamada
+de subconsciente, a qual, em animais, modifica sempre a área consciente em
+resposta a necessidades internas. A figura~\ref{aura} mostra os cinco subsistemas da arquitetura AuRA. A tabela~\ref{auratable} resume a arquitetura.
 
 
 \begin{table}[!ht]
@@ -1046,9 +1035,9 @@ cartógrafo. O planejador de missão gera objetivos e planos estratégicos, e
 os repassa para a camada intermediária, chamada Executivo. O cartógrafo é
 responsável por armazenar e atualizar o modelo do mundo, além de poder prover
 diferentes modelos para as diferentes funções do robô, a fim de otimizar a
-execução. A componente planejador olha para o futuro.
+execução. 
  
-No exemplo do robô de escritório, a componente de planejamento analisa as
+No exemplo do robô de escritório, o Planejador analisa as
 entregas do dia, pode verificar os recursos do robô, atualiza o mapa,
 pode determinar as melhores rotas de entrega e agendamento, pode estimar quando
 o robô deve se recarregar, e replaneja quando necessário, por exemplo, quando
@@ -1057,12 +1046,12 @@ a entrega mais tarde.
 
 A camada Executivo utiliza técnicas de planejamento reativo para selecionar um
 conjunto de comportamentos de uma biblioteca de comportamentos, e desenvolve uma
-rede de tarefa \textit{task network} especificando a sequência de execução para
-os comportamentos a um subobjetivo particular. De acordo com Murphy, o Executivo
+rede de tarefa (\textit{task network}) especificando a sequência de execução
+para os comportamentos a um subobjetivo particular. De acordo com Murphy, o Executivo
 seria a camada responsável por sequenciar e monitorar o desempenho de uma
 arquitetura híbrida. Ele é responsável por traduzir os planos de alto nível da
 camada Planejador em comportamentos de baixo nível, chamando estes na hora
-apropriada. É possível que a camada Executiva aloque e monitore os recursos,
+apropriada. É possível que a camada Executivo aloque e monitore os recursos,
 substituindo esta função do Planejador.
 
 No exemplo do robô de escritório, uma tarefa de alto nível seria entregar uma
@@ -1072,9 +1061,9 @@ corredores ao qual deve passar e interseções que deve virar, anunciar que a
 pessoa tem uma carta e monitorar se a pessoa pegou a carta. Se a pessoa não
 receber a carta depois de um determinado tempo, uma falha deve ser acionada, e
 uma ação de recuperação deve ser tomada, como anunciar novamente à pessoa ou
-notificar o planejamento a reagendar a entrega.
+notificar o Planejador a reagendar a entrega.
 
-Os comportamentos selecionados para uma tarefa pelo Executor formam a camada
+Os comportamentos selecionados para uma tarefa pelo Executivo formam a camada
 Funcional. Esta camada é o nível mais baixo nesta arquitetura, conectando
 diretamente sensores e atuadores. É neste nível que a teoria de controle
 tradicional reside, como a implementação de controles PID, filtros de Kalman e
@@ -1113,19 +1102,19 @@ Monitor de desempenho   & Planejador \\ \hline
 \end{table}
 
 \paragraph{AUV Phoenix}
-Em 1996, Healey \cite{healey1996autonomous}, Calfornia, aplica técnicas de
-controle híbrido em seu trabalho de desenvolvimento do AUV Phoenix.  Haley propõe
-uma arquitetura de software híbrida com três níveis organizacionais e
+Em 1996, Healey \cite{healey1996autonomous}, California, aplica técnicas de
+controle híbrido em seu trabalho de desenvolvimento do AUV Phoenix.  Healey
+propõe uma arquitetura de software híbrida com três níveis organizacionais e
 hierárquicos. Há um aumento de inteligência entre as camadas, do reflexivo,
-para o prcedural, para o deliberativo figura~\ref{HEALEY_1}:
+ao procedural, para o deliberativo figura~\ref{HEALEY_1}:
 
 \begin{itemize}
   \item \textbf{Estratégico (planejador)}: utiliza Prolog como linguagem de
   controle de missão. Desenvolve os comandos que levam o veículo a executar determinada
   missão.
   \item \textbf{Tático (executivo)}: funções na linguagem C que faz interface
-  com os predicados de Prolog e retorna variáveis booleanas (\emph{true, false}. Este
-  nível funciona de maneira assíncrona e retém os dados da missão, além de se comunicar com o
+  com os predicados de Prolog e retorna variáveis booleanas (\emph{true,
+  false}). Este nível funciona de maneira assíncrona e retém os dados da missão, além de se comunicar com o
   nível de execução.
   \item \textbf{Funcional}: controlador em tempo real do veículo, usando
   mensagens assíncronas. Opera os atuadores do veículo. 
@@ -1145,14 +1134,14 @@ de subsunção.
 \end{figure}
 
 \paragraph{Stanley}
-Em 2006, Sebastian Thrun \cite{montemerlo2006winning} ganhou o desafio DARPA,
+Em 2006, Sebastian Thrun \cite{montemerlo2006winning} ganhou o desafio DARPA, em
 uma competição de veículos autônomos organizada pelo governo dos Estados Unidos
 a fim de promover o desenvolvimento na área de direção autônoma.
 
 O robô Stanley foi desenvolvido pela Stanford University. É um veículo
 (Volkswagen Touareg R5) Fora de estrada (\textit{Off Road}) autônomo de alta
 velocidade, que ganhou o desafio de se locomover pela acidentada região do
-deserto Mojave por mais 132 milhas sem a interferência de um ser humano. Em
+deserto Mojave por mais de 132 milhas sem a interferência de um ser humano. Em
 grande parte, o desafio DARPA é uma competição de software, pois um motorista
 equipado com um carro apropriado consegue atravessar o deserto sem muitas
 dificuldades.
@@ -1195,8 +1184,8 @@ Volpe, a arquitetura de três camadas apresenta algumas desvantagens:
 
 De acordo com Volper, a estrutura CLARAty tem duas vantagens principais:
 representação explícita da granularidade das camadas (em uma representação 3D);
-e a mistura das técnicas declarativas e processuais para a tomada de decisões
-(figura~\ref{claraty}).
+e a mistura das técnicas declarativas e processuais para a tomada de decisões.
+%(figura~\ref{claraty}).
 
 A camada funcional é uma interface com todo o sistema de hardware e suas
 capacidades. É um software orientado a objeto, obtendo assim modularidade de
@@ -1204,12 +1193,12 @@ hardware, e estruturação apropriada de software para usar
 as propriedades de herança, característica extremamente importante para o nível
 funcional.
 
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=.5\columnwidth]{figs/claraty.jpg}
-\caption{Arquitetura CLARAty}
-\label{claraty}
-\end{figure}
+% \begin{figure}[!ht]
+% \centering
+% \includegraphics[width=.5\columnwidth]{figs/claraty.jpg}
+% \caption{Arquitetura CLARAty}
+% \label{claraty}
+% \end{figure}
 
 \subsection{Análise crítica} 
 Continuando a analogia de robôs com o funcionamento de animais e,
@@ -1218,14 +1207,14 @@ abordagens anteriores, deliberativa e reativa, e de forma inteligente
 aproveitar as vantagens de ambas as arquiteturas e aproximar cada vez
 mais o funcionamento das máquinas com o homem. Nesta arquitetura final, está
 presente tanto o planejamento exercido pelo cérebro, quanto a camada reflexiva
-da medula, buscando tornar o robô uma entidade completa.
+da medula, buscando tornar o robô uma entidade completa (figura~\ref{brain3}).
 
 A grande dificuldade está em como será realizada essa fusão de arquiteturas,
 qual será a maneira ótima e que garanta essas vantagens. A abordagem híbrida
 evolui a cada ano e novos sistemas, como robôs aeroespaciais e carros
 com direção autônoma, provam que esta arquitetura é eficiente.
 
-A arquitetura híbrida é modular já que grande maioria é
+A arquitetura híbrida é modular, pois é
 dividida em camadas, as quais são subdivididas em módulos. O escopo de aplicação
 é enorme se comparada às outras arquiteturas, como já foi apontado: 
 veículo aeroespacial, carros autônomos, AUV e outras, e como é
@@ -1272,10 +1261,10 @@ arquitetura robótica. De acordo com \cite{kortenkamp2008robotic}, durante o
 desenvolvimento de arquiteturas, a grande maioria dos problemas e a maior parte
 do tempo gasto em depuração (\textit{debugging}) está ligado à comunicação
 entre os componentes. Há basicamente dois estilos de comunicação:
-cliente-servidor (\textit{client-server})) e editor-subscritor
+cliente-servidor (\textit{client-server}) e editor-subscritor
 (\textit{publish-subscriber}).
 
-Em um protocolo de comunicação cliente-servidor (ou ponto-a-ponto), componentes
+Em um protocolo de comunicação cliente-servidor, componentes
 falam diretamente com outros componentes. As vantagens deste protocolo são:
 definição prévia da interface; e é uma abordagem distribuída para comunicação,
 já que não há um módulo central que distribui os dados. Uma desvantagem deste
@@ -1294,7 +1283,7 @@ sobrecarregados em caso de múltiplos pedidos de um mesmo dado. Suas principais
 desvantagens são: difícil de \textit{debug}, pois normalemente a sintaxe da
 mensagem está escondida em uma simples \textit{string} (uma \textit{lista}
 pode ser enviado como \textit{string} e o componente subscritor retraduz);
-utilização de um servidor central que distribui as mensgens (recebe dos
+utilização de um servidor central que distribui as mensagens (recebe dos
 \textit{publishers} e envia aos \textit{subscribers}), o que pode criar um único
 ponto de falha e sobrecarga.
 
@@ -1310,7 +1299,7 @@ Em \cite{staranowicz2011survey} e \cite{kramer2007development}, foram realizadas
 compilações de RDEs da camada Funcional, apontando suas vantagens, desvantagens,
 aplicações e os tipos de comunicação. Neste trabalho, são destacados os dois
 sistemas abertos mais populares: Player e ROS, e, por fim, é justificado a
-escolha por ROS como o RDE do robô DORIS.
+escolha por ROS como o RDE da DORIS.
 
 \subsubsection{Player}
 Em 2001, Player/Stage \cite{gerkey2003player} foi projetado para ser uma
@@ -1335,14 +1324,14 @@ ROS é um software aberto que provê camada de abstração de hardware (CAH -
 hardware abstraction), controle baixo nível de dispositivos, mensagens entre
 processos TCP/IP ou UDP, e gerenciamento de pacotes. Dentre todas, a mais
 importante característica de ROS é a presença de uma grande comunidade de pesquisadores que
-contribui para a expansão do software, possível, principalmente, pela
+contribui para a expansão do software, que é possível, principalmente, pela
 repositório disponível no website ROS. 
 
 ROS, como o próprio autor \cite{quigley2009ros} salienta, não é um sistema
 operacional (SO) no sentido tradicional de gerenciador de processos e
-agendamento, mas apresenta algumas ferramentas parecidas, como
+agendamento, mas apresenta algumas ferramentas semelhantes, como
 mensagens entre processos. De acordo com o autor, a filosofia por trás do
-desenvolvimento deo ROS pode se resumida nos seguintes pontos:
+desenvolvimento deo ROS pode ser resumida nos seguintes pontos:
 
 \begin{itemize}
   \item Arquitetura de rede ponto-a-ponto (\textit{peer-to-peer}).
@@ -1355,45 +1344,45 @@ desenvolvimento deo ROS pode se resumida nos seguintes pontos:
 Um sistema desenvolvido em ROS é capaz de possuir diversos processos, em
 diferentes hosts, conectados por uma topologia ponto-a-ponto, em tempo de
 execução. Uma topologia com servidor central começa a se tornar problemática se
-computadores são conectados em uma rede heterogênea. ROS necessita de um
+computadores são conectados por uma rede heterogênea. ROS necessita de um
 mecanismo de busca para permitir que processos se encontrem em tempo de
 execução, chamado \textit{service} ou \textit{master}. 
 
-O sistem se comporta de maneira semelhante ao Player em relação à conexão por
+O sistema se comporta de maneira semelhante ao Player em relação à conexão por
 soquete TCP/IP, possibilitando o uso de múltiplas
 linguagens, como Python, C++, Octave e LISP.
 
 Em ROS, pequenas \textit{tools} são usadas para construir e
-executar os componentes, em vez um grande monolítico ambiente de
+executar os componentes, em vez de um grande monolítico ambiente de
 desenvolvimento. As \textit{tools} realizam diversas tarefas, como navegar pela
 árvore de código, obter e definir parâmetros, visualizar a conexão
 ponto-a-ponto, medir a largura de banda utilizada, representar graficamente
 dados, gerar automaticamente documentações, e outros.
 
 A ideologia \textit{thin} de ROS é possibilitar que códigos, como drivers e
-algoritmos, possam ser reutilizados em outros middlewares, fora de ROS. Alguns
-exemplos são algoritmos de visão de OpenCV, e algoritmos de planejamento de
-OpenRAVE.
+algoritmos, possam ser reutilizados em outros \textit{middlewares}, fora de ROS.
+Alguns exemplos são algoritmos de visão de OpenCV, e algoritmos de planejamento
+de trajetórias do OpenRAVE.
 
-Os conceitos fundamentais de ROS são nós, mensagens, tópicos e serviços.
+Os elementos fundamentais de ROS são nós, mensagens, tópicos e serviços.
 
 Nós são processos ou módulos de software no código de controle, por exemplo um
-nó \textit{camera} poderia processar todos os dados visuais. Nós podem se
-comunicar com outros nós por simples mensagens (\textit{integer},
-\textit{floating point}, \textit{boolean}, etc), que são enviadas a um ou
-múltiplos tópicos (\textit{strings}, como ``mapa'' ou ``odometria''). Um nó
-interessado em certo tipo de mensagem deverá subescrever o tópico apropriado.
+nó \textit{camera} poderia processar todos os dados visuais. Os nós podem se
+comunicar com outros nós por simples mensagens (de tipos \textit{integer},
+\textit{floating point}, \textit{boolean}, \textit{strings} etc), que são
+enviadas a um ou múltiplos tópicos (tipo \textit{strings}). Um nó interessado em
+certo tipo de mensagem deverá subscrever ao tópico apropriado.
 Pode haver múltiplos publicadores e subscritores concorrentes a um mesmo tópico.
 
-Apesar de o modelo de comunicação do tipo publicador-subscritor ser flexível,
-sua rotina de \textit{broadcast} não é apropriada para transações síncronas. Em
-ROS, é chamado serviço (também definido por uma \textit{string}) um par de
-mensagens: um para pedido, outro para resposta, análogo à URI de um web service.
+Apesar de o modelo de comunicação do tipo editor-subscritor ser flexível,
+sua rotina de \textit{broadcast} não é apropriada para transações síncronas.
+Para trocas de mensagens síncronas em ROS, utiliza-se serviço (também
+tipo \textit{string}) um par de mensagens: um para pedido, outro para resposta, análogo à URI de um web service.
 A figura~\ref{roscomm} mostra os tipos de comunicação do sistema ROS.
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=.8\columnwidth]{figs/roscomm.jpg}
+\includegraphics[width=.6\columnwidth]{figs/roscomm.jpg}
 \caption{Tipos de comunicação so sistema ROS.}
 \label{roscomm}
 \end{figure}
@@ -1403,10 +1392,11 @@ discutidas acima, mostrando como funciona o ambiente de desenvolvimento ROS. Há
 um computador na base, rodando nós de ROS, e um computador embarcado no robô,
 também rodando nós de ROS. Os componentes no robô são drivers que se comunicam
 com os diversos hardwares do robô (sensores e atuadores), algoritmos para
-processamento (imagens e outros), e controladores dos atuadores robô. Na base,
-componentes mostram os status do robô para o usuário e exercem a função de
-visualização. Está sendo representada tanto a comunicação tipo
-\textit{service} (servidor-cliente), quanto a comunicação broadcast.
+processamento (de imagens e outros), e controladores dos atuadores do robô
+(controle PID e outros). Na base, componentes mostram os status do robô para o
+usuário e exercem a função de visualização. Está sendo representada tanto a comunicação tipo
+\textit{service} (servidor-cliente), quanto a comunicação
+editor-subscritor (\textit{broadcast}.
 
 \begin{figure}[!ht]
 \centering
@@ -1426,33 +1416,33 @@ agiliza a prototipagem e o desenvolvimento de complexos sistemas robóticos.
 Os módulos da camada funcional, nós de ROS, podem ser programados
 em diferentes linguagens, como Python, C++ e Java. Os módulos podem ser
 iniciados, interrompidos e reiniciados em tempo de execução, e se comunicam
-entre si numa rede \textit{peer-to-peer}. Há as duas formas de
-comunicação entre os módulos: o estilo síncrono baseado servidor-cliente e o
-assíncrono \textit{publisher-subscriber}. Alem disso, ROS suporta simuladores
+entre si numa rede \textit{peer-to-peer}. Há duas formas de
+comunicação entre módulos: o estilo síncrono servidor-cliente e o
+assíncrono \textit{publisher-subscriber}. Além disso, ROS suporta simuladores
 robóticos como Stage, Gazebo, MORSE e OpenRAVE.
 
 \subsection{Camada Executivo}
 
-Como já definido na subseção~\ref{3t}, em uma linguagem ROS, a camada Executiva
-usa técnicas de planejamento reativo para selecionar os nós, ou componentes, que
-entrarão em execução de uma biblioteca de componentes existentes. Ela sequencia
-a execução dos componentes para a realização de um certo objetivo, monitora o
+Como já definido na subseção~\ref{3t}, a camada Executivo
+usa técnicas de planejamento reativo para selecionar os comportamentos (nós, ou
+componentes, em uma linguagem ROS) que entrarão em execução de uma biblioteca de
+componentes existentes. Ela sequencia a execução dos componentes para a realização de um certo objetivo, monitora o
 desempenho, traduz os planos de alto nível da camada Planejador em
 tarefas, executando-os apropriadamente. Na arquitetura
-implementada, a camada Executiva também aloca e monitora os recursos
+implementada, a camada Executivo também aloca e monitora os recursos
 (gerenciamento de recursos). 
 
 Como já comentado na subseção~\ref{brooks}, apesar de possuírem inúmeras
 vantagens, a arquitetura reativa possui problemas de \emph{situatedness} e
-escala, os quais a camada Executiva deve se preocupar em resolver.
+escala, os quais a camada Executivo deve se preocupar em resolver.
 
 O problema de escala ocorre devido ao número de interconexões de uma arquitetura
-reativa, o qual aumenta exponencialmente em relação ao aumento de coportamentos.
-Isto ocorre, pois um comportamento obtem os dados de outros
-comportamentos através de interconexões (um comportamento de nível 1 necessita
-estar interconectado a comportamentos de nível 0 para obter os seus dados). Este
-problema já havia sido resolvido por uma arquitetura com comunicação do tipo
-\textit{blackboard} \cite{elfes1983distributed}, onde os dados dos sensores são
+reativa, o qual aumenta exponencialmente em relação ao aumento de
+comportamentos.
+Isto ocorre, pois um comportamento obtem os dados de outros através de
+interconexões (um comportamento de nível 1 necessita estar interconectado a
+outros de nível 0 para obter os seus dados). Este problema já havia sido
+resolvido por uma arquitetura com comunicação do tipo \textit{blackboard} \cite{elfes1983distributed}, onde os dados dos sensores são
 disponibilizados a todo os componentes, pois há um componente central que
 armazena os dados e envia a todos que necessitam. Em ROS, a comunicação de
 estilo \emph{publish-subscriber} resolve o problema, sem a necessidade de
@@ -1471,7 +1461,7 @@ com manipulador} só fará sentido quando o robô está próximo de um equipamento.
 Outro problema da arquitetura de subsunção é a \emph{ciência da falha}
 (\textit{cognizant failure}), isto é, comportamentos não sabem quando seus
 processos estão em falha e continuam a execução sem resultados promissores. A
-camada Executiva deve reportar a falha à camada Planejador (\textit{execution
+camada Executivo deve reportar a falha à camada Planejador (\textit{execution
 monitoring}), e suspender sua execução (\textit{error recovery}).
 
 
@@ -1499,18 +1489,17 @@ TDL, PNP e SMACH suportam terminação de tarefas baseado na ocorrência de eventos
 (por exemplo, quando a tarefa B termina, A deve começar). As linguagens RAPs,
 PRS e ESL incluem uma base de dados simbólica (modelo do mundo) que se conecta
 aos sensores diretamente ou à camada Funcional, a fim de manter um modelo
-síncrono do mundo. O modo de monitoramento de tarefas é específico em cada
-linguagem e será analisado a subseção~\ref{monitoamento}.
+síncrono do mundo. 
 
-As linguagens lidam de maneira diferentes em relação a monitoramento de execução
+As linguagens lidam de maneira diferente em relação a monitoramento de execução
 e recuperação de erros. ESL, TDL, SMACH e PNPs provêem monitoramento explícito
-de tarefas, verificam erros com registros, como feito em C++ e Java, e suportam
-procedimentos de ``limpeza'', quando as tarefas são terminadas. RAPs e PLEXIL
+de tarefas, verificam erros com registros (como feito nas linguagens C++ e
+Java), e suportam procedimentos de ``limpeza'', quando as tarefas são terminadas. RAPs e PLEXIL
 retornam valores para indicar falha, e não possuem verificação de erros. PRS
 suporta monitoramento da execução, mas não verificação de erros. ESL e PRS
-provêem a noção de recursos compoartilhados e gerenciamento de recursos.
+provêem a noção de recursos compartilhados e gerenciamento de recursos.
 
-Detalha-se, em seguida, a camada Executivo integradas ao sistema ROS.
+Detalha-se, em seguida, as camadas Executivo integradas ao sistema ROS.
 
 \subsubsection{Petri Net Plans (PNP)}
 
@@ -1531,18 +1520,18 @@ de linguagens de ação inspirada por Situation Calculus \cite{mccarthy1969some},
 como ConGolog \cite{de2000congolog}. A linguagem resultante é mais expressiva
 que a maioria das abordagens na literatura, permitindo formas complexas de
 sensoriamento, laços, interrupções, concorrência, coordenação e cooperação.
-Comparando-se  com sistemas baseados em máquinas de estados (FSA), as PNs são
+Comparando-se  com sistemas baseados em máquinas de estados (FSM), as PNs são
 geralmente exponencialmente mais compactas, já que, por exemplo, uma PN finita
-pode representar uma FSA infinita.
+pode representar uma FSM infinita.
 
 Dentre as diversas aplicações realizadas com PNP, destacam-se: um robô com rodas
 usado para busca e missões de resgate; e quatro robôs AIBO utilizados para o
 futebol de robôs.
 
 Apesar das inúmeras vantagens, a linguagem ainda não foi utilizada em robôs
-que exijam robustez. Além disso, a interface com ROS ainda está em
-desenvolvimento, ainda não é possível executar PNs em paralelo, e a construção
-das PNs requerem software externo independente (JARP).
+que exijam robustez. Além disso, a interface com ROS não é perfeitamente
+estável, e ainda não é possível executar PNs em paralelo. A construção das
+PNs ainda requer software externo independente (JARP).
  
 \subsubsection{SMACH}\label{smach}
 
@@ -1553,7 +1542,7 @@ aplicação que requer interação com o ser humano, e que há métricas de sucesso ou
 falha: servir bebidas (isto é, localizar, manusear e entregar). O sistema é
 completamente autônomo e integrou capacidades como: identificação dinâmica de
 obstáculos, identificação de geladeiras, tipos de bebidas, e faces humanas.
-Componentes de planejamento incluem: navegação, planejamento movimentos
+Componentes de planejamento incluem: navegação, planejamento de movimentos
 (\textit{Motion Planning}) para manipulador com objetivo e restrições de
 trajetória, e módulos de \textit{grasping} (segurar objetos).
 
@@ -1582,7 +1571,7 @@ independente de ROS, desenvolvida em Python, chamada SMACH. SMACH provê
 estruturas para geração procedural de programas baseados em máquinas de estado
 concorrentes em hierarquia. Além disso, apesar de ser uma biblioteca
 independente de ROS, provê módulos de integração como mensagens, tópicos e ações
-\textit{actionlibs}.
+\textit{actionlibs} de ROS.
 
 SMACH pode ser usado para a construção e execução hierárquica de máquinas de
 estado concorrentes (o formalismo pode ser encontrado em \textit{statecharts}
@@ -1591,7 +1580,7 @@ estado concorrentes (o formalismo pode ser encontrado em \textit{statecharts}
 A) Características do SMACH
 
 As características do sistema SMACH são aqui detalhadas, já que a implementação
-da arquitetura do robô DORIS também utiliza SMACH como parte de sua camada
+da arquitetura da DORIS também utiliza SMACH como parte de sua camada
 Executivo.
 
 1) \textit{Structures} (Estruturas): há duas interfaces primárias definidas por
@@ -1621,10 +1610,10 @@ representam transições de um estado para outro via um \textit{outcome}. Estes
 próprios \textit{outcomes}. 
 
 SMACH também provê um \textit{container} simples do
-tipo \textit{split-join} (dividir-juntar): \textit{Concurrence} (Concorrente).
+tipo \textit{split-join} (dividir-juntar), o \textit{Concurrence} (Concorrente).
 Diferente do \textit{StateMachine}, que executa um \textit{state} por vez em
 série, o \textit{Concurrence} executa mais de um \textit{state} simultaneamente.
-Os \textit{outcomes} de um \textit{Concurrence} podem ser definidas em sua
+Os \textit{outcomes} de um \textit{Concurrence} podem ser definidos em sua
 construção. O \textit{Concurrence} padrão do SMACH só termina quando todos os
 seus filhos terminam, mas isso pode ser configurado.
 
@@ -1674,9 +1663,9 @@ ferramenta permite ao desenvolvedor:
   \item O SMACH Viewer é suficientemente intuitivo, de forma que o programador
   rapidamente encontra erros.
   \item A estrutura é bastante modular, logo os processos que são executados no
-  robô podem ser divididos para múltiplos programados sem conflito.
-  \item SMACH pode ser executado a partir do meio de um plano sem alteração no
-  código.
+  robô podem ser divididos para múltiplos programadoress sem conflito.
+  \item SMACH pode ser executado a partir de qualquer ponto do plano
+  sem alteração no código.
   \item SMACH possui propagação de \textit{preemption}, isto significa que
   um pedido de cancelamento vindo do nível superior da árvore de execução atua
   no estado ativo e propaga a ação de cancelamento por todos os estados da
@@ -1689,7 +1678,7 @@ Padrão de projeto é uma solução geral reutilizável para um problema que ocorre
 com frequência dentro de um determinado contexto no projeto de software. Uma
 camada Executivo pode usar o \textbf{Sequenciador} hierárquico de máquinas de
 estados do SMACH para estruturar um plano, mas este \textit{framework} não é uma
-camada Executivo completa, pois esta camada possui outras responsabilidades
+camada Executivo completa, pois há outras responsabilidades desta camada
 (seção~\ref{3t}). SMACH utiliza padrões de projeto de ROS para suprir a
 responsabilidade de monitoramento de execução.
 
@@ -1712,15 +1701,15 @@ Executivo. A dissertação de mestrado \cite{Kolbe2013} implementa
 uma camada Planejador em cima de SMACH. O \textit{Deutsches
 Forschungszentrum für Künstliche Intelligenz} (DFKI), um dos maiores institutos
 sem fins lucrativos de pesquisa no campo de inovação de tecnologia de software e
-robótica baseado em métodos de inteligência artificial desenvolveu um robô
+robótica baseado em métodos de inteligência artificial, desenvolveu um robô
 móvel autônomo de dois braços, AILA \cite{lemburg2011aila}, que usa SMACH como
-camada de nível Executivo. E já há sistemas que se baseiam na filosofia SMACH, como em
-\cite{wachsmuth2012tobi}.
+camada de nível Executivo. E já há outros sistemas que se baseiam na filosofia
+SMACH, como em \cite{wachsmuth2012tobi}.
 
 \subsection{Camada Planejador}
 
 Na subseção~\ref{3t}, o Planejador é definido como uma camada composta pelo
-planejador de missão e o cartógrafo (modelo do mundo). A camada determina as
+planejador de missão e o cartógrafo. A camada determina as
 atividades do robô de longo prazo baseada em objetivos de alto nível. Enquanto a camada Funcional
 possui responsabilidades de com o aqui e agora, e a camada Executivo
 com o que acabou de acontecer e o que deve acontecer depois, a camada Planejador
@@ -1732,21 +1721,21 @@ De acordo com \cite{kortenkamp2008robotic}, as duas abordagens mais comuns são o
 planejador de rede de tarefas hierárquicas (\textit{hierarchical task net} - HTN) e o planejador/agendador. Os HTN, como o
 O-Plan (\textit{The open planning architecture}\cite{currie1991plan}) e
 o SHOP (\textit{simple hierarchical ordered planner})\cite{nau1999shop},
-decompõem tarefas em subtarefas de uma maneira similar às camadas Executivas. A
-diferença é que os HTN operam em um alto nível de abstração, tomam em
-conta a utilização de recursos, e possuem métodos de lidar com conflitos entre
-tarefas (tarefas que necessitam o mesmo recurso, ou uma tarefa negando uma
-pré-condição necessária por outra tarefa). A base de conhecimento do robô é o
+decompõem tarefas em subtarefas de uma maneira similar às camadas Executivo. A
+diferença é que os HTN operam em um alto nível de abstração, usam a
+informação dos recursos disponíveis, e
+possuem métodos de lidar com conflitos entre tarefas (tarefas que necessitam do
+mesmo recurso, ou uma tarefa negando uma pré-condição necessária por outra tarefa). A base de conhecimento do robô é o
 arquivo (dicionário) de tarefas.
 
 O planejador/agendador, como em \cite{chien2000using} e
 \cite{muscettola1998remote}, são úteis em aplicações onde tempo e recursos são
 limitados. A camada Planejador cria planos de alto nível que agenda quando
 tarefas devem ocorrer, mas tipicamente deixa ao Executivo a responsabilidade de
-determinar exatamente como alcançar as objetivos. Planejador/agendador organizam
+determinar exatamente como alcançar os objetivos. Planejador/agendador organizam
 as tarefas e os recursos do robô cronologicamente e com prazos a fim de evitar
 conflitos (motores, energia, comunicação e outros). A base de conhecimento do
-robô inclue os objetivos das tarefas, os recursos necessários, suas durações, e
+robô inclui os objetivos das tarefas, os recursos necessários, suas durações, e
 restrições entre tarefas.
 
 \subsubsection{Rapyuta} 
@@ -1754,15 +1743,15 @@ restrições entre tarefas.
 Rapyuta é a \textit{RoboEarth Cloud Engine}, uma
 Plataforma como serviço (\textit{Platform-as-a-Service} - PaaS) de código
 aberto, serviço de hospedagem e implementação de hardware e software, usado para
-prover aplicações por meio da internet projetado especificamente para
+prover aplicações por meio da internet e projetado especificamente para
 aplicações robóticas. A grande motivação é o número cada vez maior de robôs
-saindo do ambiente industrial para o ambiente doméstico, praticando tarefas
-caseiras como servindo bebidas, dobrando toalhas e outras. Algumas tarefas
+saindo do ambiente industrial para o ambiente doméstico e praticando tarefas
+caseiras (como servir bebidas, dobrar toalhas e outras). Algumas tarefas
 domésticas, no entanto, exigem grande poder computacional, e os computadores
 embarcados cada vez consomem mais bateria, restringindo a mobilidade do robô,
 reduzindo tempo de operação e aumentando os custos. A computação interna do
 robô pode ser reduzida se algumas computações que não exijam tempo real puderem
-ser realizadas na nuvem, como planejamento de segurar objetos (\textit{grasp
+ser realizadas na núvem, como planejamento de segurar objetos (\textit{grasp
 planning}), mapeamento, e navegação.
 
 Rapyuta é um projeto que busca resolver os desafios de construir uma plataforma

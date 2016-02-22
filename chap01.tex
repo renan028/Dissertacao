@@ -1,13 +1,14 @@
 \chapter{Introdução}\label{intro}
 
 É certo afirmar que a robótica e sistemas autônomos são cada vez mais explorados
-no meio acadêmico e industrial, por ser um desafio em várias disciplinas,
-prover retorno financeiro, e melhores condições de vida e trabalho. Este
-trabalho é um estudo de arquiteturas robóticas de sistemas inteligentes, isto
+no meio acadêmico e industrial, por ser um desafio em multidisciplinar,
+ser financeiramente atrativo, e melhorar as condições de vida e trabalho do ser
+humano.
+Este trabalho é um estudo de arquiteturas robóticas de sistemas inteligentes, isto
 é, sistemas mecânicos autônomos \cite{murphy2000introduction}. 
 
-Ser ``inteligente'' implica que o robô não executa ações simples e repetitivas,
-ou seja, é o oposto de robôs em linhas de produção, como manipuladores industriais.
+Ser ``inteligente'' implica que o sistema não executa ações simples e
+repetitivas, ou seja, é o oposto de robôs em linhas de produção, como manipuladores industriais.
 ``Sistema mecânico'' implica que o robô não é um simples computador, mas possui partes mecânicas e pode
 interagir fisicamente com o mundo em que está inserido, como mover-se, e
 modificá-lo.  Por último, ``autônomo'' indica que o robô pode operar
@@ -19,15 +20,15 @@ autônomos inteligentes, como o ``Exterminador do Futuro'', ``Ava'' de
 Ex-Machina, e ``Wall-E''. Sistemas desta complexidade ainda não são uma
 realidade, mas há esforços na literatura de sistemas complexos humanóides, como
 o robô Asimo \cite{sakagami2002intelligent}, e robôs móveis autônomos e
-teleoperados espaciais, como o Opportunity da NASA. Os sistemas autônomos
-requerem integração multidisciplinar, como a integração de sistema mecânico,
-potência, eletrônica, controle, ciência da computação, \textit{Machine learning}, e outros. A
-literatura para cada sistema é ampla e o estado da arte de cada sistema
-individual não pertence ao escopo deste trabalho, mas sim o sistema de
-integração e o software que transforma o sistema mecânico em um robô
-inteligente e autônomo, a arquitetura robótica.
+teleoperados espaciais, como o Curiosity da NASA. Os sistemas autônomos
+requerem integração multidisciplinar, como engenharia mecânica,
+engenharia elétrica, engenharia eletrônica, engenharia de controle, ciência da
+computação, \textit{Machine learning}, e outras. A literatura para cada
+subsistema é ampla, mas há, ainda, o sistema de integração e o software que
+transforma o sistema em um robô inteligente e autônomo, a
+arquitetura robótica, escopo deste trabalho.
 
-As arquiteturas robóticas, escopo deste trabalho, começaram a ser idealizadas
+As arquiteturas robóticas começaram a ser idealizadas
 desde 1960, junto com os estudos emergentes de inteligência artificial, e percorreram, durante anos, paradigmas
 em sua construção. Paradigma é uma filosofia ou conjunto de premissas ou
 técnicas que caracteriza uma abordagem a uma classe de problemas. Não há
@@ -39,46 +40,41 @@ de coordenadas polares. Aplicar o paradigma correto a um determinado problema
 pode facilitar sua solução, logo o estudo dos paradigmas da inteligência
 artificial robótica é chave para o desenvolvimento de arquiteturas adequadas aos
 diversos problemas na construção de sistemas autônomos. Dessa forma, os
-paradigmas da robótica são explicitados e um estudo do estado da arte de
-arquiteturas robóticas é realizado para o desenvolvimento de uma proposta de arquitetura para
-robôs móveis, utilizando algumas ferramentas já disponíveis e de código aberto.
+paradigmas e arquiteturas da robótica são explicitados a fim de se desenvolver
+uma proposta de arquitetura para robôs móveis.
 
 A classe de robôs que mais demanda sistemas inteligentes são robôs móveis. Esta
 classe apresenta diversos desafios, como a locomoção (atuadores) e mecânica,
 percepção (sensores) e processamento, teoria de controle, localização,
 planejamento de trajetória e navegação, entre outros. Os desafios podem ser
 explorados individualmente, e a literatura possui diversos estudos individuais
-em relação à localização ou sistemas de locomoção, por exemplo. Entretanto, é a
-integração de todas as soluções individuais de uma determinada maneira que
-compõe o sistema. O estudo de sistemas autônomos é a investigação de
-como integrar todos os sistemas e soluções para os diversos desafios,
-e ainda fornecer um software de adaptação às possíveis modificações do meio e do
-próprio sistema. Neste trabalho, após o estudo dos paradigmas da robótica, é
-analisado o estado da arte de arquiteturas robóticas de robôs autônomos
-subaquáticos (AUV), veículos autônomos não tripulados (UGV), e outros sistemas.
+em relação à localização ou sistemas de locomoção, por exemplo. A integração de
+todas as soluções individuais de uma determinada maneira compõe o sistema, e o
+estudo de sistemas autônomos é a investigação de como integrá-los e fornecer um
+software de adaptação às possíveis mudanças do meio e de si. Neste trabalho,
+são analisadas arquiteturas robóticas de robôs autônomos subaquáticos (AUV),
+veículos autônomos não tripulados (UGV), e outros sistemas.
 
 A compreensão e entendimento das diversas arquiteturas robóticas e a avaliação
 de casos bem sucedidos, suas vantagens e desvantagens permitem a análise crítica
-dos sistemas e a proposta de modificações e melhoramentos às
-arquiteturas das subclasses de robôs. O autor busca, então, propor uma
-implementação de arquitetura robótica para uma subclasse de sistemas, generaliza
-para outras subclasses e utiliza como estudo de caso o robô DORIS\footnote{This work is supported primarily by Petrobras S.A. and
-Statoil Brazil Oil \& Gas Ltda under contract COPPETEC 0050.0079406.12.9
+dos sistemas e a proposta de modificações e melhoramentos. O autor busca propor uma
+implementação de arquitetura robótica para uma subclasse de sistemas,
+generalizar para outras subclasses. O robô DORIS\footnote{This work is supported primarily by Petrobras S.A. and Statoil Brazil Oil \& Gas Ltda under contract COPPETEC 0050.0079406.12.9
 (ANP-Brazil R\&D Program), and in part by the Brazilian research agencies CNPq
-and FAPERJ.}, um
-veículo de inspeção guiado por trilhos. É desenvolvida uma metodologia geral para a avaliação de arquiteturas de mesma
-complexidade e são realizadas simulações para a análise dos critérios.
+and FAPERJ.} será o estudo de caso, um veículo de inspeção guiado por trilhos.
+Finalmente, é criada uma metodologia geral para a avaliação de
+arquiteturas de mesma complexidade e são realizadas simulações para a análise dos critérios.
 
 \section{Motivação}
 
-A motivação deste trabalho é baseada em duas perguntas principais: por quê
-utilizar sistemas autônomos? por quê desenvolver uma arquitetura robótica para
+A motivação deste trabalho é baseada em duas perguntas principais: por que
+utilizar sistemas autônomos? Por que desenvolver uma arquitetura robótica para
 sistemas autônomos? As subseções a seguir tentam motivar esses aspectos.
 
 \subsection{Sistemas autônomos}
 
 A utilização de robôs na indústria é uma realidade desde 1962, quando o primeiro
-robô industrial executa soldagem na fábrica da General Motors. Desde então,
+robô industrial faz soldagem na fábrica da General Motors. Desde então,
 robôs assumiram diferentes aplicações na indústria e suas principais razões para
 uso são:
 
@@ -93,13 +89,13 @@ uso são:
   \item Quando o maquinário pode colocar a vida do operador em risco, como
   prensas;
   \item Quando a tarefa pode prejudicar a saúde do ser humano por repetição;
-  \item Quando é requerida extrema qualidade e eficiência, impossíveis a um ser
-  humano;
+  \item Quando é requerida precisão extrema e grau de eficiência impossíveis a
+  um ser humano;
   \item Quando o ambiente é impróprio para o ser humano, como ambientes
   explosivos, e outros.
 \end{itemize} 
 
-Os robôs, aos poucos, começaram a sair das fábricas e serem usados em
+Os robôs, aos poucos, começaram a sair das fábricas e usados em
 aplicações que exigiram o desenvolvimento de uma nova classe de robôs, os
 robôs móveis, o que acelerou linhas de pesquisa na área da telerobótica. A
 teleoperação indica a operação de uma máquina à distância, e requer o conjunto:
@@ -119,8 +115,8 @@ turbulentas e com correnteza, enquanto o operador escolhe posições objetivo para
 o robô.
 
 Os níveis de autonomia podem ser extrapolados até veículos completamente
-autônomos como os AUVs, o carro autônomo da Google, e robôs já comerciais, como
-o Roomba da iRobot para limpeza doméstica. O desenvolvimento de sistemas
+autônomos, por exemplo, como em AUVs, o carro autônomo da Google, e robôs já
+comerciais, como o Roomba da iRobot para limpeza doméstica. O desenvolvimento de sistemas
 autônomos absorve as motivações já citadas, mas os fatores que mais estimulam a
 adoção destes sistemas, como exposto em \cite{campbell2010intelligent}, são a
 confiabilidade do sistema, a confiança do ser humano no sistema, treinamento e o
@@ -130,8 +126,8 @@ motivaram o desenvolvimento de sistemas robustos, confiáveis e autônomos.
 
 O robô DORIS, caso de estudo deste trabalho, é um robô de inspeção para
 plataformas de petróleo, um ambiente de grande perigo com risco de
-explosão, condições climáticas desfavoráveis, portanto, exige um grande
-grau de autonomia para proteção do robô e das pessoas que circulam no mesmo
+explosão, condições climáticas desfavoráveis, exigindo, portanto, um
+grande grau de autonomia para proteção do robô e das pessoas que circulam o mesmo
 ambiente de trabalho.
 
 \subsection{Arquiteturas}
@@ -139,13 +135,12 @@ ambiente de trabalho.
 Para entendermos a importância de uma arquitetura, considere construir uma casa
 ou um carro. Não há um projeto certo para uma casa, porém a maioria das casas
 possuem os mesmos componentes: cozinha, banheiro, paredes, chão, portas e
-outros. Isto é similar ao exemplo de carros, produzidos por diferentes
+outros. Isto é similar ao exemplo de carros. Produzidos por diferentes
 fabricantes, todos os tipos de motores de combustão interna possuem os mesmos
 componentes básicos, porém os carros parecem diferentes. 
 
-Voltando ao conceito de paradigma (seção~\ref{intro}), a combustão interna dos
-e carros elétricos são dois paradigmas, e dentro da comunidade dos veículos à
-combustão cada fabricante possui a sua própria arquitetura. Os fabricantes podem
+Voltando ao conceito de paradigma (capítulo~\ref{intro}), a combustão interna e
+carros elétricos são dois paradigmas, e dentro da comunidade dos veículos à combustão cada fabricante possui a sua própria arquitetura. Os fabricantes podem
 realizar algumas pequenas modificações para carros do tipo sedan, conversível,
 sport e etc, para suprimir algumas opções desnecessárias, mas cada estilo de
 carro é uma instância particular da arquitetura do fabricante.
@@ -173,8 +168,7 @@ avaliação conforme o estado da arte.
 A metodologia para alcançar o objetivo proposto passa pelas seguintes etapas:
 estudo dos paradigmas da robótica; estudo de arquiteturas robóticas e suas
 aplicações; pesquisa do estado da arte de ambientes de desenvolvimento
-robóticos; análise crítica e solução proposta; desenvolvimento da metodologia de avaliação
-da solução proposta; testes e resultados.
+robóticos; análise crítica e solução proposta; desenvolvimento da metodologia de avaliação; testes e resultados.
 
 Os três paradigmas da robótica e as arquiteturas robóticas são bem contemplados
 na literatura e há diversos textos acadêmicos que os exploram: paradigma deliberativo, reativo, e
@@ -187,7 +181,7 @@ mais atuais.
 Após explorar os paradigmas e arquiteturas robóticos e definir a mais
 apropriada para o estudo de caso, faz-se necessário investigar os ambientes de
 desenvolvimento robóticos (RDEs), ferramentas que facilitam a implementação da
-arquitetura. Há diversos disponíveis na literatura e suas vantagens e
+arquitetura. Há diversos disponíveis, portanto suas vantagens e
 desvantagens devem ser avaliadas. O estudo de RDEs pode proporcionar a utilização de um extenso
 repositório criado pela academia, facilitando e divulgando novos pacotes
 de software para robôs.
@@ -205,8 +199,8 @@ avaliar a implementação, por simulações ou testes exaustivos no robô.
 O capítulo~\ref{bibliografia} faz uma revisção bibliográfica, apresentando
 conceitos básicos da literatura necessários para o entendimento da dissertação,
 desenvolvendo novos conceitos pela visão do autor, estudando os paradigmas da
-robótica, a evolução das arquiteturas robóticas, e casos de robôs com análise
-crítica. 
+robótica, a evolução das arquiteturas robóticas, e casos de robôs com análises
+críticas. 
 
 O capítulo~\ref{arquipro} faz uma proposta de implementação de arquitetura
 robótica, apresenta o robô DORIS, estudo de caso deste trabalho, e detalha a
