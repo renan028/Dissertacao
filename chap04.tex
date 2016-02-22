@@ -239,9 +239,9 @@ uma volta e posição alvo 60.
 
 \section{Testes da implementação da camada Executivo}\label{avaexecutivo}
 
-A avaliação da camada Executivo é a análise e testes por simulação das
+A avaliação da camada Executivo é a análise e testes por simulação de suas
 responsabilidades dentro dos critérios de Arkin. Isto é, como o modo de
-implementação de cada responsabilidade da camada se comporta em face dos
+implementação de cada responsabilidade da camada se comporta em face aos
 critérios estabelecidos. 
 
 A criação de diversos conceitos de processos que são executados simultaneamente,
@@ -260,7 +260,7 @@ e missões simples da DORIS, utilizando a classe implementada
 \textbf{SUPPRESSION\_STATE}, apresentada na subseção~\ref{impexecutivo}, e no
 envio de mensagens ROS aos componentes da camada, simulando mensagens do nível
 Funcional (saídas de sensores e atuadores do robô).
-Como já foi discutido, a classe, derivada de SMACH, é o módulo comportamental da
+Como já foi discutido, a classe derivada de SMACH é o módulo comportamental da
 camada Executivo e faz o papel da função de coordenação por subsunção. Os
 \textbf{processos reativos} e as missões da DORIS já foram documentados na
 subseção~\ref{impexecutivo} e ~\ref{missioncontrol}, respectivamente.
@@ -301,9 +301,9 @@ A tarefa inicial da missão simples \textbf{GOTO} é \textbf{Localization}, na
 qual permanece até receber o valor da posição do robô e sua probabilidade.
 Caso esta probabilidade esteja dentro do esperado (entre 0.6 e 1), o robô segue
 para a tarefa \textbf{PathPlanning}. A
-tarefa \textbf{PathPlanning} requisita o plano ao algoritmo
-\textbf{MasterPlanning} da camada Funcional, e após recebido a missão
-\textbf{GOTO} segue para sua última tarefa \textbf{Motion\_Control\_Position}.
+tarefa \textbf{PathPlanning} requisita o plano de velocidades ao algoritmo
+\textbf{MasterPlanning} da camada Funcional. Quando recebido, a
+missão \textbf{GOTO} segue para sua última tarefa \textbf{Motion\_Control\_Position}.
 Esta é um loop que recebe a posição do robô, compara com a tabela recebida do
 \textbf{PathPlanning} e envia comando de controle de posição ao componente
 \textbf{PositionController} da camada Funcional (figura~\ref{maingoto}). 
@@ -311,17 +311,18 @@ Esta é um loop que recebe a posição do robô, compara com a tabela recebida do
 Como a primeira tarefa \textbf{Localization} espera mensagem de ROS da camada
 Funcional, uma mensagem ROS com posição e probabilidade é enviada pelo terminal
 (Ubuntu) ao tópico \textit{DORIS/Vehicle/Localization}, simulando a camada de
-baixo nível. Ao receber a mensagem [30,1] (posição 30 e probabilidade 1), a tarefa é
-completada, e a tarefa seguinte, \textbf{PathPlanning}, recebe o dado de posição
-por \textit{user data} SMACH. Esta envia por mensagem de ROS comandos ao
-\textbf{MasterPlanning}, recebe o plano deste e o envia a
-\textbf{Motion\_Control\_Position} também por \textit{user data} SMACH. A
-figura~\ref{transgoto} mostra as transições das tarefas descritas pelo terminal
-do Ubuntu onde: em azul está o recebimento da localização e dados da missão (30
-é posição atual, 80 é posição objetivo, 'fast' é o modo de velocidade rápida);
-em verde é a matriz de velocidades e pontos de troca gerada pelo
+baixo nível. Ao receber a mensagem '[30,1]' (posição 30 e probabilidade 1), a
+tarefa é completada, e a tarefa seguinte, \textbf{PathPlanning}, recebe o dado de posição
+por \textit{user data} SMACH. \textbf{PathPlanning} envia por mensagem de ROS
+comandos ao \textbf{MasterPlanning}, recebe o plano deste e o envia à tarefa
+\textbf{Motion\_Control\_Position} também por \textit{user data} SMACH. 
+
+A figura~\ref{transgoto} mostra as transições das tarefas descritas pelo
+terminal do Ubuntu onde: em azul, o recebimento da localização e dados da
+missão (30 é posição atual, 80 é posição objetivo, 'fast' é o modo de velocidade rápida);
+em verde, a matriz de velocidades e pontos de troca gerados pelo
 \textbf{MasterPlanning} da camada Funcional e recebida pela tarefa \textbf{PathPlanning} da missão \textbf{GOTO} (camada Executivo); e, em
-vermelho, é o loop da tarefa \textbf{Motion\_Control\_Position}, a qual recebe
+vermelho, o loop da tarefa \textbf{Motion\_Control\_Position}, a qual recebe
 uma localização e controla o robô por posição. Na figura~\ref{transgoto2}, a
 mesma transição pode ser vista no smach\_viewer, no qual, em verde, são as
 tarefas em execução (no caso, apenas o \textbf{Motion\_Control\_Position}, e o
@@ -336,7 +337,7 @@ estado de supressão).
  posição aumentar para 60\%; quando \textbf{Motion\_Control\_Position} recebe dados de posição com certeza inferior
  a 60\%, seu \textit{outcome} é \textbf{Localization}. Ambas as ramificações são
  testadas por mensagens de ROS via terminal, por exemplo enviando a mensagem
- [30,0.4] (probabilidade 0.4) ao tópico \textit{DORIS/Vehicle/Localization}, e
+ '[30,0.4]' (probabilidade 0.4) ao tópico \textit{DORIS/Vehicle/Localization}, e
  suas transições são acompanhadas pelo smach\_viewer.
 
 \begin{figure}[!ht]
@@ -356,13 +357,13 @@ estado de supressão).
 A segunda etapa da simulação são as três possíveis interações entre os
 tipos de processos reativos. Devem ser observadas as características de
 subsunção: cancelamento de missão por processo reativo vital; cancelamento de
-missão por processo reativo de recurso disponível; e interrupção de missão por
-processo reativo específico. 
+missão por processo reativo de recurso disponível; e interrupção de missão e
+recuperação de falha por processo reativo específico. 
 
 Exemplo com processo reativo vital: o processo \textbf{Charge} recebe a mensagem
 ``5'' no tópico \textit{'DORIS/MCS/StateOfCharge/Status'} (5\% de nível de bateria)
 e aborta a missão \textbf{GOTO} por segurança, figura~\ref{abortcharge}
-(terminal) e figura~ref\ref{abortgoto} (smach\_viewer, tarefa em cinza
+(terminal) e figura~\ref{abortgoto} (smach\_viewer, tarefa em cinza
 significa que não está em execução).
 
 \begin{figure}[!ht]
@@ -382,7 +383,7 @@ significa que não está em execução).
 \end{figure}
 
 Exemplo com processo reativo de recurso disponível: o processo \textbf{Epos}
-recebe a mensagem ``False'' no tópico \textit{'DORIS/MCS/StateOfCharge/Status'}
+recebe a mensagem ``False'' no tópico \textit{'DORIS/MCS/EPOS/Status'}
 (recurso não disponível) e aborta a missão \textbf{GOTO},
 figura~\ref{eposabort} (terminal).
 
@@ -400,10 +401,10 @@ Exemplo com processo reativo específico: o processo \textbf{OA}
 ampères) e aborta a tarefa \textbf{Motion\_Control\_Position} da missão, para um
 estado de recuperação. A missão volta à tarefa \textbf{Localização}, o
 cartógrafo deve atualizar o mapa do trilho com o obstáculo para recálculo da
-trajetório (sentido contrário).
+trajetória (sentido contrário).
 
 Dessa forma, as responsabilidades \textbf{Sequenciador} e \textbf{Selecionador}
-da camada Executivo atendem aoss critérios \textbf{Suporte a paralelismo},
+da camada Executivo atendem aos critérios \textbf{Suporte a paralelismo},
 \textbf{Suporte à modularidade} e \textbf{Tempo de desenvolvimento}, utilizando
 a metodologia de simulação adotada. Além disso, o \textbf{Desempenho em executar
 tarefas} é aumentado com o paralelismo e a modelagem seguindo a metodologia e
@@ -417,49 +418,44 @@ disponível na camada Funcional, mas não na camada autônoma.
 
 Por fim, o \textbf{\textit{Niche targetability}} é muito abrangente, já que
 a camada comporta robôs modelados por tarefas sequenciais e processos reativos
-paralelos, o mecanismo mais comum encontrado na natureza. Portanto, a camada
-Executivo passa por todos os critérios de Arkin.
+paralelos, o mecanismo mais comum encontrado na natureza. 
 
 \section{Testes da implementação da camada Planejador}\label{avaplanejador}
 
 Assim como a camada Executivo, os testes da camada Planejador é a avaliação das
 responsabilidades desenvolvidas para a camada no contexto dos critérios de
-Arkin, ou seja, é a análise dos \textbf{controle de missão}, \textbf{agendador}
-e \textbf{cartógrafo} em face aos critérios.
+Arkin, ou seja, é a análise de \textbf{controle de missão},
+\textbf{agendador} e \textbf{cartógrafo} em face aos critérios.
 
 As definições de tipos de missões, simples, complexas e desconhecidas,
 introduzidas na subseção~\ref{missioncontrol}, mostram a decomposição
 estabelecida, e estimulam uma implementação em módulos na camada Planejador.
-Portanto, o \textbf{controle de missão} traduz as missões complexas, isto é,
+O \textbf{controle de missão} traduz as missões complexas, isto é,
 decompõe as missões complexas em missões simples, de maneira sequencial ou paralela,
-provendo o \textbf{Suporte à modularidade} e \textbf{Suporte ao paralelismo}
-dos critérios de Arkin.
+provendo o \textbf{Suporte à modularidade} e \textbf{Suporte ao paralelismo}.
 
 Na classe missão, três métodos devem ser implementados: $mission(arguments)$,
 onde as tarefas da missão são implementadas sequencialmente, pertencente à
 camada Executivo; $reactives(arguments)$, onde são definidos os
 \textit{processos reativos específicos} da missão, também pertencente à camada
 Executivo; e $execute(arguments)$, onde o método $mission(arguments)$ é
-executado, junto com as missões simples que compõe as missão, de maneira
-paralela ou sequencial. A organização cria uma ferramenta para implementação de
-missões, agilizando o \textbf{Tempo de desenvolvimento}. Além disso, a
-flexibilidade na modelagem das missões complexas e o paralelismo permitem a
+executado, junto com as missões simples que compõe a missão, paralela ou
+sequencialmente. A organização cria uma ferramenta para implementação de
+missões, agilizando o \textbf{Tempo de desenvolvimento}. Além disso, a flexibilidade na modelagem das missões complexas e o paralelismo permitem a
 otimização do \textbf{Desempenho em executar tarefas}, sem comprometer a camada Executivo.
 
 A \textbf{Robustez} da arquitetura pertence à camada Executivo, nas ramificações
-dos \textit{outcomes}, e aos \textbf{Agendador} e \textbf{controle de missão},
-na camada Planejador. Erros nas missões programadas são agendadas para nova
-execução, no futuro, porém esta responsabilidade ainda não foi implementada na
-camada Planejador, logo não será analisada nos resultados. O feedback
-ao usuário disponível pelo \textbf{controle de missão}, que se comunica à camada
-Executivo, também é uma forma de \textbf{Robustez}, pois é uma informção que
-pode ser interpretada e utilizada para algumas tomadas de decisão. 
+dos \textit{outcomes}, e aos \textbf{Agendador} e \textbf{controle de
+missão}, na camada Planejador: erros nas missões agendadas devem ser
+reprogramadas para o futuro; e o feedback ao usuário disponível pelo
+\textbf{controle de missão} é uma informção
+que pode ser interpretada e utilizada para algumas tomadas de decisão. 
 
 
 O \textbf{\textit{Niche targetability}} é garantido pela flexibilidade na
 implementação das missões complexas do \textbf{controle de missão}, e a
-diversidade do \textbf{cartógrafo}, o qual pode gerar diversos modelos de mundo,
-dependendo da aplicação, comunicando-se com os algoritmos da camada Executivo.
+diversidade do \textbf{cartógrafo}, o qual pode gerar diversos modelos de mundo pelos os algoritmos da camada
+Funcional.
 
 Como a camada Executivo, a \textbf{Flexibilidade em tempo de execução} é
 comprometida propositalmente para simulações serem exaustivamente avaliadas
@@ -473,9 +469,9 @@ previamento e seu funcionamento interno detalhado, elas não foram totalmente
 implementadas e integradas à arquitetura.
 
 As etapas da simulação são: requisição de missão complexa pelo usuário; tradução
-da missão complexa; execução da missão; feedback ao usuário. Como a interface de
-usuário ainda não está finalizada, as mensagend de usuário podem ser
-perfeitamente simuladas via terminal.
+da missão complexa; execução da missão; feedback ao usuário. A interface
+gráfica de usuário não está finalizada, mas as mensagens de usuário podem ser
+simuladas por mensagens ROS via terminal.
 
 Na camada Planejador, há três \textit{threads} esperando mensagens de ROS da
 interface de usuário: 1) \textit{thread} que aguarda a mensagem da missão; 2)
@@ -483,7 +479,7 @@ interface de usuário: 1) \textit{thread} que aguarda a mensagem da missão; 2)
 3) \textit{thread} $\textbf{STOP}$, que finaliza a execução, isto é, aborta o
 sistema autônomo (todas as suas missões e processos). Para o exemplo de missão
 complexa $\textbf{INSPECTION}$, são enviadas as mensagens: 1)
-[[1,[0],['slow',80,1,0,True]]] ao tópico \textit{'DORIS/MCS/Mission'}
+'[[1,[0],['slow',80,1,0,True]]]' ao tópico \textit{'DORIS/MCS/Mission'}
 (mensagem de missão complexa, onde 1 representa a missão $\textbf{INSPECTION}$,
 [0] representa inspeção por vídeo, e ['slow',80,1,0,True] são os parâmetros
 da missão simples $\textbf{GOTO}$); 2) ``Play'' ao tópico
@@ -505,17 +501,18 @@ figura~\ref{executeinspection}. Na figura, temos:
   \item Em vermelho, estão representadas as missões simples sequenciais.
   ``join()'' em um \textit{thread} significa que uma missão simples está sendo
   executada em uma nova \textit{thread}, mas a \textit{thread} principal
-  (missão complexa) só prossegue após a finalização da missão simples em
-  ``join()'', o que mostra o caráter sequencial. As missões simples sequenciais
+  (missão complexa) só prossegue após a finalização da missão simples, o que mostra o caráter sequencial. As missões simples sequenciais
   são: $\textbf{GOTO(80,'slow')}$, $\textbf{StopDETECT}$ e
   $\textbf{StopINSPECTION}$. A missão simples $\textbf{StopINSPECTION}$ deve
   existir, pois finaliza a missão simples principal \textbf{INSPECTION\_INIT}.
+  \item Como não há processos reativos específicos, não há comando de
+  finalização destes.
 \end{itemize}
  
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=.8\columnwidth]{figs/executeinspection.png}
+\includegraphics[width=1\columnwidth]{figs/executeinspection.png}
 \caption{Método $execute$ da missão \textbf{INSPECTION}.}
 \label{executeinspection}
 \end{figure}
