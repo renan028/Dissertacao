@@ -283,32 +283,36 @@ p\kern-.025em e}}\kern-.08em\TeX}
   \frontpage@maintext
   \vspace*{8mm}
   \noindent\local@approvedname:\par
-{\begin{flushright}
-	\begin{minipage}{.6\textwidth}
+
         \vskip16\p@ \baselineskip12pt
-        \def\hrulefill2{\leavevmode\leaders\hrule height .5pt\hfill\kern\z@}
-        \hrulefill2 \vskip 1mm
+        \begin{flushright}
+        \begin{minipage}{.6\textwidth}
+
+        \def\hrulefill{\leavevmode\leaders\hrule height .5pt\hfill\kern\z@}
+        \hrulefill \vskip -0.7em
         \protect\centering
          \@adtitle\ \@adname\ \@adsurn, \@addegree \\
 
+
+
         \ifthenelse{\equal{\@coadname}{\@empty}}{}{%
         \vskip26\p@ \baselineskip12pt
-        \hrulefill2 \vskip 1mm
+        \hrulefill \vskip 1mm
         \protect\centering%
           \@coadtitle\ \@coadname\ \@coadsurn, \@coaddegree\\}
 
         \count1=0
         \@whilenum \count1<\@examiner \do {
             \vskip26\p@ \baselineskip12pt
-        \hrulefill2 \vskip 1mm
+        \hrulefill \vskip 1mm
         \protect\centering%
           \csname S:\the\count1 \endcsname\\
             \advance\count1 by 1}
 
-	\end{minipage}
-\end{flushright}}
-\vspace*{\fill}
-\frontpage@bottomtext}
+\end{minipage}
+        \end{flushright}
+  \vspace*{\fill}
+  \frontpage@bottomtext}
 \newcommand\config@hypersetup{%
 \begingroup
   % changes to \toks@ and \count@ are kept local;
