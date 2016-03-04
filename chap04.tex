@@ -207,9 +207,9 @@ de GOTO(10,'fast').}
 \end{figure}
 
 O mapa das seções do trilho até a posição 10, disponível pelo Cartógrafo, está
-representado na tabela~\ref{mapatrilho}. Observe que o trecho inicial ``Reto"
-possui comprimento 2.733 m e velocidade máxima 0.6 m/s, mas antes de o robô
-chegar no final do trecho, ele começa o processo de desaceleração em 1.907 m de
+representado na tabela~\ref{mapatrilho}, e o mapa algébrico representado
+graficamente na figura~\ref{arqprop/rail_doris.pdf}. Observe que o trecho
+inicial ``Reto" possui comprimento 2.733 m e velocidade máxima 0.6 m/s, mas antes de o robô chegar no final do trecho, ele começa o processo de desaceleração em 1.907 m de
 forma a ser possível fazer a troca de trecho na velocidade máxima permitida para
 a ``Transição reto-subida'' (0.42 m/s).
 
@@ -231,6 +231,13 @@ Transição reto-descida & 0.510       & 9.670 \\
 Descida                & 0.790       & 10.46
 \end{tabular}
 \end{table}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.8\columnwidth]{figs/arqprop/rail_doris.pdf}
+\caption{Representação gráfica do mapa algébrico do trilho até 10m.}
+\label{arqprop/rail_doris.pdf}
+\end{figure}
 
 Caso seja inserida uma posição alvo maior que o comprimento do trilho, e o
 trilho for circular, considera-se uma volta e tira-se a diferença, por exemplo
