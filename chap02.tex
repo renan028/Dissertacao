@@ -1253,13 +1253,13 @@ sensores e controle em ambientes virtuais. De acordo com
 evoluíram devido à emergente interação entre robôs e seres humanos, o que exige
 grande robustez e simulação prévia, como em aplicações médicas, assistência em
 ambientes nocivos, e outros. Dessa forma, a comunidade robótica reconheceu a
-necessidade do desenvolvimento de softwares abertos para simulação e interface
+necessidade do desenvolvimento de programas abertos para simulação e interface
 em robótica.
 
 As arquiteturas híbridas são, normalmente, decompostas em camadas, isto fica
 explícito, por exemplo, na arquitetura de três camadas. Há linguagens e
-softwares que visam ajudar na implementação de cada camada. Em seguida, são
-abordados os softwares e linguagens para cada camada, analisando os
+programas que visam ajudar na implementação de cada camada. Em seguida, são
+abordados os programas e linguagens para cada camada, analisando os
 principais ambientes de desenvolvimento atuais, destacando vantagens e
 desvantagens, e justificando a escolha do autor. 
 
@@ -1292,7 +1292,7 @@ As vantagens desse protocolo de comunicação são: simplicidade e pouco
 \textit{overhead}; ideal quando não se sabe quantos componentes diferentes
 necessitarão dos dados (como em muitas interfaces); componentes não ficam
 sobrecarregados em caso de múltiplos pedidos de um mesmo dado. Suas principais
-desvantagens são: difícil de \textit{debug}, pois normalemente a sintaxe da
+desvantagens são: difícil depuração de código, pois normalemente a sintaxe da
 mensagem está escondida em uma simples \textit{string} (uma \textit{lista}
 pode ser enviado como \textit{string} e o componente subscritor retraduz);
 utilização de um servidor central que distribui as mensagens (recebe dos
@@ -1301,7 +1301,7 @@ ponto de falha e sobrecarga.
 
 A utilização do protocolo de comuicação tipo \textit{publish-subscriber} já
 aparecia em arquiteturas robóticas antes de Brooks. Em 1983, Elfes
-\cite{elfes1983distributed} idealiza uma arquitetura em módulos e controle
+\cite{elfes1983distributed} idealizou uma arquitetura em módulos e controle
 distribuído a fim de atingir efetividade em processamento paralelo,
 flexibilidade de interação com os diversos sensores, distribuir capacidades de
 decisão e flexibilidade de expansão e modificação do sistema. O sistema de
@@ -1311,7 +1311,7 @@ Em \cite{staranowicz2011survey} e \cite{kramer2007development}, foram realizadas
 compilações de RDEs da camada Funcional, apontando suas vantagens, desvantagens,
 aplicações e os tipos de comunicação. Neste trabalho, são destacados os dois
 sistemas abertos mais populares: Player e ROS, e, por fim, é justificado a
-escolha por ROS como o RDE da DORIS.
+escolha por ROS como o RDE do sistema robótico DORIS.
 
 \subsubsection{Player}
 Em 2001, Player/Stage \cite{gerkey2003player} foi projetado para ser uma
@@ -1333,10 +1333,10 @@ possua conexão, possibilitando independência de localização.
 \subsubsection{Robot Operating System - ROS}\label{ros}
 
 ROS é um software aberto que provê camada de abstração de hardware (CAH -
-hardware abstraction), controle baixo nível de dispositivos, mensagens entre
-processos TCP/IP ou UDP, e gerenciamento de pacotes. Dentre todas, a mais
-importante característica de ROS é a presença de uma grande comunidade de pesquisadores que
-contribui para a expansão do software, que é possível, principalmente, pela
+hardware abstraction layer), controle baixo nível de dispositivos, mensagens
+entre processos TCP/IP ou UDP, e gerenciamento de pacotes. Dentre todas, a mais
+importante característica do ROS é a presença de uma grande comunidade de
+pesquisadores que contribui para a expansão do software, que é possível, principalmente, pela
 repositório disponível no website ROS. 
 
 ROS, como o próprio autor \cite{quigley2009ros} salienta, não é um sistema
@@ -1354,14 +1354,14 @@ desenvolvimento deo ROS pode ser resumida nos seguintes pontos:
 \end{itemize}
 
 Um sistema desenvolvido em ROS é capaz de possuir diversos processos, em
-diferentes hosts, conectados por uma topologia ponto-a-ponto, em tempo de
-execução. Uma topologia com servidor central começa a se tornar problemática se
+diferentes \textit{hosts}, conectados por uma topologia ponto-a-ponto, em tempo
+de execução. Uma topologia com servidor central começa a se tornar problemática se
 computadores são conectados por uma rede heterogênea. ROS necessita de um
 mecanismo de busca para permitir que processos se encontrem em tempo de
 execução, chamado \textit{service} ou \textit{master}. 
 
 O sistema se comporta de maneira semelhante ao Player em relação à conexão por
-soquete TCP/IP, possibilitando o uso de múltiplas
+\textit{socket} TCP/IP, possibilitando o uso de múltiplas
 linguagens, como Python, C++, Octave e LISP.
 
 Em ROS, pequenas \textit{tools} são usadas para construir e
@@ -1371,8 +1371,9 @@ desenvolvimento. As \textit{tools} realizam diversas tarefas, como navegar pela
 ponto-a-ponto, medir a largura de banda utilizada, representar graficamente
 dados, gerar automaticamente documentações, e outros.
 
-A ideologia \textit{thin} de ROS é possibilitar que códigos, como drivers e
-algoritmos, possam ser reutilizados em outros \textit{middlewares}, fora de ROS.
+A ideologia \textit{thin} de ROS é possibilitar que códigos, como
+\textit{drivers} e algoritmos, possam ser reutilizados em outros
+\textit{middlewares}, fora de ROS.
 Alguns exemplos são algoritmos de visão de OpenCV, e algoritmos de planejamento
 de trajetórias do OpenRAVE.
 
@@ -1388,9 +1389,9 @@ Pode haver múltiplos publicadores e subscritores concorrentes a um mesmo tópico.
 
 Apesar de o modelo de comunicação do tipo editor-subscritor ser flexível,
 sua rotina de \textit{broadcast} não é apropriada para transações síncronas.
-Para trocas de mensagens síncronas em ROS, utiliza-se serviço (também
+Para trocas de mensagens síncronas em ROS, utiliza-se \textit{service} (também
 tipo \textit{string}) um par de mensagens: um para pedido, outro para resposta, análogo à URI de um web service.
-A figura~\ref{roscomm} mostra os tipos de comunicação do sistema ROS.
+A Figura~\ref{roscomm} mostra os tipos de comunicação do sistema ROS.
 
 \begin{figure}[!ht]
 \centering
@@ -1399,16 +1400,16 @@ A figura~\ref{roscomm} mostra os tipos de comunicação do sistema ROS.
 \label{roscomm}
 \end{figure}
 
-A figura~\ref{rosarchitecture} é um resumo de todas as características
+A Figura~\ref{rosarchitecture} é um resumo de todas as características
 discutidas acima, mostrando como funciona o ambiente de desenvolvimento ROS. Há
 um computador na base, rodando nós de ROS, e um computador embarcado no robô,
-também rodando nós de ROS. Os componentes no robô são drivers que se comunicam
-com os diversos hardwares do robô (sensores e atuadores), algoritmos para
+também rodando nós de ROS. Os componentes no robô são \textit{drivers} que se
+comunicam com os diversos hardwares do robô (sensores e atuadores), algoritmos para
 processamento (de imagens e outros), e controladores dos atuadores do robô
 (controle PID e outros). Na base, componentes mostram os status do robô para o
 usuário e exercem a função de visualização. Está sendo representada tanto a comunicação tipo
 \textit{service} (servidor-cliente), quanto a comunicação
-editor-subscritor (\textit{broadcast}.
+editor-subscritor (\textit{broadcast}).
 
 \begin{figure}[!ht]
 \centering
@@ -1417,7 +1418,7 @@ editor-subscritor (\textit{broadcast}.
 \label{rosarchitecture}
 \end{figure} 
 
-As vanatagens da utilização de ROS no desenvolvimento de sistemas robóticos são
+As vantagens da utilização de ROS no desenvolvimento de sistemas robóticos são
 diversas, como comentado em \cite{dastani2013programming}. ROS é amplamente
 utilizado como \textit{framework} para a camada funcional de uma arquitetura
 híbrida. É um sistema flexível e que possui um repositório crescente de pacotes
@@ -1435,7 +1436,7 @@ robóticos como Stage, Gazebo, MORSE e OpenRAVE.
 
 \subsection{Camada Executivo}
 
-Como já definido na subseção~\ref{3t}, a camada Executivo
+Como já definido na Subseção~\ref{3t}, a camada Executivo
 usa técnicas de planejamento reativo para selecionar os comportamentos (nós, ou
 componentes, em uma linguagem ROS) que entrarão em execução de uma biblioteca de
 componentes existentes. Ela sequencia a execução dos componentes para a realização de um certo objetivo, monitora o
@@ -1444,8 +1445,8 @@ tarefas, executando-os apropriadamente. Na arquitetura
 implementada, a camada Executivo também aloca e monitora os recursos
 (gerenciamento de recursos). 
 
-Como já comentado na subseção~\ref{brooks}, apesar de possuírem inúmeras
-vantagens, a arquitetura reativa possui problemas de \emph{situatedness} e
+Como já comentado na Subseção~\ref{brooks}, apesar de possuírem inúmeras
+vantagens, a arquitetura reativa possui problemas de contextualização e
 escala, os quais a camada Executivo deve se preocupar em resolver.
 
 O problema de escala ocorre devido ao número de interconexões de uma arquitetura
@@ -1462,7 +1463,7 @@ implementação extra, já que todos os componentes podem ``ouvir'' os dados
 publicados por outro componentes.
 
 Alguns comportamentos devem ser executados apenas em situações específicas, não
-durante todo o funcionamento do robô. O problema de \emph{situatedness} é a
+durante todo o funcionamento do robô. O problema de contextualização é a
 execução de todos os comportamentos ao mesmo tempo, mesmo quando estes não são
 necessários. Apesar de estarem sendo executados, não são percebidos na saída
 do robô, pois estão sendo suprimidos por comportamentos de nível superior
@@ -1470,7 +1471,7 @@ do robô, pois estão sendo suprimidos por comportamentos de nível superior
 só faz sentido quando o robô está em movimento, e o comportamento \emph{toque
 com manipulador} só fará sentido quando o robô está próximo de um equipamento. 
 
-Outro problema da arquitetura de subsunção é a \emph{ciência da falha}
+Outro problema da arquitetura de subsunção é o \textbf{conhecimento da falha}
 (\textit{cognizant failure}), isto é, comportamentos não sabem quando seus
 processos estão em falha e continuam a execução sem resultados promissores. A
 camada Executivo deve reportar a falha à camada Planejador (\textit{execution
@@ -1489,7 +1490,7 @@ Funcional foi desenvolvida em ROS, o autor optou por analisar camadas
 Executivo integradas ao sistema ROS: Petri Net Plans (PNP)
 \cite{ziparo2006petri}, e SMACH \cite{bohren2010smach}.
 
-Todas as linguagens mencionadas provêem suporte à decomposição hierárquica de
+Todas as linguagens mencionadas fornecem suporte à decomposição hierárquica de
 tarefas e subtarefas, capacidades de expressar condicionais e iterações, e
 suportam restrições temporais seriais ou paralelas entre tarefas (por exemplo,
 tarefa B deve começar após 10s do término da tarefa A - serial). Com exceção de
@@ -1543,11 +1544,11 @@ futebol de robôs.
 Apesar das inúmeras vantagens, a linguagem ainda não foi utilizada em robôs
 que exijam robustez. Além disso, a interface com ROS não é perfeitamente
 estável, e ainda não é possível executar PNs em paralelo. A construção das
-PNs ainda requer software externo independente (JARP).
+PNs ainda requer software externo independente, JARP, para a modelagem das PNT.
  
 \subsubsection{SMACH}\label{smach}
 
-Em 2011, Bohren testa SMACH, camada Executivo, no robô PR2, integrado
+Em 2011, Bohren testou SMACH, camada Executivo, no robô PR2, integrado
 ao sistema ROS~\cite{bohren2011towards}. PR2 é um robô planejado a executar uma
 tarefa com grande repetição e robustez, em um ambiente bem definido, numa
 aplicação que requer interação com o ser humano, e que há métricas de sucesso ou
@@ -1640,13 +1641,13 @@ interface para um estado e devem ser declarados durante a construção.
 (\textit{input and output keys}), a fim de mover dados entre escopos.
 
 Apesar de esta característica deixar a análise dos estados mais complexa, ela
-deixa o sistema muito poderoso. Ela permite que dados sejam passados entre
+deixa o sistema muito mais flexível. Ela permite que dados sejam passados entre
 estados consecutivos, e, além disso, os dados podem ser acumulados por vários
 estados de forma que estejam disponíveis, no futuro, a um ramo durante a
 execução. Isto significa que um estado ``completo'' de uma árvore SMACH, em um
 determinado momento, é a união dos estados ativos do nível de execução em cada
 \textit{container} e os conteúdos de dicionários do \textit{user data} em cada
-\textit{container}. A figura~\ref{container} mostra um \textit{container}
+\textit{container}. A Figura~\ref{container} mostra um \textit{container}
 exemplo do SMACH, chamado \textit{SM\_TOP}, que possui dois estados \textit{FOO}
 e \textit{BAR}, tal que as entradas do \textit{container SM\_TOP}
 (\textit{input keys}) são recebidas pelo estado \textit{FOO}, os dados de saída
@@ -1691,7 +1692,7 @@ com frequência dentro de um determinado contexto no projeto de software. Uma
 camada Executivo pode usar o \textbf{Sequenciador} hierárquico de máquinas de
 estados do SMACH para estruturar um plano, mas este \textit{framework} não é uma
 camada Executivo completa, pois há outras responsabilidades desta camada
-(seção~\ref{3t}). SMACH utiliza padrões de projeto de ROS para suprir a
+(Seção~\ref{3t}). SMACH utiliza padrões de projeto de ROS para suprir a
 responsabilidade de monitoramento de execução.
 
 1) Coordenação de dados: os estados em SMACH podem ser ações do tipo
@@ -1712,19 +1713,18 @@ Além da demonstração de desempenho na utilização de SMACH em PR2
 Executivo. A dissertação de mestrado \cite{Kolbe2013} implementa
 uma camada Planejador em cima de SMACH. O \textit{Deutsches
 Forschungszentrum für Künstliche Intelligenz} (DFKI), um dos maiores institutos
-sem fins lucrativos de pesquisa no campo de inovação de tecnologia de software e
-robótica baseado em métodos de inteligência artificial, desenvolveu um robô
+de pesquisa no campo de inovação de tecnologia de software e robótica baseado em métodos de inteligência artificial, desenvolveu um robô
 móvel autônomo de dois braços, AILA \cite{lemburg2011aila}, que usa SMACH como
 camada de nível Executivo. E já há outros sistemas que se baseiam na filosofia
 SMACH, como em \cite{wachsmuth2012tobi}.
 
 \subsection{Camada Planejador}
 
-Na subseção~\ref{3t}, o Planejador é definido como uma camada composta pelo
+Na Subseção~\ref{3t}, o Planejador é definido como uma camada composta pelo
 planejador de missão e o cartógrafo. A camada determina as
 atividades do robô de longo prazo baseada em objetivos de alto nível. Enquanto a camada Funcional
-possui responsabilidades de com o aqui e agora, e a camada Executivo
-com o que acabou de acontecer e o que deve acontecer depois, a camada Planejador
+possui responsabilidades de com o ``aqui e agora'', e a camada Executivo
+com ``o que acabou de acontecer'' e ``o que deve acontecer depois'', a camada Planejador
 olha para o futuro. Nesta subseção, aborda-se as RDEs voltadas para a camada
 Planejador, como elas funcionam internamente, e destaca-se o Rapyuta, uma
 camada Planejador visionária que está sendo integrada ao ambiente ROS.
