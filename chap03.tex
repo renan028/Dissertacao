@@ -8,27 +8,24 @@ um robô depende, em grande parte, do desenvolvimento desta arquitetura robótica.
 Neste capítulo, será apresentada uma implementação da arquitetura híbrida de
 três camadas, utilizando o ambiente de desenvolvimento ROS, para um robô
 móvel que executa tarefas de inspeção, a DORIS. Como definido no
-capítulo~\ref{bibliografia}, a arquitetura robótica não é apenas uma
+Capítulo~\ref{bibliografia}, a arquitetura robótica não é apenas uma
 arquitetura de software, mas sim uma arquitetura que depende dos
-componentes físicos do robô (hardware) e a sua aplicação. Dessa forma, faz-se
-necessário apresentar o objeto de estudo desta dissertação.
-
-
-
+componentes físicos do robô (hardware) e a sua aplicação.
 
 \section{A arquitetura robótica implementada}
 
-Na seção~\ref{doris}, foi apresentada a DORIS e suas funcionalidades. Como
-foi definido na seção~\ref{conceitos}, pela visão do autor, o conceito de
-\emph{arquitetura robótica} não é equivalente a uma arquitetura de
+Na Seção~\ref{doris}, foi apresentado o sistema robótico DORIS e suas
+funcionalidades.
+Como foi definido na Seção~\ref{conceitos}, pela visão do autor, o conceito de
+\textit{arquitetura robótica} não é equivalente a uma arquitetura de
 software, é necessária a avaliação do robô como um todo, isto é, seus
 elementos de hardware e sua aplicação. O desenvolvedor de ROS
 \cite{quigley2009ros} já afirmava que não há melhor RDE, já que
 todos apresentam vantagens e desvantagens, e o mesmo pode ser afirmado no
 contexto mais amplo de arquitetura robótica e em paradigmas. A arquitetura ideal
 para um robô pode ser ineficiente para outro. A arquitetura robótica desenvolvida tenta
-ser geral para robôs com características e desafios semelhantes ao DORIS, como
-AUVs e UGVs.
+ser geral para robôs com características e desafios semelhantes ao sistema
+robótico DORIS, como AUVs e UGVs.
 
 DORIS exigem grande processamento de imagem (câmeras) e de
 outros sensores. O usuário final poderá, com o auxílio de uma interface,
@@ -42,25 +39,24 @@ modelo do mundo, pois há constante comparação com a situação esperada e
 possíveis anomalias. Também fica claro que não é só um modelo do mundo que se
 faz necessário, mas a construção de modelos distintos para cada componente
 de forma a otimizar as missões. Além disso, robôs \textit{offshore} exigem
-grande robustez, por trabalharem em ambientes hostis, e que demandam ações rápidas em situações
-emergenciais. As exigências de um controle de missão para modos
+grande versatilidade, flexibilidade e resistência, por trabalharem em ambientes
+hostis, e que demandam ações rápidas em situações emergenciais. As exigências de um controle de missão para modos
 flexíveis de inspeção, a manutenção de modelos de mundo e a robustez
 no controle do robô demandam uma arquitetura híbrida.
 
-No capítulo~\ref{bibliografia}, foi explicitada algumas formas de arquitetura
+No Capítulo~\ref{bibliografia}, foi explicitada algumas formas de arquitetura
 híbrida, mas aquela com maior número de aplicações bem sucedidas é a arquitetura
 híbrida de três camadas, utilizadas desde a aplicação do carro autônomo do
 desafio DARPA (Stanley) até a aplicação de exploração do robô da NASA no
 planeta Marte. 
 
-Escolhida a arquitetura híbrida de três camadas como arquitetura robótica da
-DORIS, ainda é necessário desenvolver a implementação de cada camada, isto
-é, como e qual executará as funções descritas por Murphy: sequenciador,
-gerenciador de recurso, cartógrafo, controle de missão, e monitor de
+Um vez que a arquitetura híbrida de três camadas foi escolhida como arquitetura
+robótica do sistema robótico DORIS, ainda é necessário desenvolver a
+implementação de cada camada, isto é, como e qual executará as funções descritas por Murphy: sequenciador, gerenciador de recurso, cartógrafo, controle de missão, e monitor de
 desempenho. A arquitetura de três camadas é formada por: camada Funcional,
 camada Executivo e camada Planejador, e como cada arquitetura de três camadas
-apresenta suas peculiaridades, as camadas da DORIS são detalhadas
-adiante.
+apresenta suas peculiaridades, as camadas do sistema robótico DORIS são
+detalhadas adiante.
 
 \subsection{Implementação da camada Planejador}\label{planejador}
 
@@ -69,9 +65,9 @@ responsabilidades da camada Planejador. Kortenkamp \cite{kortenkamp2008robotic},
 por exemplo, aponta que as responsabilidades mais comuns da camada Planejador
 são criar redes de tarefas hierárquicas, ou agendamentos e gerenciamento de
 recursos.  Em \cite{arkin1998behavior}, o Planejador pode assumir
-responsabilidades de Adaptador, ou Selecionador, ou Conselheiro (ver seção
-\ref{hibrida}). A camada Planejador implementada na DORIS terá as seguintes
-responsabilidades:
+responsabilidades de Adaptador, ou Selecionador, ou Conselheiro (ver Seção
+\ref{hibrida}). A camada Planejador implementada no sistema robótico DORIS terá
+as seguintes responsabilidades:
 
 \begin{itemize}
   \item Controle de missão: como definido na subeção \ref{conceitos}, é a

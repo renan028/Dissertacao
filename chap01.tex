@@ -111,36 +111,36 @@ exemplo, levou tempo até ser aceito, porém o número de variáveis e o risco
 motivaram o desenvolvimento de sistemas robustos, confiáveis e autônomos.
 
 DORIS é um robô desenvolvido pela COPPE/UFRJ, em colaboração com Petrobras e
-Statoil, para aplicação \textit{offshore}: monitoramento e inspeção em
-plataformas de petróleo. O robô é controlado de maneira autônoma ou teleoperado,
+Statoil, para aplicação em tarefas de monitoramento e inspeção de plataformas
+\textit{offshore}. O robô é controlado de maneira autônoma ou teleoperado,
 permitindo que o operador acompanhe o estado da missão, e monitore a informação
 dos sensores. O robô apresenta as seguintes funcionalidades
 \cite{carvalho2013doris}:
 
 \begin{itemize}
   \item Detecção de anomalias por vídeo: uso de múltiplas câmeras (luz visível,
-  infravermelho, fisheye e estéreo) para detectar anomalias, como objetos abandonados, fumaça,
-  fogo, intrusos e vazamentos.
+  infravermelho, \textit{fisheye} e estéreo) para detectar anomalias, como
+  objetos abandonados, fumaça, fogo, intrusos e vazamentos.
   \item Detecção de anomalias por áudio: microfones detectam áudios anômalos,
-  como explosões, e realizam diagnóstico de mau funcionamento de máquinas, comparando os sons recebidos com
-  assinaturas obtidas previamente.
-  \item Detecção de anomalias por vibração: DORIS possui um manipulador com
+  como explosões, e realizam diagnóstico de mau funcionamento de máquinas,
+  comparando os sons recebidos com assinaturas obtidas previamente.
+  \item Detecção de anomalias por vibração: um manipulador com
   sensor de vibração em seu efetuador para inspecionar o funcionamento de máquinas, a partir de
   algoritmos com classificadores de falhas.
   \item Detecção de anomalias por sensor de gás: sensor de hidrocarboneto
   detecta o vazamento de gases.
-  \item Mapeamento 3D do ambiente: DORIS é capaz de reconstruir um ambiente 3D a
+  \item Mapeamento 3D do ambiente: reconstrução de um ambiente 3D a
   partir de câmeras e Laser.
-  \item Detecção de anomalias por temperatura: DORIS possui um sensor de
+  \item Detecção de anomalias por temperatura: sensor de
   temperatura e umidade.
   \item Detecção de anomalias por câmera de infravermelho: uma câmera de
   infravermelho pode detectar pessoas, indicar a presença de intrusos ou
   indentificar incêndios.
 \end{itemize}
 
-DORIS é um robô móvel que se locomove em um trilho pelo uso de dois gimbals, os
-quais contêm atuadores e rodas. O robô foi desenvolvido dentro da filosofia
-de modularidade, isto é, novos sensores podem ser integrados ao sistema, ou até
+DORIS é um robô móvel que se locomove em um trilho pelo uso de dois
+\textit{gimbals}, os quais contêm atuadores e rodas. O robô foi desenvolvido
+dentro da filosofia de modularidade, isto é, novos sensores podem ser integrados ao sistema, ou até
 um novo módulo do robô pode ser adicionado, a fim de melhorar seu desempenho
 dentro do escopo da aplicação de inspeção. Isso exige a
 flexibilidade e modularidade do sistema mecânico, software e sistema
@@ -175,15 +175,14 @@ O trilho por onde o robô se desloca é construído a partir de tubos de
 policloreto de polivinila (PVC) e possui seções retas, curvas ortogonais de
 subida, descida, para a direita e para a esquerda. Os segmentos curvos são tubos
 de 1 m dobrados $90^o$, resultando em curvaturas de aproximadamente 630 mm. Um
-trilho para testes foi construído no Centro de Pesquisas e
-Desenvolvimento da Petrobras (CENPES) e sua extensão é cerca de 140 m. As
-figuras~\ref{doris} e \ref{cenpes} ilustram o robô, o trilho e o ambiente em que
-trabalha.
+trilho para testes foi construído no Centro de Pesquisas e Desenvolvimento
+Leopoldo Américo Miguez de Mello (CENPES) e sua extensão é cerca de 140 m. As
+Figuras~\ref{doris} e \ref{cenpes} ilustram o robô, o trilho e o ambiente em que trabalha.
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=.8\columnwidth]{figs/DORIS/2_1.png}
-\caption{A DORIS e o trilho.}
+\caption{Sistema robótico em trilho.}
 \label{doris}
 \end{figure}
 
