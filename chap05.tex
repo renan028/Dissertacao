@@ -1,5 +1,6 @@
 \chapter{Conclusões e trabalhos futuros}\label{conclusao}
 
+\section{Conclusões}
 A dissertação ``Arquitetura híbrida de um robô móvel guiado por
   trilhos'' foi dividia em três partes principais: revisão bibliográfica,
 arquitetura proposta, e resultados.
@@ -42,7 +43,7 @@ garantir modularidade, flexibilidade, facilidade de implementação e desempenho
 de execução. Além disso, é desenvolvida uma arquitetura de subsunção, na camada, 
 com a ferramenta SMACH e ROS, obtendo assim as vantagens da função de coordenação competitiva
 para tarefas conflitantes. As desvantagens da subsunção, como
-\textit{situatedness} e escalabilidade, são contornadas a partir de uma
+contextualização e escalabilidade, são contornadas a partir de uma
 deliberação na camada.
 
 A camada Funcional utiliza ROS como \textit{framework} e comunicação entre
@@ -61,8 +62,8 @@ camadas. Uma metodologia de testes
 foi proposta e as camadas são avaliadas pelos critérios sugeridos por Arkin.
 
 A avaliação de resultados da camada Funcional são testes exaustivos de
-componentes com os hardwares do robô. Drivers de sensores, atuadores e
-algoritmos são testados, e o robô pode ser teleoperado com joystick ou por
+componentes com os elementos de hardware do robô. Drivers de sensores,
+atuadores e algoritmos são testados, e o robô pode ser teleoperado com joystick ou por
 interface web. O repositório ROS e a organização de um software orientado
 a objeto aumentam a facilidade de implementação e passam por todos os
 critérios de Arkin com excelência.
@@ -81,7 +82,7 @@ criação e definição de novos conceitos de missões, garantiram modularidade,
 paralelismo e flexibilidade da solução. Os testes mostraram o sistema autônomo
 integrado e em funcionamento.
 
-Dessa forma, a dissertação é um estudo profundo no tema de arquiteturas
+Dessa forma, a dissertação é um estudo no tema de arquiteturas
 robóticas e a tentativa de compilar ideias, criar novos conceitos e propor uma arquitetura
 híbrida mais geral para robôs autônomos na aplicação de inspeção, e que possuem
 desafios semelhantes à DORIS, isto é, AUVs e UGVs. A arquitetura se inspira na
@@ -108,7 +109,7 @@ alguns ajustes e modelagem de novas funcionalidades são necessárias.
 
 Na camada Planejador, é necessário desenvolver a interface gráfica de usuário, e
 finalizar as responsabilidades de agendador e cartógrafo. O cartógrafo depende
-da camada Funcional e deve ser implementada concomitantemente. O agendador não é
+da camada Funcional e deve ser implementada simultaneamente. O agendador não é
 essencial para o sistema autônomo, mas importante para um robô de inspeção e
 outras aplicações, logo é necessária para uma arquitetura mais geral.
 
